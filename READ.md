@@ -1,0 +1,1 @@
+Este repositorio se usará para realizar el frontend de SEDI para la materia de Ingeniería de Software
