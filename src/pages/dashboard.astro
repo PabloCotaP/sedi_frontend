@@ -3,26 +3,90 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
+
+const sections = [
+  {
+    title: 'Formación Académica',
+    description: 'Registra y consulta tu información académica, títulos y certificaciones',
+    route: '/info-academica',
+    icon: 'graduation',
+    color: 'bg-gray-500 hover:bg-gray-600'
+  },
+  {
+    title: 'Producción Académica',
+    description: 'Gestiona tus publicaciones, artículos y trabajos académicos',
+    route: '/prod-academicos',
+    icon: 'book',
+    color: 'bg-gray-500 hover:bg-gray-600'
+  },
+  {
+    title: 'Capacitación Docente',
+    description: 'Consulta y registra cursos, talleres y capacitaciones',
+    route: '/capa-docente',
+    icon: 'teacher',
+    color: 'bg-gray-500 hover:bg-gray-600'
+  },
+  {
+    title: 'Acta Disciplinar',
+    description: 'Accede a tu historial y registros disciplinares',
+    route: '/act-disciplinar',
+    icon: 'clipboard',
+    color: 'bg-gray-500 hover:bg-gray-600'
+  }
+];
 ---
 
 <BaseLayout title="Dashboard - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-blue-100">
+  <div class="flex flex-col min-h-screen">
     <Header showUserInfo={true} userEmail="" />
 
-    <main class="flex-1 px-4 py-12 sm:px-8 max-w-7xl mx-auto w-full">
-      <div class="text-center mb-12">
-        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
-          Bienvenido al Sistema de Expediente Académico
-        </h2>
-      </div>
+    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-12 sm:px-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">Bienvenido al Sistema de Expediente Académico</h1>
+          <p class="text-lg text-gray-600">Selecciona el apartado que deseas consultar o editar</p>
+        </div>
 
-      <div class="max-w-2xl mx-auto mb-12">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-          <div class="chart-container">
-            <canvas id="progressChart"></canvas>
-          </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+          {sections.map((section) => (
+            <a
+              href={section.route}
+              class={`relative text-white no-underline border-none rounded-xl p-8 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color}`}
+            >
+              <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              
+              <div class="relative z-10">
+                <div class="text-6xl mb-4 flex justify-center">
+                  {section.icon === 'graduation' && (
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+                    </svg>
+                  )}
+                  {section.icon === 'book' && (
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
+                    </svg>
+                  )}
+                  {section.icon === 'teacher' && (
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                      <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
+                    </svg>
+                  )}
+                  {section.icon === 'clipboard' && (
+                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                      <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                    </svg>
+                  )}
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold mb-3">{section.title}</h3>
+                <p class="text-sm sm:text-base opacity-95 leading-relaxed">{section.description}</p>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </main>
@@ -31,20 +95,7 @@ import Sidebar from '../components/Sidebar.astro';
   </div>
 </BaseLayout>
 
-<style>
-  .chart-container {
-    position: relative;
-    height: 450px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
-
 <script>
-  import Chart from 'chart.js/auto';
-
   // Check if user is logged in
   const email = localStorage.getItem('user_email');
   if (!email) {
@@ -54,67 +105,6 @@ import Sidebar from '../components/Sidebar.astro';
     const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
     if (headerEmailElement) {
       headerEmailElement.textContent = email;
-    }
-  }
-
-  // Initialize Chart.js
-  const chartCanvas = document.getElementById('progressChart') as HTMLCanvasElement;
-  if (chartCanvas) {
-    const ctx = chartCanvas.getContext('2d');
-    if (ctx) {
-      new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: ['completado', 'pendiente'],
-          datasets: [{
-            label: 'Progreso de expediente',
-            data: [30, 70],
-            backgroundColor: [
-              'rgba(220, 53, 69, 0.8)',
-              'rgba(54, 162, 235, 0.8)'
-            ],
-            borderColor: [
-              'rgba(220, 53, 69, 1)',
-              'rgba(54, 162, 235, 1)'
-            ],
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: {
-              position: 'bottom',
-              labels: {
-                padding: 15,
-                font: {
-                  size: 14
-                }
-              }
-            },
-            title: {
-              display: true,
-              text: 'Progreso de expediente',
-              font: {
-                size: 18,
-                weight: 'bold'
-              },
-              padding: {
-                top: 10,
-                bottom: 20
-              },
-              color: '#6b7280'
-            }
-          },
-          layout: {
-            padding: {
-              top: 0,
-              bottom: 0
-            }
-          }
-        }
-      });
     }
   }
 </script>

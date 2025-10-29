@@ -88,10 +88,6 @@ import Sidebar from '../components/Sidebar.astro';
   </div>
 </BaseLayout>
 
-<style>
-  h1 { font-family: 'Georgia', serif; }
-</style>
-
 <script>
   const volverBtn = document.getElementById('volver-btn');
   const uploadBtn = document.getElementById('upload-btn');
@@ -101,7 +97,7 @@ import Sidebar from '../components/Sidebar.astro';
 
   if (volverBtn) {
     volverBtn.addEventListener('click', () => {
-      window.location.href = '/apartados';
+      window.location.href = '/dashboard';
     });
   }
 

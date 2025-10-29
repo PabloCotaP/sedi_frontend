@@ -59,7 +59,7 @@ import Footer from '../components/Footer.astro';
       return;
     }
     
-    // Simular el inicio de sesión guardando el correo en localStorage
+    // Simular el inicio de sesión guardando el correo en localStorage hasta que se implemente la autenticacion por google
     localStorage.setItem('user_email', userEmail);
     window.location.href = '/dashboard';
   }
