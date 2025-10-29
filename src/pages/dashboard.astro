@@ -6,32 +6,81 @@ import Sidebar from '../components/Sidebar.astro';
 
 const sections = [
   {
-    title: 'Formación Académica',
-    description: 'Registra y consulta tu información académica, títulos y certificaciones',
+    title: 'Formación académica',
     route: '/info-academica',
-    icon: 'graduation',
-    color: 'bg-gray-500 hover:bg-gray-600'
+    icon: 'form-academica',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Gestiona tu información académica'
   },
   {
-    title: 'Producción Académica',
-    description: 'Gestiona tus publicaciones, artículos y trabajos académicos',
+    title: 'Capacitación docente',
     route: '/prod-academicos',
-    icon: 'book',
-    color: 'bg-gray-500 hover:bg-gray-600'
+    icon: 'cap-docente',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Registra tus capacitaciones'
   },
   {
-    title: 'Capacitación Docente',
-    description: 'Consulta y registra cursos, talleres y capacitaciones',
+    title: 'Actualización disciplinar',
     route: '/capa-docente',
-    icon: 'teacher',
-    color: 'bg-gray-500 hover:bg-gray-600'
+    icon: 'act-disciplinar',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Actualización en tu disciplina'
   },
   {
-    title: 'Acta Disciplinar',
-    description: 'Accede a tu historial y registros disciplinares',
+    title: 'Gestión académica',
     route: '/act-disciplinar',
-    icon: 'clipboard',
-    color: 'bg-gray-500 hover:bg-gray-600'
+    icon: 'gest-academica',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Gestiona tus actividades académicas'
+  },
+  {
+    title: 'Productos académicos relevantes',
+    route: '/prod-academicos',
+    icon: 'prod-academicos-relevantes',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Registra tus productos académicos'
+  },
+  {
+    title: 'Experiencia profesional no académica',
+    route: '/exp-prof-no-academica',
+    icon: 'exp-prof-no-academica',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Documenta tu experiencia profesional'
+  },
+  {
+    title: 'Experiencia en diseño ingenieril',
+    route: '/exp-diseno-ingenieril',
+    icon: 'exp-diseno-ingenieril',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Registra tu experiencia en diseño'
+  },
+  {
+    title: 'Logros profesionales no académicos',
+    route: '/logros-prof-no-academicos',
+    icon: 'logros-prof-no-academicos',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Registra tus logros profesionales'
+  },
+  {
+    title: 'Participación en colegios, cámaras, asociaciones científicas, etc.',
+    route: '/participacion-colegios',
+    icon: 'participacion-colegios',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Documenta tu participación en asociaciones'
+  },
+  {
+    title: 'Premios, distinciones o reconocimientos recibidos',
+    route: '/premios-distinciones',
+    icon: 'premios-distinciones',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Registra tus premios y reconocimientos'
+  },
+  {
+    title: 'Aportaciones relevantes a la mejora del PE',
+    route: '/aportaciones-mejora-pe',
+    icon: 'aportaciones-mejora-pe',
+    color: 'bg-gray-500 hover:bg-gray-600',
+    description: 'Documenta tus aportaciones al programa educativo'
   }
 ];
 ---
@@ -59,27 +108,38 @@ const sections = [
               
               <div class="relative z-10">
                 <div class="text-6xl mb-4 flex justify-center">
-                  {section.icon === 'graduation' && (
-                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
-                    </svg>
+                  {section.icon === 'form-academica' && (
+                    <img src="/images/educacion-icon.png" alt="Formación académica" class="w-24 h-24" />
                   )}
-                  {section.icon === 'book' && (
-                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"></path>
-                    </svg>
+                  {section.icon === 'cap-docente' && (
+                    <img src="/images/capacitacion-docente.png" alt="Capacitación docente" class="w-24 h-24" />
                   )}
-                  {section.icon === 'teacher' && (
-                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path>
-                      <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path>
-                    </svg>
+                  {section.icon === 'act-disciplinar' && (
+                    <img src="/images/actualizacion-disciplinar.png" alt="Actualización disciplinar" class="w-24 h-24" />
                   )}
-                  {section.icon === 'clipboard' && (
-                    <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                      <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                    </svg>
+                  {section.icon === 'gest-academica' && (
+                    <img src="/images/gestion-academica.png" alt="Gestión académica" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'prod-academicos-relevantes' && (
+                    <img src="/images/prod-academicos-relevantes.png" alt="Productos académicos relevantes" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'exp-prof-no-academica' && (
+                    <img src="/images/exp-prof-no-academica.png" alt="Experiencia profesional no académica" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'exp-diseno-ingenieril' && (
+                    <img src="/images/exp-dis-ingenieril.png" alt="Experiencia en diseño ingenieril" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'logros-prof-no-academicos' && (
+                    <img src="/images/logros-prof-no-academicos.png" alt="Logros profesionales no académicos" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'participacion-colegios' && (
+                    <img src="/images/part-colegios.png" alt="Participación en colegios" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'premios-distinciones' && (
+                    <img src="/images/premios-distinciones.png" alt="Premios y distinciones" class="w-24 h-24" />
+                  )}
+                  {section.icon === 'aportaciones-mejora-pe' && (
+                    <img src="/images/aport-relevantes.png" alt="Aportaciones a la mejora del PE" class="w-24 h-24" />
                   )}
                 </div>
                 <h3 class="text-xl sm:text-2xl font-bold mb-3">{section.title}</h3>
@@ -96,12 +156,10 @@ const sections = [
 </BaseLayout>
 
 <script>
-  // Check if user is logged in
   const email = localStorage.getItem('user_email');
   if (!email) {
     window.location.href = '/';
   } else {
-    // Update header with user email
     const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
     if (headerEmailElement) {
       headerEmailElement.textContent = email;
