@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Acta Disciplinar - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen">
+    <Header showUserInfo={false} />
+
+    <main class="flex-1 bg-gray-100 p-6">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <h1 class="text-3xl font-bold text-gray-800 mb-4">Acta Disciplinar</h1>
+          <p class="text-gray-600 mb-6">Contenido en desarrollo. Aquí podrás acceder a tu historial y registros disciplinares.</p>
+          
+          <button id="volver-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow transition-colors">
+            ← Volver
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  const volverBtn = document.getElementById('volver-btn');
+  if (volverBtn) {
+    volverBtn.addEventListener('click', () => {
+      window.location.href = '/apartados';
+    });
+  }
+</script>

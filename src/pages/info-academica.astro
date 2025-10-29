@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Formación Académica - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen">
+    <Header showUserInfo={false} />
+
+    <main class="flex-1 bg-gray-100 p-6">
+      <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-gray-200 p-6">
+          <h1 class="text-4xl font-serif text-center underline mb-6">Formación académica</h1>
+
+          <div class="grid grid-cols-12 gap-4 items-center">
+            <label for="nivel-select" class="col-span-3 text-right pr-4 font-semibold">Nivel</label>
+            <div class="col-span-5">
+              <select id="nivel-select" class="w-full border rounded px-3 py-1">
+                <option value="">Selecciona una opción</option>
+                <option>Licenciatura</option>
+                <option>Maestría</option>
+                <option>Doctorado</option>
+                <option>Especialidad</option>
+              </select>
+            </div>
+            <div class="col-span-4"></div>
+
+            <label for="nombre-input" class="col-span-3 text-right pr-4 font-semibold">Nombre (Incluir especialidad)</label>
+            <div class="col-span-5">
+              <input id="nombre-input" class="w-full border rounded px-3 py-1" />
+            </div>
+            <div class="col-span-4"></div>
+
+            <label for="institucion-input" class="col-span-3 text-right pr-4 font-semibold">Institución</label>
+            <div class="col-span-5">
+              <input id="institucion-input" class="w-full border rounded px-3 py-1" />
+            </div>
+            <div class="col-span-4"></div>
+
+            <label for="pais-input" class="col-span-3 text-right pr-4 font-semibold">País</label>
+            <div class="col-span-5">
+              <input id="pais-input" class="w-full border rounded px-3 py-1" />
+            </div>
+            <div class="col-span-4"></div>
+
+            <label for="anio-input" class="col-span-3 text-right pr-4 font-semibold">Año de obtención</label>
+            <div class="col-span-5">
+              <input id="anio-input" type="number" min="1900" max="2100" class="w-full border rounded px-3 py-1" />
+            </div>
+            <div class="col-span-4"></div>
+
+            <label for="cedula-input" class="col-span-3 text-right pr-4 font-semibold">Cédula profesional</label>
+            <div class="col-span-5">
+              <input id="cedula-input" class="w-full border rounded px-3 py-1" />
+            </div>
+            <div class="col-span-4"></div>
+
+            <div class="col-span-12 flex justify-center space-x-6 mt-6">
+              <button id="volver-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow transition-colors">
+                ← Volver
+              </button>
+
+              <div>
+                <input id="file-input" type="file" accept="application/pdf,image/*" class="hidden" />
+                <button id="upload-btn" class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow transition-colors">
+                  Subir documento
+                </button>
+                <div id="file-name" class="text-sm text-gray-600 mt-2 text-center">No hay archivo seleccionado</div>
+              </div>
+
+              <button id="guardar-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded shadow flex items-center transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M17 3H3a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1zM9 14H7v-4h2v4zm4 0h-2v-6h2v6z" />
+                </svg>
+                Guardar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  h1 { font-family: 'Georgia', serif; }
+</style>
+
+<script>
+  const volverBtn = document.getElementById('volver-btn');
+  const uploadBtn = document.getElementById('upload-btn');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement;
+  const fileNameDisplay = document.getElementById('file-name');
+  const guardarBtn = document.getElementById('guardar-btn');
+
+  if (volverBtn) {
+    volverBtn.addEventListener('click', () => {
+      window.location.href = '/apartados';
+    });
+  }
+
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+  }
+
+  if (fileInput && fileNameDisplay) {
+    fileInput.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        fileNameDisplay.textContent = target.files[0].name;
+      }
+    });
+  }
+
+  if (guardarBtn) {
+    guardarBtn.addEventListener('click', () => {
+      const nivel = (document.getElementById('nivel-select') as HTMLSelectElement)?.value;
+      const nombre = (document.getElementById('nombre-input') as HTMLInputElement)?.value;
+
+      if (!nivel || !nombre) {
+        alert('Por favor completa los campos requeridos (Nivel y Nombre).');
+        return;
+      }
+
+      const institucion = (document.getElementById('institucion-input') as HTMLInputElement)?.value;
+      const pais = (document.getElementById('pais-input') as HTMLInputElement)?.value;
+      const anio = (document.getElementById('anio-input') as HTMLInputElement)?.value;
+      const cedula = (document.getElementById('cedula-input') as HTMLInputElement)?.value;
+      const fileName = fileNameDisplay?.textContent;
+
+      const payload = { nivel, nombre, institucion, pais, anio, cedula, fileName };
+      console.log('Guardar formación académica:', payload);
+      alert('Información guardada correctamente (simulación sin backend)');
+    });
+  }
+</script>

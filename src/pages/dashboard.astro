@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Dashboard - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-gradient-to-br from-gray-50 to-blue-100">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 px-4 py-12 sm:px-8 max-w-7xl mx-auto w-full">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+          Bienvenido al Sistema de Expediente Académico
+        </h2>
+      </div>
+
+      <div class="max-w-2xl mx-auto mb-12">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+          <div class="chart-container">
+            <canvas id="progressChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .chart-container {
+    position: relative;
+    height: 450px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+
+<script>
+  import Chart from 'chart.js/auto';
+
+  // Check if user is logged in
+  const email = localStorage.getItem('user_email');
+  if (!email) {
+    window.location.href = '/';
+  } else {
+    // Update header with user email
+    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
+    if (headerEmailElement) {
+      headerEmailElement.textContent = email;
+    }
+  }
+
+  // Initialize Chart.js
+  const chartCanvas = document.getElementById('progressChart') as HTMLCanvasElement;
+  if (chartCanvas) {
+    const ctx = chartCanvas.getContext('2d');
+    if (ctx) {
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['completado', 'pendiente'],
+          datasets: [{
+            label: 'Progreso de expediente',
+            data: [30, 70],
+            backgroundColor: [
+              'rgba(220, 53, 69, 0.8)',
+              'rgba(54, 162, 235, 0.8)'
+            ],
+            borderColor: [
+              'rgba(220, 53, 69, 1)',
+              'rgba(54, 162, 235, 1)'
+            ],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                padding: 15,
+                font: {
+                  size: 14
+                }
+              }
+            },
+            title: {
+              display: true,
+              text: 'Progreso de expediente',
+              font: {
+                size: 18,
+                weight: 'bold'
+              },
+              padding: {
+                top: 10,
+                bottom: 20
+              },
+              color: '#6b7280'
+            }
+          },
+          layout: {
+            padding: {
+              top: 0,
+              bottom: 0
+            }
+          }
+        }
+      });
+    }
+  }
+</script>
