@@ -102,7 +102,7 @@ const sections = [
           {sections.slice(0, 8).map((section) => (
             <a
               href={section.route}
-              class={`relative text-white no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color}`}
+              class={`relative text-gray-800 no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color}`}
             >
               <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               
@@ -148,12 +148,11 @@ const sections = [
           ))}
         </div>
 
-        <!-- Última fila centrada con 3 elementos -->
         <div class="flex justify-center gap-6 max-w-7xl mx-auto mt-6">
           {sections.slice(8).map((section) => (
             <a
               href={section.route}
-              class={`relative text-white no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color} w-full lg:w-[calc(25%-1.125rem)]`}
+              class={`relative text-black no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color} w-full lg:w-[calc(25%-1.125rem)]`}
             >
               <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
               
