@@ -48,6 +48,10 @@ npm run dev
 
 3. No agreguen datos estáticos, únicamente debemos de mostrar las pantallas y después que hagamos la unión con el backend, agregaremos funcionalidad para que se vayan agregando datos de manera dinámica.
 
+4. Siempre trabajen en SUS ramas, iremos agregando los cambios al proyecto mediante PRs.
+
+5. Asegúrense de no interferir con las ramas de los demás, únicamente modifiquen los archivos que les corresponde a cada uno.
+
 ## Licencia
 
 © 2025 Equipo 2 - Ingenieria de Software
