@@ -1,0 +1,192 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Aportaciones a la mejora del PE - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-8">
+      <div class="max-w-6xl mx-auto">
+        <div id="vista-principal" class="bg-white rounded-lg shadow-lg p-8">
+          <div class="mb-6">
+            <a 
+              href="/dashboard"
+              class="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Regresar
+            </a>
+          </div>
+
+          <div class="flex justify-between items-start mb-6">
+            <div class="flex-1">
+              <h1 class="text-2xl font-bold text-gray-800 mb-3">
+                Aportación relevantes para la mejora del PE
+              </h1>
+              <p class="text-sm text-gray-600 mb-4">
+                Participación del profesor en actividades relevantes del PE, tales como diseño del PE, diseño de asignatura(s) del PE, análisis de indicadores del PE, participación en cuerpos colegiados del PE, participación en grupos de mejora continua del PE, en actividades extracurriculares relacionadas con el PE, etc.
+              </p>
+              <div class="bg-gray-100 border border-gray-300 rounded p-4" id="descripcion-guardada">
+                <h2 class="font-semibold text-gray-700 mb-2">
+                  Descripción de la participación del profesor en actividades relevantes
+                </h2>
+                <p class="text-sm text-gray-600 italic" id="texto-descripcion">
+                  Describir, en máximo 200 palabras, la participación del profesor en actividades relevantes del PE, tales como diseño del PE, diseño de asignatura(s) del PE, análisis de indicadores del PE, participación en cuerpos colegiados del PE, participación en grupos de mejora continua del PE, en actividades extracurriculares relacionadas con el PE, etc.
+                </p>
+              </div>
+            </div>
+            <button 
+              id="btn-agregar"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 ml-6">
+              Agregar
+            </button>
+          </div>
+        </div>
+
+        <div id="vista-formulario" class="bg-white rounded-lg shadow-lg p-8 hidden">
+          <div class="flex items-center mb-8">
+            <button 
+              id="btn-regresar"
+              class="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mr-4">
+              Regresar
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+              APORTACIONES RELEVANTES PARA LA MEJORA DEL PE
+            </h1>
+          </div>
+
+          <form class="space-y-6 max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 gap-6">
+              <div>
+                <p class="text-red-600 font-semibold mb-3 text-center">
+                  *Describir en máximo 200 palabras su participación en actividades relevantes del PE*
+                </p>
+                <div class="bg-gray-100 border border-gray-300 rounded p-4 mb-4">
+                  <p class="text-sm text-gray-600">
+                    En su descripción asegúrese de incluir cosas tales como: El diseño del PE, el diseño de asignatura(s) del PE, análisis de indicadores del PE, participación en cuerpos colegiados del PE, participación en grupos de mejora continua del PE, en actividades extracurriculares relacionadas con el PE,etc.
+                  </p>
+                </div>
+                <textarea
+                  id="descripcion"
+                  name="descripcion"
+                  rows="10"
+                  maxlength="1200"
+                  class="w-full border border-gray-300 rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  placeholder="Escriba aquí su descripción (máximo 200 palabras)..."
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-2 text-right">
+                  <span id="char-count">0</span> / 1200 caracteres
+                </p>
+              </div>
+
+              <div class="flex items-center justify-center">
+                <label for="documento" class="font-semibold text-gray-700 mr-6">
+                  Subir documento
+                </label>
+                <div class="flex items-center">
+                  <input
+                    type="file"
+                    id="documento"
+                    name="documento"
+                    class="hidden"
+                  />
+                  <label for="documento" class="cursor-pointer bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded px-4 py-2 inline-flex items-center transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Seleccionar archivo
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-center pt-6">
+              <button
+                type="submit"
+                class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-12 rounded-lg transition-colors duration-200 text-lg">
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  const vistaPrincipal = document.getElementById('vista-principal');
+  const vistaFormulario = document.getElementById('vista-formulario');
+  const btnAgregar = document.getElementById('btn-agregar');
+  const btnRegresar = document.getElementById('btn-regresar');
+  const textoDescripcion = document.getElementById('texto-descripcion');
+  const formulario = document.querySelector('#vista-formulario form');
+
+  let descripcionGuardada = '';
+
+  btnAgregar?.addEventListener('click', () => {
+    vistaPrincipal?.classList.add('hidden');
+    vistaFormulario?.classList.remove('hidden');
+    
+    if (descripcionGuardada) {
+      const textarea = document.getElementById('descripcion') as HTMLTextAreaElement;
+      if (textarea) {
+        textarea.value = descripcionGuardada;
+        const charCount = document.getElementById('char-count');
+        if (charCount) {
+          charCount.textContent = descripcionGuardada.length.toString();
+        }
+      }
+    }
+  });
+
+  btnRegresar?.addEventListener('click', () => {
+    vistaFormulario?.classList.add('hidden');
+    vistaPrincipal?.classList.remove('hidden');
+  });
+
+  const textarea = document.getElementById('descripcion') as HTMLTextAreaElement;
+  const charCount = document.getElementById('char-count');
+
+  textarea?.addEventListener('input', () => {
+    if (charCount) {
+      charCount.textContent = textarea.value.length.toString();
+    }
+  });
+
+  formulario?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const descripcion = formData.get('descripcion') as string;
+
+    descripcionGuardada = descripcion;
+    
+    if (textoDescripcion) {
+      textoDescripcion.textContent = descripcion;
+      textoDescripcion.classList.remove('italic');
+    }
+    
+    vistaFormulario?.classList.add('hidden');
+    vistaPrincipal?.classList.remove('hidden');
+  });
+
+  const email = localStorage.getItem('user_email');
+  if (!email) {
+    window.location.href = '/';
+  } else {
+    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
+    if (headerEmailElement) {
+      headerEmailElement.textContent = email;
+    }
+  }
+</script>

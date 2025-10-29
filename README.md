@@ -40,6 +40,14 @@ npm run dev
 
 3. Abrir el navegador en `http://localhost:4321` o presionar Ctl + Click Izquierdo en esa direccion
 
+## Notas
+
+1. Para los estilos, utilizaremos únicamente TailWind, ya está importado en styles. NO USEN ESTILOS GLOBALES.
+
+2. Para el redireccionamiento, usaremos JS para ocultar o mostrar secciones con clases CSS.
+
+3. No agreguen datos estáticos, únicamente debemos de mostrar las pantallas y después que hagamos la unión con el backend, agregaremos funcionalidad para que se vayan agregando datos de manera dinámica.
+
 ## Licencia
 
 © 2025 Equipo 2 - Ingenieria de Software
