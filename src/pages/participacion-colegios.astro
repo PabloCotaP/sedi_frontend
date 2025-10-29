@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Participación en colegios - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-8">
+      <div class="max-w-6xl mx-auto">
+        <div id="vista-lista" class="bg-white rounded-lg shadow-lg p-8">
+          <div class="mb-6">
+            <a 
+              href="/dashboard"
+              class="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Regresar
+            </a>
+          </div>
+
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                Participación en colegios, cámaras, asociaciones científicas o algún otro tipo de organismo profesional
+              </h1>
+              <p class="text-sm text-gray-600">
+                Mencionar vigencia en colegios, cámaras, asociaciones científicas o algún otro tipo de organismo profesional. Señale el nombre del organismo, tiempo de membresía/vigencia y el nivel de participación.
+              </p>
+            </div>
+            <button 
+              id="btn-agregar"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
+              Agregar
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Organismo</th>
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Periodo (años)</th>
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Nivel de participación</th>
+                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-participaciones">
+                <tr>
+                  <td colspan="4" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                    No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="vista-formulario" class="bg-white rounded-lg shadow-lg p-8 hidden">
+          <div class="flex items-center mb-6">
+            <button 
+              id="btn-regresar"
+              class="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mr-4">
+              Regresar
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+              PARTICIPACIÓN EN COLEGIOS, CÁMARAS, ASOCIACIONES CIENTÍFICAS O ALGÚN OTRO TIPO DE ORGANISMO PROFESIONAL
+            </h1>
+          </div>
+
+          <form class="space-y-6 max-w-3xl mx-auto">
+            <div class="grid grid-cols-1 gap-6">
+              <div class="flex items-center">
+                <label for="organismo" class="w-64 text-right pr-6 font-semibold text-gray-700">
+                  Organismo
+                </label>
+                <input
+                  type="text"
+                  id="organismo"
+                  name="organismo"
+                  class="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div class="flex items-center">
+                <label for="periodo" class="w-64 text-right pr-6 font-semibold text-gray-700">
+                  Periodo (años)
+                </label>
+                <input
+                  type="text"
+                  id="periodo"
+                  name="periodo"
+                  class="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div class="flex items-center">
+                <label for="nivel" class="w-64 text-right pr-6 font-semibold text-gray-700">
+                  Nivel de participación
+                </label>
+                <input
+                  type="text"
+                  id="nivel"
+                  name="nivel"
+                  class="flex-1 border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div class="flex items-center">
+                <label for="documento" class="w-64 text-right pr-6 font-semibold text-gray-700">
+                  Subir documento
+                </label>
+                <div class="flex-1 flex items-center">
+                  <input
+                    type="file"
+                    id="documento"
+                    name="documento"
+                    class="hidden"
+                  />
+                  <label for="documento" class="cursor-pointer bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded px-4 py-2 inline-flex items-center transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Seleccionar archivo
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-center pt-6">
+              <button
+                type="submit"
+                class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-3 px-12 rounded-lg transition-colors duration-200 text-lg">
+                Guardar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  const vistaLista = document.getElementById('vista-lista');
+  const vistaFormulario = document.getElementById('vista-formulario');
+  const btnAgregar = document.getElementById('btn-agregar');
+  const btnRegresar = document.getElementById('btn-regresar');
+  const tablaParticipaciones = document.getElementById('tabla-participaciones');
+  const formulario = document.querySelector('#vista-formulario form');
+
+  let participaciones: any[] = [];
+
+  function renderizarTabla() {
+    if (!tablaParticipaciones) return;
+
+    if (participaciones.length === 0) {
+      tablaParticipaciones.innerHTML = `
+        <tr>
+          <td colspan="4" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+            No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
+          </td>
+        </tr>
+      `;
+    } else {
+      tablaParticipaciones.innerHTML = participaciones.map((item, index) => `
+        <tr class="hover:bg-gray-50">
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.organismo}</td>
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.periodo}</td>
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.nivelParticipacion}</td>
+          <td class="border border-gray-300 px-4 py-3 text-center">
+            <button class="btn-editar bg-green-600 hover:bg-green-700 text-white rounded-full p-2 mx-1 transition-colors duration-200" data-index="${index}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  btnAgregar?.addEventListener('click', () => {
+    vistaLista?.classList.add('hidden');
+    vistaFormulario?.classList.remove('hidden');
+  });
+
+  btnRegresar?.addEventListener('click', () => {
+    vistaFormulario?.classList.add('hidden');
+    vistaLista?.classList.remove('hidden');
+    if (formulario) {
+      (formulario as HTMLFormElement).reset();
+    }
+  });
+
+  formulario?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    const nuevaParticipacion = {
+      organismo: formData.get('organismo') as string,
+      periodo: formData.get('periodo') as string,
+      nivelParticipacion: formData.get('nivel') as string,
+      documento: formData.get('documento') as File | null
+    };
+
+    participaciones.push(nuevaParticipacion);
+    renderizarTabla();
+    vistaFormulario?.classList.add('hidden');
+    vistaLista?.classList.remove('hidden');
+    (e.target as HTMLFormElement).reset();
+  });
+
+  renderizarTabla();
+
+  const email = localStorage.getItem('user_email');
+  if (!email) {
+    window.location.href = '/';
+  } else {
+    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
+    if (headerEmailElement) {
+      headerEmailElement.textContent = email;
+    }
+  }
+</script>
