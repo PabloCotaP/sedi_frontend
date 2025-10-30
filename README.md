@@ -11,10 +11,9 @@ Sistema web para la gestión del expediente académico de la Facultad de Ingenie
 
 ## Tecnologías
 
-- **Astro** - Framework web moderno y rápido
-- **HTML** - Markup semántico
-- **Tailwind CSS** - Estilos utilitarios
-- **TypeScript** - Tipado estático
+- Astro `v5.15.2`
+- TypeScript `v5.5`
+- @astrojs/tailwind `v6.0.2`
 
 ## Comandos
 
