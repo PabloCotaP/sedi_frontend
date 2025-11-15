@@ -5,6 +5,7 @@ Sistema web para la gestión del expediente académico de la Facultad de Ingenie
 ## Equipo 2 - Frontend
 
 ### Integrantes del equipo:
+
 - Kevin Emmanuel Valdez Vanderas
 - Raymundo Miguel Aguilera
 - Jose Alonso Lopez Michel
