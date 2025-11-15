@@ -4,196 +4,109 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
 
+const images = {
+  informacionPersonal: 'https://www.figma.com/api/mcp/asset/89f6a535-b6c2-4697-81ff-0b2f90e9b7af',
+  formacionAcademica: 'https://www.figma.com/api/mcp/asset/d69a0182-ddd8-4775-8053-143bd5ea493c',
+  capacitacionDocente: 'https://www.figma.com/api/mcp/asset/677afece-8c53-4a6a-b30f-096c8deaec0c',
+  actualizacionDisciplinar: 'https://www.figma.com/api/mcp/asset/3868464a-2abd-4c0a-9d40-1be6107f42b5',
+  gestionAcademica: 'https://www.figma.com/api/mcp/asset/7bac27bb-810c-4dc6-af9b-ed2814572641',
+  productosAcademicos: 'https://www.figma.com/api/mcp/asset/a561747b-314c-4df7-a99b-269cab02b20a',
+  expProfNoAcademica: 'https://www.figma.com/api/mcp/asset/bb19d593-bc61-40bb-96c2-67e5d1d8c3e4',
+  expDisenoIngenieril: 'https://www.figma.com/api/mcp/asset/73bae6f6-dd13-47b4-8117-e83f973c4392',
+  logrosProfNoAcademicos: 'https://www.figma.com/api/mcp/asset/cffe2ed7-d6d3-47d7-877e-7ef997f5b16d',
+  participacionColegios: 'https://www.figma.com/api/mcp/asset/2e5cdd20-f56b-4a21-bd9c-117fc187b597',
+  premiosDistinciones: 'https://www.figma.com/api/mcp/asset/4fc412d0-35aa-4b1e-b024-c0419444f7a2',
+  aportacionesMejoraPE: 'https://www.figma.com/api/mcp/asset/462c93c8-7bb0-4724-85b3-e97252f24b2b'
+};
+
 const sections = [
+  {
+    title: 'Información personal',
+    route: '/informacion-personal',
+    image: images.informacionPersonal
+  },
   {
     title: 'Formación académica',
     route: '/formacion-academica',
-    icon: 'form-academica',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Gestiona tu información académica'
+    image: images.formacionAcademica
   },
   {
     title: 'Capacitación docente',
     route: '/capacitacion-docente',
-    icon: 'cap-docente',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Registra tus capacitaciones'
+    image: images.capacitacionDocente
   },
   {
     title: 'Actualización disciplinar',
     route: '/actualizacion_disciplinar',
-    icon: 'act-disciplinar',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Actualización en tu disciplina'
+    image: images.actualizacionDisciplinar
   },
   {
     title: 'Gestión académica',
     route: '/gestion-academica',
-    icon: 'gest-academica',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Gestiona tus actividades académicas'
+    image: images.gestionAcademica
   },
   {
     title: 'Productos académicos relevantes',
     route: '/productos_aca_relevantes',
-    icon: 'prod-academicos-relevantes',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Registra tus productos académicos'
+    image: images.productosAcademicos
   },
   {
     title: 'Experiencia profesional no académica',
     route: '/exp-prof-no-academica',
-    icon: 'exp-prof-no-academica',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Documenta tu experiencia profesional'
+    image: images.expProfNoAcademica
   },
   {
     title: 'Experiencia en diseño ingenieril',
     route: '/exp-diseno-ingenieril',
-    icon: 'exp-diseno-ingenieril',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Registra tu experiencia en diseño'
+    image: images.expDisenoIngenieril
   },
   {
     title: 'Logros profesionales no académicos',
     route: '/logros-prof-no-academicos',
-    icon: 'logros-prof-no-academicos',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Registra tus logros profesionales'
+    image: images.logrosProfNoAcademicos
   },
   {
     title: 'Participación en colegios, cámaras, asociaciones científicas, etc.',
     route: '/participacion-colegios',
-    icon: 'participacion-colegios',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Documenta tu participación en asociaciones'
+    image: images.participacionColegios
   },
   {
     title: 'Premios, distinciones o reconocimientos recibidos',
     route: '/premios-distinciones',
-    icon: 'premios-distinciones',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Registra tus premios y reconocimientos'
+    image: images.premiosDistinciones
   },
   {
     title: 'Aportaciones relevantes a la mejora del PE',
     route: '/aportaciones-mejora-pe',
-    icon: 'aportaciones-mejora-pe',
-    color: 'bg-gray-200 hover:bg-gray-300 text-black',
-    description: 'Documenta tus aportaciones al programa educativo'
+    image: images.aportacionesMejoraPE
   }
 ];
 ---
 
-<BaseLayout title="Dashboard - SEDI">
+<BaseLayout title="Panel de Control - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen bg-white">
     <Header showUserInfo={true} userEmail="" />
 
-    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-12 sm:px-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <h1 class="text-3xl font-bold text-gray-800 mb-2">Bienvenido al Sistema de Expediente Académico</h1>
-          <p class="text-lg text-gray-600">Selecciona el apartado al que deseas acceder</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {sections.slice(0, 8).map((section) => (
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {sections.map((section) => (
             <a
               href={section.route}
-              class={`relative text-gray-800 no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color}`}
+              class="bg-[#d9d9d9] rounded-[44px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 no-underline transition-all duration-300 hover:-translate-y-2 hover:shadow-xl h-[236px] flex flex-col items-center justify-center"
             >
-              <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-              
-              <div class="relative z-10">
-                <div class="text-6xl mb-3 flex justify-center">
-                  {section.icon === 'form-academica' && (
-                    <img src="/images/educacion-icon.png" alt="Formación académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'cap-docente' && (
-                    <img src="/images/capacitacion-docente.png" alt="Capacitación docente" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'act-disciplinar' && (
-                    <img src="/images/actualizacion-disciplinar.png" alt="Actualización disciplinar" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'gest-academica' && (
-                    <img src="/images/gestion-academica.png" alt="Gestión académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'prod-academicos-relevantes' && (
-                    <img src="/images/prod-academicos-relevantes.png" alt="Productos académicos relevantes" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'exp-prof-no-academica' && (
-                    <img src="/images/exp-prof-no-academica.png" alt="Experiencia profesional no académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'exp-diseno-ingenieril' && (
-                    <img src="/images/exp-dis-ingenieril.png" alt="Experiencia en diseño ingenieril" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'logros-prof-no-academicos' && (
-                    <img src="/images/logros-prof-no-academicos.png" alt="Logros profesionales no académicos" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'participacion-colegios' && (
-                    <img src="/images/part-colegios.png" alt="Participación en colegios" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'premios-distinciones' && (
-                    <img src="/images/premios-distinciones.png" alt="Premios y distinciones" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'aportaciones-mejora-pe' && (
-                    <img src="/images/aport-relevantes.png" alt="Aportaciones a la mejora del PE" class="w-16 h-16" />
-                  )}
-                </div>
-                <h3 class="text-sm font-bold mb-2 leading-tight">{section.title}</h3>
+              <div class="flex items-center justify-center mb-4">
+                <img 
+                  src={section.image} 
+                  alt={section.title}
+                  class="w-[140px] h-[140px] object-contain"
+                />
               </div>
-            </a>
-          ))}
-        </div>
-
-        <div class="flex justify-center gap-6 max-w-7xl mx-auto mt-6">
-          {sections.slice(8).map((section) => (
-            <a
-              href={section.route}
-              class={`relative text-black no-underline border-none rounded-xl p-6 cursor-pointer transition-all duration-300 shadow-lg hover:-translate-y-1 hover:shadow-2xl text-center overflow-hidden group ${section.color} w-full lg:w-[calc(25%-1.125rem)]`}
-            >
-              <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-              
-              <div class="relative z-10">
-                <div class="text-6xl mb-3 flex justify-center">
-                  {section.icon === 'form-academica' && (
-                    <img src="/images/educacion-icon.png" alt="Formación académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'cap-docente' && (
-                    <img src="/images/capacitacion-docente.png" alt="Capacitación docente" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'act-disciplinar' && (
-                    <img src="/images/actualizacion-disciplinar.png" alt="Actualización disciplinar" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'gest-academica' && (
-                    <img src="/images/gestion-academica.png" alt="Gestión académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'prod-academicos-relevantes' && (
-                    <img src="/images/prod-academicos-relevantes.png" alt="Productos académicos relevantes" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'exp-prof-no-academica' && (
-                    <img src="/images/exp-prof-no-academica.png" alt="Experiencia profesional no académica" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'exp-diseno-ingenieril' && (
-                    <img src="/images/exp-dis-ingenieril.png" alt="Experiencia en diseño ingenieril" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'logros-prof-no-academicos' && (
-                    <img src="/images/logros-prof-no-academicos.png" alt="Logros profesionales no académicos" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'participacion-colegios' && (
-                    <img src="/images/part-colegios.png" alt="Participación en colegios" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'premios-distinciones' && (
-                    <img src="/images/premios-distinciones.png" alt="Premios y distinciones" class="w-16 h-16" />
-                  )}
-                  {section.icon === 'aportaciones-mejora-pe' && (
-                    <img src="/images/aport-relevantes.png" alt="Aportaciones a la mejora del PE" class="w-16 h-16" />
-                  )}
-                </div>
-                <h3 class="text-sm font-bold mb-2 leading-tight">{section.title}</h3>
-              </div>
+              <p class="text-black text-center text-[20px] font-light leading-tight max-w-[321px] m-0">
+                {section.title}
+              </p>
             </a>
           ))}
         </div>
