@@ -5,16 +5,16 @@ Sistema web para la gestión del expediente académico de la Facultad de Ingenie
 ## Equipo 2 - Frontend
 
 ### Integrantes del equipo:
+
 - Kevin Emmanuel Valdez Vanderas
 - Raymundo Miguel Aguilera
 - Jose Alonso Lopez Michel
 
 ## Tecnologías
 
-- **Astro** - Framework web moderno y rápido
-- **HTML** - Markup semántico
-- **Tailwind CSS** - Estilos utilitarios
-- **TypeScript** - Tipado estático
+- Astro `v5.15.2`
+- TypeScript `v5.5`
+- @astrojs/tailwind `v6.0.2`
 
 ## Comandos
 
@@ -47,6 +47,10 @@ npm run dev
 2. Para el redireccionamiento, usaremos JS para ocultar o mostrar secciones con clases CSS.
 
 3. No agreguen datos estáticos, únicamente debemos de mostrar las pantallas y después que hagamos la unión con el backend, agregaremos funcionalidad para que se vayan agregando datos de manera dinámica.
+
+4. Siempre trabajen en SUS ramas, iremos agregando los cambios al proyecto mediante PRs.
+
+5. Asegúrense de no interferir con las ramas de los demás, únicamente modifiquen los archivos que les corresponde a cada uno.
 
 ## Licencia
 

@@ -14,40 +14,44 @@ import Sidebar from '../components/Sidebar.astro';
     <main class="flex-1 bg-gray-100 p-6">
       <div class="max-w-4xl mx-auto">
         <div class="bg-white rounded-lg shadow-lg p-8">
-          <h1 class="text-3xl font-bold text-gray-800 mb-6">Información Personal</h1>
+          <h1 class="text-3xl font-bold text-gray-800 mb-6">Mi nformación Personal</h1>
           
           <div class="space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombre completo</label>
-                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Juan Pérez García" />
+                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombre(s)</label>
+                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Juan" />
+              </div>
+
+               <div>
+                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Paterno</label>
+                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem, Michel" />
+              </div>
+
+               <div>
+                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Materno</label>
+                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Lopez" />
               </div>
 
               <div>
-                <label for="institutionalEmail" class="block text-sm font-semibold text-gray-700 mb-2">Correo institucional</label>
-                <input id="institutionalEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="juan.perez@uabc.edu.mx" />
+                <label for="institutionalEmail" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de nacimiento</label>
+                <input id="institutionalEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
+              </div>
+
+               <div>
+                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombramiento actual</label>
+                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. PROFR ORD. DE CARRERA TIT, B" />
+              </div>
+
+               <div>
+                <label for="institutionalEmail" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de contratación</label>
+                <input id="institutionalEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
               </div>
 
               <div>
-                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Teléfono</label>
-                <input id="phone" type="tel" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="664-123-4567" />
+                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Cedula profesional</label>
+                <input id="phone" type="tel" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 664-123-4567" />
               </div>
-
-              <div>
-                <label for="department" class="block text-sm font-semibold text-gray-700 mb-2">Departamento</label>
-                <input id="department" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ciencias de la Computación" />
-              </div>
-
-              <div>
-                <label for="rfc" class="block text-sm font-semibold text-gray-700 mb-2">RFC</label>
-                <input id="rfc" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="PEGJ800101XXX" />
-              </div>
-
-              <div>
-                <label for="curp" class="block text-sm font-semibold text-gray-700 mb-2">CURP</label>
-                <input id="curp" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="PEGJ800101HBCRNN00" />
-              </div>
-            </div>
 
             <div class="flex justify-end gap-4 mt-8">
               <button id="cancel-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors">
