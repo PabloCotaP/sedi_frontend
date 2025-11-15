@@ -117,14 +117,4 @@ const sections = [
   </div>
 </BaseLayout>
 
-<script>
-  const email = localStorage.getItem('user_email');
-  if (!email) {
-    window.location.href = '/';
-  } else {
-    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
-    if (headerEmailElement) {
-      headerEmailElement.textContent = email;
-    }
-  }
-</script>
+<script type="module" src="/js/pages.js"></script>

@@ -68,18 +68,17 @@ import Sidebar from '../components/Sidebar.astro';
         </div>
 
         <form class="space-y-6 max-w-4xl mx-auto">
-          <div class="flex flex-col gap-3">
-            <label for="descripcion" class="font-semibold text-black text-[18px]">
-              Descripción del premio o reconocimiento
+          <div class="flex items-start gap-6">
+            <label for="descripcion" class="w-48 text-right font-semibold text-black text-[18px] pt-3">
+              Descripción
             </label>
             <textarea
               id="descripcion"
               name="descripcion"
-              rows="12"
+              rows="6"
               required
-              class="border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none bg-white"
-              placeholder="Ingrese la descripción del premio o reconocimiento..."
-            ></textarea>
+              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-y"
+              placeholder="Describe el premio, distinción o reconocimiento recibido..."></textarea>
           </div>
 
           <div class="flex justify-center pt-4">
@@ -111,136 +110,4 @@ import Sidebar from '../components/Sidebar.astro';
     <Footer />
   </div>
 </BaseLayout>
-
-<script>
-  const vistaLista = document.getElementById('vista-lista');
-  const vistaFormulario = document.getElementById('vista-formulario');
-  const btnAgregar = document.getElementById('btn-agregar');
-  const btnRegresar = document.getElementById('btn-regresar');
-  const tablaPremios = document.getElementById('tabla-premios');
-  const formulario = document.querySelector('#vista-formulario form');
-
-  let premios: any[] = [];
-  let editandoIndex: number | null = null;
-
-  function renderizarTabla() {
-    if (!tablaPremios) return;
-
-    if (premios.length === 0) {
-      tablaPremios.innerHTML = `
-        <tr>
-          <td colspan="2" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-            No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
-          </td>
-        </tr>
-      `;
-    } else {
-      tablaPremios.innerHTML = premios.map((item, index) => `
-        <tr class="hover:bg-gray-50">
-          <td class="border border-gray-400 px-4 py-3 text-black">${item.descripcion}</td>
-          <td class="border border-gray-400 px-4 py-3">
-            <div class="flex justify-center items-center gap-3">
-              <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${index}" title="Ver">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
-              <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${index}" title="Editar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-              </button>
-              <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${index}" title="Eliminar">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-
-      document.querySelectorAll('.btn-ver').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const index = parseInt((e.currentTarget as HTMLElement).getAttribute('data-index') || '0');
-          const item = premios[index];
-          alert(`Descripción:\n\n${item.descripcion}`);
-        });
-      });
-
-      document.querySelectorAll('.btn-editar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const index = parseInt((e.currentTarget as HTMLElement).getAttribute('data-index') || '0');
-          editandoIndex = index;
-          const item = premios[index];
-          (document.getElementById('descripcion') as HTMLTextAreaElement).value = item.descripcion;
-          vistaLista?.classList.add('hidden');
-          vistaFormulario?.classList.remove('hidden');
-        });
-      });
-
-      document.querySelectorAll('.btn-eliminar').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          if (confirm('¿Estás seguro de que deseas eliminar este registro?')) {
-            const index = parseInt((e.currentTarget as HTMLElement).getAttribute('data-index') || '0');
-            premios.splice(index, 1);
-            renderizarTabla();
-          }
-        });
-      });
-    }
-  }
-
-  btnAgregar?.addEventListener('click', () => {
-    editandoIndex = null;
-    if (formulario) {
-      (formulario as HTMLFormElement).reset();
-    }
-    vistaLista?.classList.add('hidden');
-    vistaFormulario?.classList.remove('hidden');
-  });
-
-  btnRegresar?.addEventListener('click', () => {
-    editandoIndex = null;
-    vistaFormulario?.classList.add('hidden');
-    vistaLista?.classList.remove('hidden');
-    if (formulario) {
-      (formulario as HTMLFormElement).reset();
-    }
-  });
-
-  formulario?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(e.target as HTMLFormElement);
-    const premio = {
-      descripcion: formData.get('descripcion') as string,
-      documento: formData.get('documento') as File | null
-    };
-
-    if (editandoIndex !== null) {
-      premios[editandoIndex] = premio;
-      editandoIndex = null;
-    } else {
-      premios.push(premio);
-    }
-    
-    renderizarTabla();
-    vistaFormulario?.classList.add('hidden');
-    vistaLista?.classList.remove('hidden');
-    (e.target as HTMLFormElement).reset();
-  });
-
-  renderizarTabla();
-
-  const email = localStorage.getItem('user_email');
-  if (!email) {
-    window.location.href = '/';
-  } else {
-    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
-    if (headerEmailElement) {
-      headerEmailElement.textContent = email;
-    }
-  }
-</script>
+<script type="module" src="/js/pages.js"></script>
