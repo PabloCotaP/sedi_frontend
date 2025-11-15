@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
 ---
 
-<BaseLayout title="Formación Académica - SEDI">
+<BaseLayout title="Actualización Disciplinar - SEDI">
   <Sidebar />
 
   <div class="flex flex-col min-h-screen">
@@ -30,10 +30,11 @@ import Sidebar from '../components/Sidebar.astro';
           <div class="flex justify-between items-center mb-6">
             <div>
               <h1 class="text-2xl font-bold text-gray-800 mb-2">
-                Formación Académica
+                Actualización Disciplinar
               </h1>
               <p class="text-sm text-gray-600">
-                Grados académicos del profesor, y especialidad en su caso, institución, país, año de obtención del título o grado académico y número de cédula obtenida, según aplique para cada caso. Se señala ND si no se cuenta con ella o EP si está en trámite
+                Cursos, diplomados o módulos de capacitación o actualización docente realizados en los últimos cinco años, institución, país donde los realizó y horas de duración.
+              </p>
             </div>
             <button 
               id="btn-agregar"
@@ -46,17 +47,16 @@ import Sidebar from '../components/Sidebar.astro';
             <table class="w-full border-collapse border border-gray-300">
               <thead>
                 <tr class="bg-gray-100">
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Nivel</th>
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Nombre (Incluir especialidad)</th>
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Tipo de actualización</th>
                   <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Institución</th>
                   <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">País</th>
                   <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Año de obtención</th>
-                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Cédula profesional</th>
+                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Horas</th>
                 </tr>
               </thead>
-              <tbody id="tabla-formacion">
+              <tbody id="tabla-actualizacion">
                 <tr>
-                  <td colspan="7" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                  <td colspan="5" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
                     No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
                   </td>
                 </tr>
@@ -74,27 +74,15 @@ import Sidebar from '../components/Sidebar.astro';
               Regresar
             </button>
             <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
-              FORMACIÓN ACADÉMICA
+              ACTUALIZACIÓN DISCIPLINAR
             </h1>
           </div>
 
           <div class="max-w-4xl mx-auto">
             <div class="grid grid-cols-12 gap-4 items-center">
-              <label for="nivel-select" class="col-span-3 text-right pr-4 font-semibold">Nivel</label>
+              <label for="tipo-actualizacion" class="col-span-3 text-right pr-4 font-semibold">Tipo de actualización</label>
               <div class="col-span-5">
-                <select id="nivel-select" class="w-full border rounded px-3 py-1">
-                  <option value="">Selecciona una opción</option>
-                  <option>Licenciatura</option>
-                  <option>Maestría</option>
-                  <option>Doctorado</option>
-                  <option>Especialidad</option>
-                </select>
-              </div>
-              <div class="col-span-4"></div>
-
-              <label for="nombre-input" class="col-span-3 text-right pr-4 font-semibold">Nombre (Incluir especialidad)</label>
-              <div class="col-span-5">
-                <input id="nombre-input" class="w-full border rounded px-3 py-1" />
+                <input id="tipo-actualizacion" class="w-full border rounded px-3 py-1" />
               </div>
               <div class="col-span-4"></div>
 
@@ -116,14 +104,15 @@ import Sidebar from '../components/Sidebar.astro';
               </div>
               <div class="col-span-4"></div>
 
-              <label for="cedula-input" class="col-span-3 text-right pr-4 font-semibold">Cédula profesional</label>
+              <label for="horas-input" class="col-span-3 text-right pr-4 font-semibold">Horas</label>
               <div class="col-span-5">
-                <input id="cedula-input" class="w-full border rounded px-3 py-1" />
+                <input id="horas-input" class="w-full border rounded px-3 py-1" />
               </div>
               <div class="col-span-4"></div>
 
               <div class="col-span-12 flex justify-center space-x-6 mt-6">
                 
+
                 <div>
                   <input id="file-input" type="file" accept="application/pdf,image/*" class="hidden" />
                   <button id="upload-btn" class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow transition-colors">
@@ -155,43 +144,35 @@ import Sidebar from '../components/Sidebar.astro';
   const vistaFormulario = document.getElementById('vista-formulario');
   const btnAgregar = document.getElementById('btn-agregar');
   const btnRegresar = document.getElementById('btn-regresar');
-  const tablaFormacion = document.getElementById('tabla-formacion');
+  const tablaActualizacion = document.getElementById('tabla-actualizacion');
   const guardarBtn = document.getElementById('guardar-btn');
   const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
-  const fileNameDisplay = document.getElementById('file-name');
-  const uploadBtn = document.getElementById('upload-btn')
+  const fileNameDisplay = document.getElementById('file-name') as HTMLElement | null;
+  const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement | null;
 
   // Array para almacenar los datos (simulando backend)
-  let formaciones: any[] = [];
+  let actualizaciones: any[] = [];
 
   // Función para renderizar la tabla
   function renderizarTabla() {
-    if (!tablaFormacion) return;
+    if (!tablaActualizacion) return;
 
-    if (formaciones.length === 0) {
-      tablaFormacion.innerHTML = `
+    if (actualizaciones.length === 0) {
+      tablaActualizacion.innerHTML = `
         <tr>
-          <td colspan="7" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+          <td colspan="5" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
             No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
           </td>
         </tr>
       `;
     } else {
-      tablaFormacion.innerHTML = formaciones.map((item, index) => `
+      tablaActualizacion.innerHTML = actualizaciones.map(item => `
         <tr class="hover:bg-gray-50">
-          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.nivel}</td>
-          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.nombre}</td>
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.tipo}</td>
           <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.institucion}</td>
           <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.pais}</td>
           <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.anio}</td>
-          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.cedula}</td>
-          <td class="border border-gray-300 px-4 py-3 text-center">
-            <button class="btn-editar bg-green-600 hover:bg-green-700 text-white rounded-full p-2 mx-1 transition-colors duration-200" data-index="${index}">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
-              </svg>
-            </button>
-          </td>
+          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.horas}</td>
         </tr>
       `).join('');
     }
@@ -207,7 +188,6 @@ import Sidebar from '../components/Sidebar.astro';
   btnRegresar?.addEventListener('click', () => {
     vistaFormulario?.classList.add('hidden');
     vistaLista?.classList.remove('hidden');
-    // Limpiar el formulario
     resetearFormulario();
   });
 
@@ -232,55 +212,62 @@ import Sidebar from '../components/Sidebar.astro';
   // Manejar guardado
   if (guardarBtn) {
     guardarBtn.addEventListener('click', () => {
-      const nivel = (document.getElementById('nivel-select') as HTMLSelectElement)?.value;
-      const nombre = (document.getElementById('nombre-input') as HTMLInputElement)?.value.trim();
-      const institucion = (document.getElementById('institucion-input') as HTMLInputElement)?.value.trim();
-      const pais = (document.getElementById('pais-input') as HTMLInputElement)?.value.trim();
-      const anio = (document.getElementById('anio-input') as HTMLInputElement)?.value;
-      const cedula = (document.getElementById('cedula-input') as HTMLInputElement)?.value.trim();
-      const fileName = fileNameDisplay?.textContent || '';
+      const tipoInput = document.getElementById('tipo-actualizacion') as HTMLInputElement | null;
+      const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
+      const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
+      const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
+      const horasInput = document.getElementById('horas-input') as HTMLInputElement | null;
 
-      if (!nivel || !nombre) {
-        alert('Por favor completa los campos requeridos (Nivel y Nombre).');
+      const tipo = tipoInput?.value.trim() || '';
+      const institucion = institucionInput?.value.trim() || '';
+      const pais = paisInput?.value.trim() || '';
+      const anio = anioInput?.value || '';
+      const horas = horasInput?.value.trim() || '';
+
+      if (!tipo) {
+        alert('Por favor completa el campo "Tipo de actualización".');
         return;
       }
 
-      const nuevaFormacion = {
-        nivel,
-        nombre,
+      const nuevaActualizacion = {
+        tipo,
         institucion,
         pais,
         anio,
-        cedula,
-        fileName
+        horas,
+        archivo: fileNameDisplay?.textContent || ''
       };
 
-      // Agregar a la lista
-      formaciones.push(nuevaFormacion);
-
-      // Renderizar tabla
+      actualizaciones.push(nuevaActualizacion);
       renderizarTabla();
 
-      // Volver a la vista de lista
       vistaFormulario?.classList.add('hidden');
       vistaLista?.classList.remove('hidden');
-
-      // Limpiar el formulario
       resetearFormulario();
     });
   }
 
   // Función para limpiar el formulario
   function resetearFormulario() {
-  (document.getElementById('nivel-select') as HTMLSelectElement).value = '';
-  (document.getElementById('nombre-input') as HTMLInputElement).value = '';
-  (document.getElementById('institucion-input') as HTMLInputElement).value = '';
-  (document.getElementById('pais-input') as HTMLInputElement).value = '';
-  (document.getElementById('anio-input') as HTMLInputElement).value = '';
-  (document.getElementById('cedula-input') as HTMLInputElement).value = '';
-  fileNameDisplay.textContent = 'No hay archivo seleccionado';
-  if (fileInput) fileInput.value = ''; 
-}
+    const tipoInput = document.getElementById('tipo-actualizacion') as HTMLInputElement | null;
+    const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
+    const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
+    const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
+    const horasInput = document.getElementById('horas-input') as HTMLInputElement | null;
+
+    if (tipoInput) tipoInput.value = '';
+    if (institucionInput) institucionInput.value = '';
+    if (paisInput) paisInput.value = '';
+    if (anioInput) anioInput.value = '';
+    if (horasInput) horasInput.value = '';
+
+    if (fileNameDisplay) {
+      fileNameDisplay.textContent = 'No hay archivo seleccionado';
+    }
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
 
   // Renderizar tabla inicial
   renderizarTabla();

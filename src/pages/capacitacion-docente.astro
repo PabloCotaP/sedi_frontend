@@ -5,21 +5,129 @@ import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
 ---
 
-<BaseLayout title="Producción Académica - SEDI">
+<BaseLayout title="Capacitación Docente - SEDI">
   <Sidebar />
 
   <div class="flex flex-col min-h-screen">
-    <Header showUserInfo={false} />
+    <Header showUserInfo={true} userEmail="" />
 
-    <main class="flex-1 bg-gray-100 p-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="bg-white rounded-lg shadow-lg p-6">
-          <h1 class="text-3xl font-bold text-gray-800 mb-4">Producción Académica</h1>
-          <p class="text-gray-600 mb-6">Contenido en desarrollo. Aquí podrás gestionar tus publicaciones, artículos y trabajos académicos.</p>
-          
-          <button id="volver-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded shadow transition-colors">
-            ← Volver
-          </button>
+    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-8">
+      <div class="max-w-6xl mx-auto">
+
+        <!-- Vista de lista -->
+        <div id="vista-lista" class="bg-white rounded-lg shadow-lg p-8">
+          <div class="mb-6">
+            <a 
+              href="/dashboard"
+              class="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+              </svg>
+              Regresar
+            </a>
+          </div>
+
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h1 class="text-2xl font-bold text-gray-800 mb-2">
+                Capacitación Docente
+              </h1>
+              <p class="text-sm text-gray-600">
+                Cursos, diplomados o módulos de capacitación o actualización docente realizados en los últimos cinco años, institución, país donde los realizó y horas de duración.
+            </div>
+            <button 
+              id="btn-agregar"
+              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
+              Agregar
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full border-collapse border border-gray-300">
+              <thead>
+                <tr class="bg-gray-100">
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Tipo de capacitación</th>
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Institución</th>
+                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">País</th>
+                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Año de obtención</th>
+                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Horas</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-capacitacion">
+                <tr>
+                  <td colspan="5" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+                    No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Vista de formulario (inicialmente oculta) -->
+        <div id="vista-formulario" class="bg-white rounded-lg shadow-lg p-8 hidden">
+          <div class="flex items-center mb-6">
+            <button 
+              id="btn-regresar"
+              class="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mr-4">
+              Regresar
+            </button>
+            <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
+              CAPACITACIÓN DOCENTE
+            </h1>
+          </div>
+
+          <div class="max-w-4xl mx-auto">
+            <div class="grid grid-cols-12 gap-4 items-center">
+              <label for="tipo-capacitacion" class="col-span-3 text-right pr-4 font-semibold">Tipo de capacitación</label>
+              <div class="col-span-5">
+                <input id="tipo-capacitacion" class="w-full border rounded px-3 py-1"  />
+              </div>
+              <div class="col-span-4"></div>
+
+              <label for="institucion-input" class="col-span-3 text-right pr-4 font-semibold">Institución</label>
+              <div class="col-span-5">
+                <input id="institucion-input" class="w-full border rounded px-3 py-1" />
+              </div>
+              <div class="col-span-4"></div>
+
+              <label for="pais-input" class="col-span-3 text-right pr-4 font-semibold">País</label>
+              <div class="col-span-5">
+                <input id="pais-input" class="w-full border rounded px-3 py-1" />
+              </div>
+              <div class="col-span-4"></div>
+
+              <label for="anio-input" class="col-span-3 text-right pr-4 font-semibold">Año de obtención</label>
+              <div class="col-span-5">
+                <input id="anio-input" type="number" min="1900" max="2100" class="w-full border rounded px-3 py-1" />
+              </div>
+              <div class="col-span-4"></div>
+
+              <label for="cedula-input" class="col-span-3 text-right pr-4 font-semibold">Horas</label>
+              <div class="col-span-5">
+                <input id="cedula-input" class="w-full border rounded px-3 py-1" />
+              </div>
+              <div class="col-span-4"></div>
+
+              <div class="col-span-12 flex justify-center space-x-6 mt-6">
+
+                <div>
+                  <input id="file-input" type="file" accept="application/pdf,image/*" class="hidden" />
+                  <button id="upload-btn" class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow transition-colors">
+                    Subir documento
+                  </button>
+                  <div id="file-name" class="text-sm text-gray-600 mt-2 text-center">No hay archivo seleccionado</div>
+                </div>
+
+                <button id="guardar-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded shadow flex items-center transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M17 3H3a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1zM9 14H7v-4h2v4zm4 0h-2v-6h2v6z" />
+                  </svg>
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>
@@ -29,10 +137,147 @@ import Sidebar from '../components/Sidebar.astro';
 </BaseLayout>
 
 <script>
-  const volverBtn = document.getElementById('volver-btn');
-  if (volverBtn) {
-    volverBtn.addEventListener('click', () => {
-      window.location.href = '/dashboard';
+  // Manejo de vistas
+  const vistaLista = document.getElementById('vista-lista');
+  const vistaFormulario = document.getElementById('vista-formulario');
+  const btnAgregar = document.getElementById('btn-agregar');
+  const btnRegresar = document.getElementById('btn-regresar');
+  const tablaCapacitacion = document.getElementById('tabla-capacitacion');
+  const guardarBtn = document.getElementById('guardar-btn');
+  const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
+  const fileNameDisplay = document.getElementById('file-name') as HTMLElement | null;
+  const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement | null;
+
+  // Array para almacenar los datos (simulando backend)
+  let capacitaciones: any[] = [];
+
+  // Función para renderizar la tabla
+  function renderizarTabla() {
+    if (!tablaCapacitacion) return;
+
+    if (capacitaciones.length === 0) {
+      tablaCapacitacion.innerHTML = `
+        <tr>
+          <td colspan="5" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
+            No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
+          </td>
+        </tr>
+      `;
+    } else {
+      tablaCapacitacion.innerHTML = capacitaciones.map(item => `
+        <tr class="hover:bg-gray-50">
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.tipo}</td>
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.institucion}</td>
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.pais}</td>
+          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.anio}</td>
+          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.horas}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  // Mostrar formulario
+  btnAgregar?.addEventListener('click', () => {
+    vistaLista?.classList.add('hidden');
+    vistaFormulario?.classList.remove('hidden');
+  });
+
+  // Regresar a la lista
+  btnRegresar?.addEventListener('click', () => {
+    vistaFormulario?.classList.add('hidden');
+    vistaLista?.classList.remove('hidden');
+    resetearFormulario();
+  });
+
+  // Manejar subida de archivo
+  if (uploadBtn && fileInput) {
+    uploadBtn.addEventListener('click', () => {
+      fileInput.click();
     });
+  }
+
+  if (fileInput && fileNameDisplay) {
+    fileInput.addEventListener('change', (e) => {
+      const target = e.target as HTMLInputElement;
+      if (target.files && target.files.length > 0) {
+        fileNameDisplay.textContent = target.files[0].name;
+      } else {
+        fileNameDisplay.textContent = 'No hay archivo seleccionado';
+      }
+    });
+  }
+
+  // Manejar guardado
+  if (guardarBtn) {
+    guardarBtn.addEventListener('click', () => {
+      const tipoInput = document.getElementById('tipo-capacitacion') as HTMLInputElement | null;
+      const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
+      const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
+      const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
+      const horasInput = document.getElementById('cedula-input') as HTMLInputElement | null;
+
+      const tipo = tipoInput?.value.trim() || '';
+      const institucion = institucionInput?.value.trim() || '';
+      const pais = paisInput?.value.trim() || '';
+      const anio = anioInput?.value || '';
+      const horas = horasInput?.value.trim() || '';
+
+      if (!tipo) {
+        alert('Por favor completa el campo "Tipo de capacitación".');
+        return;
+      }
+
+      const nuevaCapacitacion = {
+        tipo,
+        institucion,
+        pais,
+        anio,
+        horas,
+        archivo: fileNameDisplay?.textContent || ''
+      };
+
+      capacitaciones.push(nuevaCapacitacion);
+      renderizarTabla();
+
+      vistaFormulario?.classList.add('hidden');
+      vistaLista?.classList.remove('hidden');
+      resetearFormulario();
+    });
+  }
+
+  // Función para limpiar el formulario
+  function resetearFormulario() {
+    const tipoInput = document.getElementById('tipo-capacitacion') as HTMLInputElement | null;
+    const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
+    const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
+    const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
+    const horasInput = document.getElementById('cedula-input') as HTMLInputElement | null;
+
+    if (tipoInput) tipoInput.value = '';
+    if (institucionInput) institucionInput.value = '';
+    if (paisInput) paisInput.value = '';
+    if (anioInput) anioInput.value = '';
+    if (horasInput) horasInput.value = '';
+
+    if (fileNameDisplay) {
+      fileNameDisplay.textContent = 'No hay archivo seleccionado';
+    }
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  }
+
+  // Renderizar tabla inicial
+  renderizarTabla();
+
+  // Verificar autenticación
+  const email = localStorage.getItem('user_email');
+  if (!email) {
+    window.location.href = '/';
+  } else {
+    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
+    if (headerEmailElement) {
+      headerEmailElement.textContent = email;
+    }
   }
 </script>
