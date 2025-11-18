@@ -51,6 +51,7 @@ import Sidebar from '../components/Sidebar.astro';
                   <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">País</th>
                   <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Año de obtención</th>
                   <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Horas</th>
+                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Acciones</th>
                 </tr>
               </thead>
               <tbody id="tabla-capacitacion">
@@ -136,148 +137,8 @@ import Sidebar from '../components/Sidebar.astro';
   </div>
 </BaseLayout>
 
-<script>
-  // Manejo de vistas
-  const vistaLista = document.getElementById('vista-lista');
-  const vistaFormulario = document.getElementById('vista-formulario');
-  const btnAgregar = document.getElementById('btn-agregar');
-  const btnRegresar = document.getElementById('btn-regresar');
-  const tablaCapacitacion = document.getElementById('tabla-capacitacion');
-  const guardarBtn = document.getElementById('guardar-btn');
-  const fileInput = document.getElementById('file-input') as HTMLInputElement | null;
-  const fileNameDisplay = document.getElementById('file-name') as HTMLElement | null;
-  const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement | null;
 
-  // Array para almacenar los datos (simulando backend)
-  let capacitaciones: any[] = [];
 
-  // Función para renderizar la tabla
-  function renderizarTabla() {
-    if (!tablaCapacitacion) return;
 
-    if (capacitaciones.length === 0) {
-      tablaCapacitacion.innerHTML = `
-        <tr>
-          <td colspan="5" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
-            No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
-          </td>
-        </tr>
-      `;
-    } else {
-      tablaCapacitacion.innerHTML = capacitaciones.map(item => `
-        <tr class="hover:bg-gray-50">
-          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.tipo}</td>
-          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.institucion}</td>
-          <td class="border border-gray-300 px-4 py-3 text-gray-700">${item.pais}</td>
-          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.anio}</td>
-          <td class="border border-gray-300 px-4 py-3 text-center text-gray-700">${item.horas}</td>
-        </tr>
-      `).join('');
-    }
-  }
 
-  // Mostrar formulario
-  btnAgregar?.addEventListener('click', () => {
-    vistaLista?.classList.add('hidden');
-    vistaFormulario?.classList.remove('hidden');
-  });
-
-  // Regresar a la lista
-  btnRegresar?.addEventListener('click', () => {
-    vistaFormulario?.classList.add('hidden');
-    vistaLista?.classList.remove('hidden');
-    resetearFormulario();
-  });
-
-  // Manejar subida de archivo
-  if (uploadBtn && fileInput) {
-    uploadBtn.addEventListener('click', () => {
-      fileInput.click();
-    });
-  }
-
-  if (fileInput && fileNameDisplay) {
-    fileInput.addEventListener('change', (e) => {
-      const target = e.target as HTMLInputElement;
-      if (target.files && target.files.length > 0) {
-        fileNameDisplay.textContent = target.files[0].name;
-      } else {
-        fileNameDisplay.textContent = 'No hay archivo seleccionado';
-      }
-    });
-  }
-
-  // Manejar guardado
-  if (guardarBtn) {
-    guardarBtn.addEventListener('click', () => {
-      const tipoInput = document.getElementById('tipo-capacitacion') as HTMLInputElement | null;
-      const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
-      const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
-      const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
-      const horasInput = document.getElementById('cedula-input') as HTMLInputElement | null;
-
-      const tipo = tipoInput?.value.trim() || '';
-      const institucion = institucionInput?.value.trim() || '';
-      const pais = paisInput?.value.trim() || '';
-      const anio = anioInput?.value || '';
-      const horas = horasInput?.value.trim() || '';
-
-      if (!tipo) {
-        alert('Por favor completa el campo "Tipo de capacitación".');
-        return;
-      }
-
-      const nuevaCapacitacion = {
-        tipo,
-        institucion,
-        pais,
-        anio,
-        horas,
-        archivo: fileNameDisplay?.textContent || ''
-      };
-
-      capacitaciones.push(nuevaCapacitacion);
-      renderizarTabla();
-
-      vistaFormulario?.classList.add('hidden');
-      vistaLista?.classList.remove('hidden');
-      resetearFormulario();
-    });
-  }
-
-  // Función para limpiar el formulario
-  function resetearFormulario() {
-    const tipoInput = document.getElementById('tipo-capacitacion') as HTMLInputElement | null;
-    const institucionInput = document.getElementById('institucion-input') as HTMLInputElement | null;
-    const paisInput = document.getElementById('pais-input') as HTMLInputElement | null;
-    const anioInput = document.getElementById('anio-input') as HTMLInputElement | null;
-    const horasInput = document.getElementById('cedula-input') as HTMLInputElement | null;
-
-    if (tipoInput) tipoInput.value = '';
-    if (institucionInput) institucionInput.value = '';
-    if (paisInput) paisInput.value = '';
-    if (anioInput) anioInput.value = '';
-    if (horasInput) horasInput.value = '';
-
-    if (fileNameDisplay) {
-      fileNameDisplay.textContent = 'No hay archivo seleccionado';
-    }
-    if (fileInput) {
-      fileInput.value = '';
-    }
-  }
-
-  // Renderizar tabla inicial
-  renderizarTabla();
-
-  // Verificar autenticación
-  const email = localStorage.getItem('user_email');
-  if (!email) {
-    window.location.href = '/';
-  } else {
-    const headerEmailElement = document.querySelector('header p.text-sm.opacity-90');
-    if (headerEmailElement) {
-      headerEmailElement.textContent = email;
-    }
-  }
-</script>
+<script type="module" src="/js/capacitacion.js"></script>
