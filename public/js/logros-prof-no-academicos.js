@@ -1,5 +1,4 @@
 (function(){
-  // Script para 'Logros profesionales (no académicos)'
   const vistaLista = document.getElementById('vista-lista');
   const vistaFormulario = document.getElementById('vista-formulario');
   const btnAgregar = document.getElementById('btn-agregar');
@@ -123,6 +122,6 @@
     formulario && formulario.reset();
   });
 
-  // inicializar
+  
   renderTabla();
 })();
