@@ -8,7 +8,7 @@ import Sidebar from '../components/Sidebar.astro';
 <BaseLayout title="Experiencia profesional (no académica) - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen bg-white">
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
     <Header showUserInfo={true} userEmail="" />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
@@ -55,7 +55,7 @@ import Sidebar from '../components/Sidebar.astro';
             </thead>
             <tbody id="tabla-participaciones">
               <tr>
-                <td colspan="4" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
+                <td colspan="5" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
                   No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
                 </td>
               </tr>
@@ -158,4 +158,5 @@ import Sidebar from '../components/Sidebar.astro';
     <Footer />
   </div>
 </BaseLayout>
-<script type="module" src="/js/pages.js"></script>
+
+<script type="module" src="/js/exp-prof-no-academica.js"></script>
