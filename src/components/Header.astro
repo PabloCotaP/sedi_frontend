@@ -37,11 +37,12 @@ const { showUserInfo = false, userEmail = null } = Astro.props;
 </header>
 
 <script>
+  import { logout } from '../lib/auth';
+  
   const logoutBtn = document.getElementById('logout-btn');
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('user_email');
-      window.location.href = '/';
+      logout();
     });
   }
 </script>
