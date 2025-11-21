@@ -334,8 +334,6 @@ El backend ya tiene estos modelos creados:
 - `TipoDocumento`
 - `Usuario`
 
-Puedes crear rutas API para estos modelos según los necesites.
-
 ---
 
 ## Siguiente Paso

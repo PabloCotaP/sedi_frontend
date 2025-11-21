@@ -118,3 +118,8 @@ const sections = [
 </BaseLayout>
 
 <script type="module" src="/js/pages.js"></script>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  requireAuth();
+</script>

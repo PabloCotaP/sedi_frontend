@@ -58,13 +58,14 @@ const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-48
 </header>
 
 <script>
+  import { logout } from '../lib/auth';
+  
   const logoutBtn = document.getElementById('logout-btn');
   const notifyBtn = document.getElementById('notify-btn');
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('user_email');
-      window.location.href = '/';
+      logout();
     });
   }
 
