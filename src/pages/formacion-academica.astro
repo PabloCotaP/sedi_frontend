@@ -8,147 +8,150 @@ import Sidebar from '../components/Sidebar.astro';
 <BaseLayout title="Formación Académica - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-screen bg-white">
     <Header showUserInfo={true} userEmail="" />
 
-    <main class="flex-1 bg-gradient-to-br from-gray-50 to-blue-100 px-4 py-8">
-      <div class="max-w-6xl mx-auto">
-
-        <div id="vista-lista" class="bg-white rounded-lg shadow-lg p-8">
-          <div class="mb-6">
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div id="vista-lista" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div class="flex-1">
+            <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">
+              Formación Académica
+            </h1>
+            <p class="text-[14px] text-gray-700 leading-snug">
+              Grados académicos del profesor, y especialidad en su caso, institución, país, año de obtención del título o grado académico y número de cédula obtenida, según aplique para cada caso. Se señala ND si no se cuenta con ella o EP si está en trámite.
+            </p>
+          </div>
+          <div class="flex gap-3">
+            <button 
+              id="btn-agregar"
+              class="bg-[#1f6818] hover:bg-[#165012] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+              Agregar
+            </button>
             <a 
               href="/dashboard"
-              class="inline-flex items-center bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
-              </svg>
+              class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
               Regresar
             </a>
           </div>
-
-          <div class="flex justify-between items-center mb-6">
-            <div>
-              <h1 class="text-2xl font-bold text-gray-800 mb-2">
-                Formación Académica
-              </h1>
-              <p class="text-sm text-gray-600">
-                Grados académicos del profesor, y especialidad en su caso, institución, país, año de obtención del título o grado académico y número de cédula obtenida, según aplique para cada caso. Se señala ND si no se cuenta con ella o EP si está en trámite.
-            </div>
-            <button 
-              id="btn-agregar"
-              class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200">
-              Agregar
-            </button>
-          </div>
-
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr class="bg-gray-100">
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Nivel</th>
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Nombre (Incluir especialidad)</th>
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">Institución</th>
-                  <th class="border border-gray-300 px-4 py-3 text-left font-semibold text-gray-700">País</th>
-                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Año de obtención</th>
-                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Cédula profesional</th>
-                  <th class="border border-gray-300 px-4 py-3 text-center font-semibold text-gray-700">Acciones</th>
-                </tr>
-              </thead>
-              <tbody id="tabla-formacion">
-                <tr>
-                  <td colspan="7" class="border border-gray-300 px-4 py-8 text-center text-gray-500">
-                    No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
 
-        <div id="vista-formulario" class="bg-white rounded-lg shadow-lg p-8 hidden">
-          <div class="flex items-center mb-6">
-            <button 
-              id="btn-regresar"
-              class="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 mr-4">
-              Regresar
-            </button>
-            <h1 class="text-2xl font-bold text-gray-800 text-center flex-1">
-              FORMACIÓN ACADÉMICA
-            </h1>
-          </div>
+        <div class="overflow-x-auto bg-white rounded-lg">
+          <table class="w-full border-collapse">
+            <thead>
+              <tr class="bg-[#d9d9d9]">
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nivel</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nombre (Incluir especialidad)</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Institución</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">País</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Año de obtención</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Cédula profesional</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tabla-formacion">
+              <tr>
+                <td colspan="7" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
+                  No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
 
-          <div class="max-w-4xl mx-auto">
-            <div class="grid grid-cols-12 gap-4 items-center">
-              <label for="nivel-select" class="col-span-3 text-right pr-4 font-semibold">Nivel</label>
-              <div class="col-span-5">
-                <select id="nivel-select" class="w-full border rounded px-3 py-1">
-                  <option value="">Selecciona una opción</option>
-                  <option>Licenciatura</option>
-                  <option>Maestría</option>
-                  <option>Doctorado</option>
-                  <option>Especialidad</option>
-                </select>
-              </div>
-              <div class="col-span-4"></div>
+      <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
+        <div class="flex justify-between items-center mb-8">
+          <h1 class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
+            FORMACIÓN ACADÉMICA
+          </h1>
+          <button 
+            id="btn-regresar"
+            class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+            Regresar
+          </button>
+        </div>
 
-              <label for="nombre-input" class="col-span-3 text-right pr-4 font-semibold">Nombre (Incluir especialidad)</label>
-              <div class="col-span-5">
-                <input id="nombre-input" class="w-full border rounded px-3 py-1" />
-              </div>
-              <div class="col-span-4"></div>
-
-              <label for="institucion-input" class="col-span-3 text-right pr-4 font-semibold">Institución</label>
-              <div class="col-span-5">
-                <input id="institucion-input" class="w-full border rounded px-3 py-1" />
-              </div>
-              <div class="col-span-4"></div>
-
-              <label for="pais-input" class="col-span-3 text-right pr-4 font-semibold">País</label>
-              <div class="col-span-5">
-                <input id="pais-input" class="w-full border rounded px-3 py-1" />
-              </div>
-              <div class="col-span-4"></div>
-
-              <label for="anio-input" class="col-span-3 text-right pr-4 font-semibold">Año de obtención</label>
-              <div class="col-span-5">
-                <input id="anio-input" type="number" min="1900" max="2100" class="w-full border rounded px-3 py-1" />
-              </div>
-              <div class="col-span-4"></div>
-
-              <label for="cedula-input" class="col-span-3 text-right pr-4 font-semibold">Cédula profesional</label>
-              <div class="col-span-5">
-                <input id="cedula-input" class="w-full border rounded px-3 py-1" />
-              </div>
-              <div class="col-span-4"></div>
-
-              <div class="col-span-12 flex justify-center space-x-6 mt-6">
-                
-                <div>
-                  <input id="file-input" type="file" accept="application/pdf,image/*" class="hidden" />
-                  <button id="upload-btn" class="bg-green-700 hover:bg-green-800 text-white px-6 py-2 rounded shadow transition-colors">
-                    Subir documento
-                  </button>
-                  <div id="file-name" class="text-sm text-gray-600 mt-2 text-center">No hay archivo seleccionado</div>
-                </div>
-
-                <button id="guardar-btn" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded shadow flex items-center transition-colors">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M17 3H3a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1zM9 14H7v-4h2v4zm4 0h-2v-6h2v6z" />
-                  </svg>
-                  Guardar
-                </button>
-              </div>
+        <form class="space-y-6 max-w-4xl mx-auto">
+          <div class="flex items-center gap-6">
+            <label for="nivel-select" class="w-48 text-right font-semibold text-black text-[18px]">
+              Nivel
+            </label>
+            <div class="flex-1">
+              <select id="nivel-select" class="w-full border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+                <option value="">Selecciona una opción</option>
+                <option>Licenciatura</option>
+                <option>Maestría</option>
+                <option>Doctorado</option>
+                <option>Especialidad</option>
+              </select>
             </div>
           </div>
-        </div>
+
+          <div class="flex items-center gap-6">
+            <label for="nombre-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              Nombre (Incluir especialidad)
+            </label>
+            <input id="nombre-input" name="nombre" type="text" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label for="institucion-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              Institución
+            </label>
+            <input id="institucion-input" name="institucion" type="text" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label for="pais-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              País
+            </label>
+            <input id="pais-input" name="pais" type="text" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label for="anio-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              Año de obtención
+            </label>
+            <input id="anio-input" name="anio" type="number" min="1900" max="2100" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label for="cedula-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              Cédula profesional
+            </label>
+            <input id="cedula-input" name="cedula" type="text" class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+          </div>
+
+          <div class="flex justify-center pt-4">
+            <label for="documento" class="cursor-pointer bg-[#d9d9d9] hover:bg-[#c0c0c0] border-2 border-black rounded-lg px-8 py-4 inline-flex items-center transition-colors duration-200 font-semibold text-[18px]">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+              </svg>
+              Subir documento
+            </label>
+            <input
+              type="file"
+              id="documento"
+              name="documento"
+              class="hidden"
+            />
+          </div>
+
+          <div class="flex justify-center pt-6">
+            <button
+              type="submit"
+              id="guardar-btn"
+              class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-3 px-16 rounded-lg transition-colors duration-200 text-[18px]">
+              Guardar
+            </button>
+          </div>
+        </form>
       </div>
     </main>
 
     <Footer />
   </div>
 </BaseLayout>
-
-
-
 
 <script type="module" src="/js/formacion.js"></script>
