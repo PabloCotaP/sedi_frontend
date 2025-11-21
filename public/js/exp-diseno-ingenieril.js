@@ -28,7 +28,20 @@
       return;
     }
 
-    tabla.innerHTML = items.map((it, idx) => `\n      <tr class="hover:bg-gray-50">\n        <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.organismo)}</td>\n        <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.periodo)}</td>\n        <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.nivel)}</td>\n        <td class="border border-gray-400 px-4 py-3 text-center">\n          <div class="flex justify-center items-center gap-3">\n            <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${idx}" title="Ver">🔍</button>\n            <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${idx}" title="Editar">✏️</button>\n            <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${idx}" title="Eliminar">🗑️</button>\n          </div>\n        </td>\n      </tr>\n    `).join('');
+    tabla.innerHTML = items.map((it, idx) => `\n
+          <tr class="hover:bg-gray-50">\n        
+            <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.organismo)}</td>
+            <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.periodo)}</td>        
+            <td class="border border-gray-400 px-4 py-3 text-black">${escapeHtml(it.nivel)}</td>       
+            <td class="border border-gray-400 px-4 py-3 text-center">        
+              <div class="flex justify-center items-center gap-3">          
+                <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${idx}" title="Ver"></button>  
+                <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${idx}" title="Editar"></button>           
+                <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${idx}" title="Eliminar"></button>         
+              </div>\n        
+            </td>\n      
+          </tr>\n    
+     `).join('');
 
     tabla.querySelectorAll('.btn-ver').forEach(btn=>{
       btn.addEventListener('click', ()=>{

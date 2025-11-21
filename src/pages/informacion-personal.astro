@@ -8,59 +8,111 @@ import Sidebar from '../components/Sidebar.astro';
 <BaseLayout title="Información Personal - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen ml-[133px]">
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
     <Header showUserInfo={false} />
 
-    <main class="flex-1 bg-gray-100 p-6">
-      <div class="max-w-4xl mx-auto">
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
         <div class="bg-white rounded-lg shadow-lg p-8">
-          <h1 class="text-3xl font-bold text-gray-800 mb-6">Mi nformación Personal</h1>
-          
-          <div class="space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div id="vista-lista" class="space-y-6">
+            <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic underline underline-offset-4 decoration-2">Información Personal</h1>
+            <div class="grid grid-cols-1 gap-4">
               <div>
-                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombre(s)</label>
-                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Juan" />
-              </div>
-
-               <div>
-                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Paterno</label>
-                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem, Michel" />
-              </div>
-
-               <div>
-                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Materno</label>
-                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Lopez" />
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre(s)</label>
+                <input id="show_fullName" value="Ejem. Juan" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
-                <label for="institutionalEmail" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de nacimiento</label>
-                <input id="institutionalEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
-              </div>
-
-               <div>
-                <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombramiento actual</label>
-                <input id="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. PROFR ORD. DE CARRERA TIT, B" />
-              </div>
-
-               <div>
-                <label for="institutionalEmail" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de contratación</label>
-                <input id="institutionalEmail" type="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido paterno</label>
+                <input id="show_apellidoP" value="Ejem. Michel" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
-                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Cedula profesional</label>
-                <input id="phone" type="tel" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 664-123-4567" />
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido materno</label>
+                <input id="show_apellidoM" value="Ejem. Lopez" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
-            <div class="flex justify-end gap-4 mt-8">
-              <button id="cancel-btn" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-colors">
-                Cancelar
-              </button>
-              <button id="save-btn" class="bg-[#8b7355] hover:bg-[#7a6349] text-white px-6 py-2 rounded-lg transition-colors">
-                Guardar cambios
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de nacimiento</label>
+                <input id="show_birthDate" value="20/12/1978" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Nombramiento actual</label>
+                <input id="show_nombramiento" value="PROFR ORD. DE CARRERA TIT, B" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de contratación</label>
+                <input id="show_fechaContratacion" value="20/12/1978" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Cédula profesional</label>
+                <input id="show_cedula" value="664-123-4567" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+                <div class="flex justify-start mt-4">
+                  <button id="btn-agregar" class="bg-yellow-400 hover:bg-yellow-500 text-white border-2 border-black px-6 py-2 rounded-lg transition-colors">
+                    Editar
+                  </button>
+                </div>
+            </div>
+
+            
+          </div>
+
+          <div id="vista-formulario" class="space-y-6 hidden">
+            <div class="flex justify-between items-center">
+              <h2 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic underline underline-offset-4 decoration-2">Actualizar datos</h2>
+              <button 
+                id="btn-regresar"
+                class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+                Regresar
               </button>
             </div>
+
+            <form id="info-form" class="space-y-6">
+              <div class="grid grid-cols-1 gap-6">
+                <div>
+                  <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombre(s)</label>
+                  <input id="fullName" name="fullName" type="text" value="Ejem. Juan" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Juan" />
+                </div>
+
+                 <div>
+                  <label for="apellidoP" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Paterno</label>
+                  <input id="apellidoP" name="apellidoP" type="text" value="Ejem. Michel" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem, Michel" />
+                </div>
+
+                 <div>
+                  <label for="apellidoM" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Materno</label>
+                  <input id="apellidoM" name="apellidoM" type="text" value="Ejem. Lopez" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Lopez" />
+                </div>
+
+                <div>
+                  <label for="birthDate" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de nacimiento</label>
+                  <input id="birthDate" name="birthDate" type="text" value="20/12/1978" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
+                </div>
+
+                 <div>
+                  <label for="nombramiento" class="block text-sm font-semibold text-gray-700 mb-2">Nombramiento actual</label>
+                  <input id="nombramiento" name="nombramiento" type="text" value="PROFR ORD. DE CARRERA TIT, B" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. PROFR ORD. DE CARRERA TIT, B" />
+                </div>
+
+                 <div>
+                  <label for="fechaContratacion" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de contratación</label>
+                  <input id="fechaContratacion" name="fechaContratacion" type="text" value="20/12/1978" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
+                </div>
+
+                <div>
+                  <label for="cedula" class="block text-sm font-semibold text-gray-700 mb-2">Cédula profesional</label>
+                  <input id="cedula" name="cedula" type="text" value="664-123-4567" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 664-123-4567" />
+                </div>
+              </div>
+
+              <div class="flex justify-start gap-4 mt-4">
+                 <button type="submit" class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 text-[16px]">Actualizar</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -70,19 +122,4 @@ import Sidebar from '../components/Sidebar.astro';
   </div>
 </BaseLayout>
 
-<script>
-  const saveBtn = document.getElementById('save-btn');
-  const cancelBtn = document.getElementById('cancel-btn');
-
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-      alert('Cambios guardados correctamente (simulación sin backend)');
-    });
-  }
-
-  if (cancelBtn) {
-    cancelBtn.addEventListener('click', () => {
-      window.location.href = '/dashboard';
-    });
-  }
-</script>
+<script type="module" src="/js/informacion-personal.js"></script>
