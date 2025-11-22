@@ -5,11 +5,18 @@ export interface Props {
 }
 
 const { showUserInfo = false, userEmail = null } = Astro.props;
+
+const uabcLogo = 'https://www.figma.com/api/mcp/asset/2800c9ce-3082-4b14-a26a-3cfbc2310697';
+const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-487146e4bff0';
 ---
 
-<header class="bg-[#3d3d3d] text-white px-4 py-6 sm:px-8 border-b-4 border-[#8b7355] shadow-md">
-  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
-    <div class="text-center md:text-left">
+<header class="bg-[#3d3d3d] text-white px-4 py-4 sm:px-8 border-b-4  shadow-md">
+  <div class="max-w-7xl mx-auto flex items-center justify-center gap-4">
+    <div class="flex items-center flex-shrink-0">
+      <img src={uabcLogo} alt="UABC" class="w-[65px] h-[89px] object-contain"  />
+    </div>
+
+    <div class="text-center mx-4 ">
       <h1 class="text-base sm:text-xl font-bold tracking-wide leading-snug m-0">
         UNIVERSIDAD AUTÓNOMA DE BAJA CALIFORNIA
       </h1>
@@ -20,28 +27,52 @@ const { showUserInfo = false, userEmail = null } = Astro.props;
         SISTEMA DE EXPEDIENTE ACADÉMICO
       </p>
     </div>
-    {showUserInfo && (
-      <div class="flex flex-col items-center md:items-end gap-2">
-        {userEmail && (
-          <p class="text-sm opacity-90 m-0">{userEmail}</p>
-        )}
-        <button 
-          id="logout-btn"
-          class="bg-[#8b7355] hover:bg-[#7a6349] text-white px-4 py-2 rounded-md text-sm transition-colors duration-300 cursor-pointer border-none"
-        >
-          Cerrar sesión
-        </button>
-      </div>
-    )}
+
+    <div class="flex items-center flex-shrink-0">
+      <img src={fiadLogo} alt="FIAD" class="w-[67px] h-[89px] object-contain -ml-1" />
+    </div>
+
+    <div class="w-24  items-center justify-end pr-0 -mr-4 sm:-mr-8">
+      {showUserInfo && (
+        <div class="flex items-center gap-0">
+          <button id="notify-btn" aria-label="Notificaciones" class="bg-transparent hover:bg-[#6b5a44] p-3 rounded-md transition-colors">
+            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </button>
+
+          <button 
+            id="logout-btn"
+            aria-label="Cerrar sesión"
+            title="Cerrar sesión"
+            class="hover:bg-[#7a6349] text-white p-3 rounded-md text-sm transition-colors duration-300 cursor-pointer border-none"
+          >
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+            </svg>
+          </button>
+        </div>
+      )}
+    </div>
   </div>
 </header>
 
 <script>
+  import { logout } from '../lib/auth';
+  
   const logoutBtn = document.getElementById('logout-btn');
+  const notifyBtn = document.getElementById('notify-btn');
+
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('user_email');
-      window.location.href = '/';
+      logout();
+    });
+  }
+
+  if (notifyBtn) {
+    notifyBtn.addEventListener('click', () => {
+      // Placeholder: mostrar notificaciones o abrir panel
+      alert('No hay notificaciones nuevas.');
     });
   }
 </script>

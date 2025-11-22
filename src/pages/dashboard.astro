@@ -86,7 +86,7 @@ const sections = [
 <BaseLayout title="Panel de Control - SEDI">
   <Sidebar />
 
-  <div class="flex flex-col min-h-screen bg-white">
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
     <Header showUserInfo={true} userEmail="" />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
@@ -118,3 +118,8 @@ const sections = [
 </BaseLayout>
 
 <script type="module" src="/js/pages.js"></script>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  requireAuth();
+</script>

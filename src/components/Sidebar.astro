@@ -1,130 +1,39 @@
-<button
-  id="menu-toggle-btn"
-  class="fixed top-4 left-4 z-50 bg-[#8b7355] text-white p-3 rounded-lg shadow-lg hover:bg-[#7a6349] transition-colors"
-  aria-label="Toggle menu"
->
-  <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-  </svg>
-</button>
-
-<div
-  id="sidebar-overlay"
-  class="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity hidden"
-></div>
-
 <aside
   id="sidebar"
-  class="fixed top-0 left-0 h-full w-64 bg-[#8b7355] text-white z-40 transform transition-transform duration-300 ease-in-out shadow-2xl -translate-x-full"
->
-  <div class="flex flex-col h-full">
-    <div class="p-6 border-b border-[#7a6349] flex justify-between items-center">
-      <h2 class="text-xl font-bold">Menú</h2>
-      <button
-        id="close-sidebar-btn"
-        class="text-white hover:text-gray-200 transition-colors"
-        aria-label="Cerrar menú"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-    </div>
+  class="fixed top-0 left-0 h-screen w-[133px] bg-[#F4AB0D] shadow-lg z-40 flex flex-col"
+  aria-label="Sidebar principal">
+  <nav class="flex flex-col items-center pt-10 space-y-10 flex-1">
+    <a
+      href="/dashboard"
+      class="w-[81px] h-[79px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      aria-label="Inicio"
+      title="Inicio"
+    >
+      <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    </a>
 
-    <nav class="flex-1 py-4">
-      <a
-        href="/dashboard"
-        class="w-full text-left px-6 py-4 hover:bg-[#7a6349] transition-colors flex items-center gap-3 border-none bg-transparent text-white cursor-pointer no-underline"
-      >
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
-        </svg>
-        <span>Inicio</span>
-      </a>
+    <a
+      href="/informacion-personal"
+      class="w-[81px] h-[80px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      aria-label="Información Personal"
+      title="Información Personal"
+    >
+      <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </a>
 
-      <a
-        href="/informacion-personal"
-        class="w-full text-left px-6 py-4 hover:bg-[#7a6349] transition-colors flex items-center gap-3 border-none bg-transparent text-white cursor-pointer no-underline"
-      >
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-        </svg>
-        <span>Información Personal</span>
-      </a>
-
-      <div class="border-t border-[#7a6349] my-2"></div>
-
-      <button
-        id="sidebar-logout-btn"
-        class="w-full text-left px-6 py-4 hover:bg-red-600 transition-colors flex items-center gap-3 border-none bg-transparent text-white cursor-pointer"
-      >
-        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-          <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"></path>
-        </svg>
-        <span>Cerrar Sesión</span>
-      </button>
-    </nav>
-
-    <div class="p-4 border-t border-[#7a6349] text-center text-sm opacity-75">
-      <p>UABC</p>
-    </div>
-  </div>
+    <a
+      href="/panel-administrador"
+      class="w-[88px] h-[88px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      aria-label="Consultar Usuarios"
+      title="Consultar Usuarios"
+    >
+      <svg class="w-14 h-14 text-white" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+      </svg>
+    </a>
+  </nav>
 </aside>
-
-<script>
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  const menuToggleBtn = document.getElementById('menu-toggle-btn');
-  const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-  const sidebarLogoutBtn = document.getElementById('sidebar-logout-btn');
-
-  function openSidebar() {
-    if (sidebar && overlay && menuToggleBtn) {
-      sidebar.classList.remove('-translate-x-full');
-      overlay.classList.remove('hidden');
-      menuToggleBtn.classList.add('hidden');
-    }
-  }
-
-  function closeSidebar() {
-    if (sidebar && overlay && menuToggleBtn) {
-      sidebar.classList.add('-translate-x-full');
-      overlay.classList.add('hidden');
-      menuToggleBtn.classList.remove('hidden');
-    }
-  }
-
-  if (menuToggleBtn) {
-    menuToggleBtn.addEventListener('click', openSidebar);
-  }
-
-  if (closeSidebarBtn) {
-    closeSidebarBtn.addEventListener('click', closeSidebar);
-  }
-
-  if (overlay) {
-    overlay.addEventListener('click', closeSidebar);
-  }
-
-  if (sidebarLogoutBtn) {
-    sidebarLogoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('user_email');
-      window.location.href = '/';
-    });
-  }
-
-  // Handle sidebar links
-  const sidebarLinks = sidebar?.querySelectorAll('a');
-  sidebarLinks?.forEach(link => {
-    link.addEventListener('click', () => {
-      closeSidebar();
-    });
-  });
-
-  // Close sidebar on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeSidebar();
-    }
-  });
-</script>
