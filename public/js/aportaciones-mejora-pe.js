@@ -49,9 +49,9 @@
           <td class="border border-gray-400 px-4 py-3 text-black">${short}</td>
           <td class="border border-gray-400 px-4 py-3">
             <div class="flex justify-center items-center gap-3">
-              <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${index}" title="Ver">🔍</button>
-              <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${index}" title="Editar">✏️</button>
-              <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${index}" title="Eliminar">🗑️</button>
+              <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${index}" title="Ver">Ver</button>
+              <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${index}" title="Editar">Editar</button>
+              <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${index}" title="Eliminar">Eliminar</button>
             </div>
           </td>
         </tr>
