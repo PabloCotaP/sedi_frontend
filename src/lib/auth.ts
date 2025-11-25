@@ -15,11 +15,15 @@ export function isAuthenticated(): boolean {
   const token = localStorage.getItem('google_token');
   const timestamp = localStorage.getItem('auth_timestamp');
   
+  console.log('Verificando autenticación:', { email, hasToken: !!token, timestamp });
+  
   if (!email || !token || !timestamp) {
+    console.log('Faltan datos de autenticación');
     return false;
   }
   
   if (!email.endsWith('@uabc.edu.mx')) {
+    console.error('Email no válido:', email);
     clearAuth();
     return false;
   }
@@ -28,10 +32,12 @@ export function isAuthenticated(): boolean {
   const maxAge = 24 * 60 * 60 * 1000;
   
   if (sessionAge > maxAge) {
+    console.log('Sesión expirada');
     clearAuth();
     return false;
   }
   
+  console.log('Autenticación válida');
   return true;
 }
 
