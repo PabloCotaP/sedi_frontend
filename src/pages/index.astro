@@ -63,7 +63,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
     localStorage.setItem('google_token', credential);
     localStorage.setItem('auth_timestamp', Date.now().toString());
     
-    window.location.href = '/dashboard';
+    window.location.href = '/principal';
   }
 
   window.onload = function() {

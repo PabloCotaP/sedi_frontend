@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Bienvenido al sistema de expedientes digitales SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div id="vista-lista" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div class="flex-1">
+            <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">
+              Bienvenido al sistema de expedientes digitales SEDI
+            </h1>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
