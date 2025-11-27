@@ -7,6 +7,7 @@ export async function fetchAPI<T>(
   const url = `${API_BASE_URL}${endpoint}`;
   
   const defaultOptions: RequestInit = {
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -23,17 +24,46 @@ export async function fetchAPI<T>(
   });
 
   if (!response.ok) {
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status}: ${response.statusText}`);
   }
 
   return response.json();
 }
 
-// Ejemplo de función API
-export async function testConnection() {
+export async function loginWithGoogle(idToken: string) {
+  return fetchAPI<{
+    status: string;
+    message?: string;
+    user?: {
+      id: number;
+      nombre: string;
+      correo: string;
+      rol: string;
+    };
+  }>('/login', {
+    method: 'POST',
+    body: JSON.stringify({ id_token: idToken }),
+  });
+}
+
+export async function checkSession() {
+  return fetchAPI<{
+    status: string;
+    user: {
+      id: number;
+      nombre: string;
+      correo: string;
+      rol: string;
+    };
+  }>('/user');
+}
+
+export async function logout() {
   return fetchAPI<{
     status: string;
     message: string;
-    timestamp: string;
-  }>('/test');
+  }>('/logout', {
+    method: 'POST',
+  });
 }

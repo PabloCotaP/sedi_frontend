@@ -24,3 +24,4 @@ dist-ssr
 *.sln
 *.sw?
 .astro/types.d.ts
+.astro/types.d.ts

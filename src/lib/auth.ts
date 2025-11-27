@@ -1,44 +1,31 @@
+import { checkSession, logout as logoutAPI } from './api';
+
 function clearAuth() {
   if (typeof window === 'undefined') return;
   
   localStorage.removeItem('user_email');
   localStorage.removeItem('user_name');
   localStorage.removeItem('user_picture');
-  localStorage.removeItem('google_token');
-  localStorage.removeItem('auth_timestamp');
 }
 
-export function isAuthenticated(): boolean {
+export async function isAuthenticated(): Promise<boolean> {
   if (typeof window === 'undefined') return false;
   
-  const email = localStorage.getItem('user_email');
-  const token = localStorage.getItem('google_token');
-  const timestamp = localStorage.getItem('auth_timestamp');
-  
-  console.log('Verificando autenticación:', { email, hasToken: !!token, timestamp });
-  
-  if (!email || !token || !timestamp) {
-    console.log('Faltan datos de autenticación');
+  try {
+    const response = await checkSession();
+    
+    if (response.status === 'success' && response.user) {
+      localStorage.setItem('user_email', response.user.correo);
+      localStorage.setItem('user_name', response.user.nombre);
+      return true;
+    }
+    
+    clearAuth();
     return false;
-  }
-  
-  if (!email.endsWith('@uabc.edu.mx')) {
-    console.error('Email no válido:', email);
+  } catch (error) {
     clearAuth();
     return false;
   }
-  
-  const sessionAge = Date.now() - parseInt(timestamp);
-  const maxAge = 24 * 60 * 60 * 1000;
-  
-  if (sessionAge > maxAge) {
-    console.log('Sesión expirada');
-    clearAuth();
-    return false;
-  }
-  
-  console.log('Autenticación válida');
-  return true;
 }
 
 export function getUser() {
@@ -51,13 +38,20 @@ export function getUser() {
   };
 }
 
-export function logout() {
-  clearAuth();
-  window.location.href = '/';
+export async function logout() {
+  try {
+    await logoutAPI();
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+  } finally {
+    clearAuth();
+    window.location.href = '/';
+  }
 }
 
-export function requireAuth() {
-  if (!isAuthenticated()) {
+export async function requireAuth() {
+  const authenticated = await isAuthenticated();
+  if (!authenticated) {
     window.location.href = '/';
   }
 }
