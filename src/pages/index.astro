@@ -27,7 +27,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
         
         <div id="google-signin-button" class="w-full"></div>
 
-        <p class="text-gray-500 text-base mt-2">Usa tu cuenta institucional @uabc.edu.mx para iniciar sesión</p>
+        <p class="text-gray-500 text-base mt-2">Favor de iniciar sesión con su cuenta de Google</p>
         
         <div id="error-message" class="hidden text-red-600 text-sm mt-2"></div>
       </div>
@@ -40,30 +40,46 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
 <script src="https://accounts.google.com/gsi/client" async></script>
 
 <script define:vars={{ GOOGLE_CLIENT_ID }}>
-  function handleCredentialResponse(response) {
+  async function handleCredentialResponse(response) {
     const credential = response.credential;
-    
-    const payload = JSON.parse(atob(credential.split('.')[1]));
-    const email = payload.email;
-    const name = payload.name;
-    const picture = payload.picture;
-    
-     if (!email.endsWith('@uabc.edu.mx')) {
+
+    try {
+      const res = await fetch('http://localhost:8000/api/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ id_token: credential })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        const errorDiv = document.getElementById('error-message');
+        if (errorDiv) {
+          errorDiv.textContent = data.message || data.error || 'Error al iniciar sesión';
+          errorDiv.classList.remove('hidden');
+        }
+        return;
+      }
+
+      if (data.user) {
+        localStorage.setItem('user_email', data.user.correo);
+        localStorage.setItem('user_name', data.user.nombre);
+      }
+
+      window.location.href = '/principal';
+
+    } catch (err) {
+      console.error('Error al iniciar sesión:', err);
       const errorDiv = document.getElementById('error-message');
       if (errorDiv) {
-        errorDiv.textContent = 'Solo se permiten cuentas institucionales @uabc.edu.mx';
+        errorDiv.textContent = 'Error al iniciar sesión. Por favor, intenta nuevamente.';
         errorDiv.classList.remove('hidden');
       }
-      return;
     }
-    
-    localStorage.setItem('user_email', email);
-    localStorage.setItem('user_name', name);
-    localStorage.setItem('user_picture', picture);
-    localStorage.setItem('google_token', credential);
-    localStorage.setItem('auth_timestamp', Date.now().toString());
-    
-    window.location.href = '/principal';
   }
 
   window.onload = function() {
@@ -73,7 +89,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
         callback: handleCredentialResponse,
         auto_select: false,
       });
-      
+
       google.accounts.id.renderButton(
         document.getElementById('google-signin-button'),
         { 
@@ -84,7 +100,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
           locale: 'es'
         }
       );
-      
+
       google.accounts.id.prompt();
     }
   };
