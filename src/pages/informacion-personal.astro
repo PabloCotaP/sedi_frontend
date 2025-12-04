@@ -13,8 +13,25 @@ import Sidebar from '../components/Sidebar.astro';
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
       <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+        
+        <div id="viewing-user-banner" class="hidden mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span class="text-blue-700 font-medium">
+              Viendo información de: <strong id="viewing-user-name"></strong>
+            </span>
+          </div>
+        </div>
+
         <div class="bg-white rounded-lg shadow-lg p-8">
-          <div id="vista-lista" class="space-y-6">
+          <div id="loading-indicator" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <p class="mt-2 text-gray-600">Cargando información...</p>
+          </div>
+
+          <div id="vista-lista" class="space-y-6 hidden">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
               <div class="flex-1">
                 <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic underline underline-offset-4 decoration-2">Información Personal</h1>
@@ -26,46 +43,50 @@ import Sidebar from '../components/Sidebar.astro';
             <div class="grid grid-cols-1 gap-4">
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre(s)</label>
-                <input id="show_fullName" value="Ejem. Juan" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_fullName" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido paterno</label>
-                <input id="show_apellidoP" value="Ejem. Michel" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_apellidoP" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido materno</label>
-                <input id="show_apellidoM" value="Ejem. Lopez" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_apellidoM" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Correo electrónico</label>
+                <input id="show_correo" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de nacimiento</label>
-                <input id="show_birthDate" value="20/12/1978" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_birthDate" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">Carrera</label>
+                <input id="show_carrera" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Nombramiento actual</label>
-                <input id="show_nombramiento" value="PROFR ORD. DE CARRERA TIT, B" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_nombramiento" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
               <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de contratación</label>
-                <input id="show_fechaContratacion" value="20/12/1978" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+                <input id="show_fechaContratacion" value="" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
               </div>
 
-              <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Cédula profesional</label>
-                <input id="show_cedula" value="664-123-4567" class="w-full border border-gray-200 bg-gray-50 rounded px-3 py-2 text-gray-800" disabled />
+              <div id="edit-button-container" class="flex justify-start mt-4">
+                <button id="btn-agregar" class="bg-yellow-400 hover:bg-yellow-500 text-white border-2 border-black px-6 py-2 rounded-lg transition-colors">
+                  Editar
+                </button>
               </div>
-                <div class="flex justify-start mt-4">
-                  <button id="btn-agregar" class="bg-yellow-400 hover:bg-yellow-500 text-white border-2 border-black px-6 py-2 rounded-lg transition-colors">
-                    Editar
-                  </button>
-                </div>
             </div>
-
-            
           </div>
 
           <div id="vista-formulario" class="space-y-6 hidden">
@@ -82,42 +103,32 @@ import Sidebar from '../components/Sidebar.astro';
               <div class="grid grid-cols-1 gap-6">
                 <div>
                   <label for="fullName" class="block text-sm font-semibold text-gray-700 mb-2">Nombre(s)</label>
-                  <input id="fullName" name="fullName" type="text" value="Ejem. Juan" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Juan" />
+                  <input id="fullName" name="fullName" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ingresa tu nombre" />
                 </div>
 
-                 <div>
+                <div>
                   <label for="apellidoP" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Paterno</label>
-                  <input id="apellidoP" name="apellidoP" type="text" value="Ejem. Michel" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem, Michel" />
+                  <input id="apellidoP" name="apellidoP" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ingresa tu apellido paterno" />
                 </div>
 
-                 <div>
+                <div>
                   <label for="apellidoM" class="block text-sm font-semibold text-gray-700 mb-2">Apellido Materno</label>
-                  <input id="apellidoM" name="apellidoM" type="text" value="Ejem. Lopez" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. Lopez" />
+                  <input id="apellidoM" name="apellidoM" type="text" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ingresa tu apellido materno" />
                 </div>
 
                 <div>
                   <label for="birthDate" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de nacimiento</label>
-                  <input id="birthDate" name="birthDate" type="text" value="20/12/1978" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
-                </div>
-
-                 <div>
-                  <label for="nombramiento" class="block text-sm font-semibold text-gray-700 mb-2">Nombramiento actual</label>
-                  <input id="nombramiento" name="nombramiento" type="text" value="PROFR ORD. DE CARRERA TIT, B" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. PROFR ORD. DE CARRERA TIT, B" />
-                </div>
-
-                 <div>
-                  <label for="fechaContratacion" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de contratación</label>
-                  <input id="fechaContratacion" name="fechaContratacion" type="text" value="20/12/1978" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 20/12/1978" />
+                  <input id="birthDate" name="birthDate" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" />
                 </div>
 
                 <div>
-                  <label for="cedula" class="block text-sm font-semibold text-gray-700 mb-2">Cédula profesional</label>
-                  <input id="cedula" name="cedula" type="text" value="664-123-4567" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" placeholder="Ejem. 664-123-4567" />
+                  <label for="fechaContratacion" class="block text-sm font-semibold text-gray-700 mb-2">Fecha de contratación</label>
+                  <input id="fechaContratacion" name="fechaContratacion" type="date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#8b7355]" />
                 </div>
               </div>
 
               <div class="flex justify-start gap-4 mt-4">
-                 <button type="submit" class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 text-[16px]">Actualizar</button>
+                <button type="submit" class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200 text-[16px]">Actualizar</button>
               </div>
             </form>
           </div>
@@ -129,4 +140,262 @@ import Sidebar from '../components/Sidebar.astro';
   </div>
 </BaseLayout>
 
-<script type="module" src="/js/informacion-personal.js"></script>
+<script>
+  import { getCurrentUser, getUserById, updateUser, getAllCarreras, getAllNombramientos } from '../lib/api';
+
+  interface LocalUsuario {
+    id_usuario: number;
+    correo: string;
+    nombre: string;
+    ap_pat: string;
+    ap_mat: string;
+    fecha_nacimiento: string | null;
+    fecha_contratacion: string | null;
+    carrera_id_carrera: number;
+    nombramiento_idnombramiento: number;
+    roles_id_role: number;
+    activo: number | boolean;
+  }
+
+  interface Carrera {
+    id_carrera: number;
+    nombre_carrera: string;
+  }
+
+  interface Nombramiento {
+    idnombramiento: number;
+    titulo: string;
+    niveles_id_niveles: number;
+    niveles_id_niveles_rel?: {
+      id_niveles: number;
+      nivel: string;
+    };
+  }
+
+  let currentUserId: number | null = null;
+  let isViewingOtherUser = false;
+  let carrerasMap: { [key: number]: string } = {};
+  let nombramientosMap: { [key: number]: string } = {};
+  let userData: LocalUsuario | null = null;
+
+  function formatDateDisplay(dateString: string | null): string {
+    if (!dateString) return 'No especificado';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  }
+
+  function formatDateForInput(dateString: string | null): string {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0];
+    } catch {
+      return '';
+    }
+  }
+
+  function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      userId: params.get('userId'),
+      userName: params.get('userName')
+    };
+  }
+
+  async function loadCatalogsData() {
+    try {
+      const [carrerasRes, nombramientosRes] = await Promise.all([
+        getAllCarreras(),
+        getAllNombramientos()
+      ]);
+
+      if (carrerasRes.status === 'success' && carrerasRes.data) {
+        carrerasRes.data.forEach((c: Carrera) => {
+          carrerasMap[c.id_carrera] = c.nombre_carrera;
+        });
+      }
+
+      if (nombramientosRes.status === 'success' && nombramientosRes.data) {
+        nombramientosRes.data.forEach((n: Nombramiento) => {
+          const nivelTexto = n.niveles_id_niveles_rel?.nivel || '';
+          nombramientosMap[n.idnombramiento] = nivelTexto ? `${n.titulo} - Nivel ${nivelTexto}` : n.titulo;
+        });
+      }
+    } catch (error) {
+    }
+  }
+
+  function displayUserData(user: LocalUsuario) {
+    const showFullName = document.getElementById('show_fullName') as HTMLInputElement;
+    const showApellidoP = document.getElementById('show_apellidoP') as HTMLInputElement;
+    const showApellidoM = document.getElementById('show_apellidoM') as HTMLInputElement;
+    const showCorreo = document.getElementById('show_correo') as HTMLInputElement;
+    const showBirthDate = document.getElementById('show_birthDate') as HTMLInputElement;
+    const showCarrera = document.getElementById('show_carrera') as HTMLInputElement;
+    const showNombramiento = document.getElementById('show_nombramiento') as HTMLInputElement;
+    const showFechaContratacion = document.getElementById('show_fechaContratacion') as HTMLInputElement;
+
+    if (showFullName) showFullName.value = user.nombre || 'No especificado';
+    if (showApellidoP) showApellidoP.value = user.ap_pat || 'No especificado';
+    if (showApellidoM) showApellidoM.value = user.ap_mat || 'No especificado';
+    if (showCorreo) showCorreo.value = user.correo || 'No especificado';
+    if (showBirthDate) showBirthDate.value = formatDateDisplay(user.fecha_nacimiento);
+    if (showCarrera) showCarrera.value = carrerasMap[user.carrera_id_carrera] || 'No especificado';
+    if (showNombramiento) showNombramiento.value = nombramientosMap[user.nombramiento_idnombramiento] || 'No especificado';
+    if (showFechaContratacion) showFechaContratacion.value = formatDateDisplay(user.fecha_contratacion);
+  }
+
+  function populateFormFields(user: LocalUsuario) {
+    const fullName = document.getElementById('fullName') as HTMLInputElement;
+    const apellidoP = document.getElementById('apellidoP') as HTMLInputElement;
+    const apellidoM = document.getElementById('apellidoM') as HTMLInputElement;
+    const birthDate = document.getElementById('birthDate') as HTMLInputElement;
+    const fechaContratacion = document.getElementById('fechaContratacion') as HTMLInputElement;
+
+    if (fullName) fullName.value = user.nombre || '';
+    if (apellidoP) apellidoP.value = user.ap_pat || '';
+    if (apellidoM) apellidoM.value = user.ap_mat || '';
+    if (birthDate) birthDate.value = formatDateForInput(user.fecha_nacimiento);
+    if (fechaContratacion) fechaContratacion.value = formatDateForInput(user.fecha_contratacion);
+  }
+
+  async function init() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.href = '/';
+      return;
+    }
+
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const vistaLista = document.getElementById('vista-lista');
+    const vistaFormulario = document.getElementById('vista-formulario');
+    const btnAgregar = document.getElementById('btn-agregar');
+    const btnRegresar = document.getElementById('btn-regresar');
+    const form = document.getElementById('info-form') as HTMLFormElement;
+    const viewingBanner = document.getElementById('viewing-user-banner');
+    const viewingUserName = document.getElementById('viewing-user-name');
+    const editButtonContainer = document.getElementById('edit-button-container');
+
+    const { userId, userName } = getUrlParams();
+
+    await loadCatalogsData();
+
+    try {
+      if (userId) {
+        isViewingOtherUser = true;
+        currentUserId = parseInt(userId);
+        
+        if (viewingBanner && viewingUserName) {
+          viewingBanner.classList.remove('hidden');
+          viewingUserName.textContent = decodeURIComponent(userName || 'Usuario');
+        }
+
+        if (editButtonContainer) {
+          editButtonContainer.classList.add('hidden');
+        }
+
+        const response = await getUserById(currentUserId);
+        if (response.status === 'success' && response.user) {
+          userData = response.user as LocalUsuario;
+        } else {
+          throw new Error('No se pudo cargar la información del usuario');
+        }
+      } else {
+        const response = await getCurrentUser();
+        if (response.status === 'success' && response.user) {
+          userData = response.user as LocalUsuario;
+          currentUserId = userData.id_usuario;
+        } else {
+          throw new Error('No se pudo cargar tu información');
+        }
+      }
+
+      displayUserData(userData!);
+
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      if (vistaLista) vistaLista.classList.remove('hidden');
+
+      if (!isViewingOtherUser && userData) {
+        btnAgregar?.addEventListener('click', () => {
+          populateFormFields(userData!);
+          vistaLista?.classList.add('hidden');
+          vistaFormulario?.classList.remove('hidden');
+        });
+
+        btnRegresar?.addEventListener('click', () => {
+          vistaFormulario?.classList.add('hidden');
+          vistaLista?.classList.remove('hidden');
+        });
+
+        form?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          if (!currentUserId) {
+            alert('Error: No se pudo identificar al usuario.');
+            return;
+          }
+
+          const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+          const originalText = submitBtn?.textContent || 'Actualizar';
+          
+          if (submitBtn) {
+            submitBtn.textContent = 'Guardando...';
+            submitBtn.disabled = true;
+          }
+
+          try {
+            const fullName = document.getElementById('fullName') as HTMLInputElement;
+            const apellidoP = document.getElementById('apellidoP') as HTMLInputElement;
+            const apellidoM = document.getElementById('apellidoM') as HTMLInputElement;
+            const birthDate = document.getElementById('birthDate') as HTMLInputElement;
+            const fechaContratacion = document.getElementById('fechaContratacion') as HTMLInputElement;
+
+            const updateData: Partial<LocalUsuario> = {
+              nombre: fullName?.value || '',
+              ap_pat: apellidoP?.value || '',
+              ap_mat: apellidoM?.value || '',
+              fecha_nacimiento: birthDate?.value || null,
+              fecha_contratacion: fechaContratacion?.value || null,
+            };
+
+            const response = await updateUser(currentUserId, updateData as any);
+
+            if (response.status === 'success') {
+              userData = { ...userData!, ...updateData } as LocalUsuario;
+              displayUserData(userData);
+              alert('Datos actualizados correctamente.');
+              vistaFormulario?.classList.add('hidden');
+              vistaLista?.classList.remove('hidden');
+            } else {
+              alert('Error al actualizar: ' + (response.message || 'Error desconocido'));
+            }
+          } catch (error: any) {
+            alert('Error al actualizar los datos: ' + error.message);
+          } finally {
+            if (submitBtn) {
+              submitBtn.textContent = originalText;
+              submitBtn.disabled = false;
+            }
+          }
+        });
+      }
+
+    } catch (error: any) {
+      if (loadingIndicator) {
+        loadingIndicator.innerHTML = `<p class="text-lg text-red-600">Error: ${error.message}</p>`;
+      }
+    }
+  }
+
+  init();
+</script>
+
+<script is:inline src="/js/back-navigation.js"></script>

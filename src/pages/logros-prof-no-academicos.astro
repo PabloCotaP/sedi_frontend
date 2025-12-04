@@ -12,6 +12,17 @@ import Sidebar from '../components/Sidebar.astro';
     <Header showUserInfo={true} userEmail="" />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div id="viewing-user-banner" class="hidden max-w-[1728px] mx-auto mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+          <span class="text-blue-700 font-medium">
+            Viendo registros de: <strong id="viewing-user-name"></strong>
+          </span>
+        </div>
+      </div>
+
       <div id="vista-lista" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div class="flex-1">
@@ -20,8 +31,6 @@ import Sidebar from '../components/Sidebar.astro';
             </h1>
             <p class="text-[14px] text-gray-700 leading-snug">
               Logros profesionales: nombre del logro, relevancia, autores, dónde se realizó, etc.
-            </p>
-            <p class="text-[14px] text-gray-700 leading-snug">
               Esto incluye: certificaciones profesionales, premios o reconocimientos, patentes, etc.
             </p>
           </div>
@@ -39,30 +48,34 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
         </div>
 
-        <div class="overflow-x-auto bg-white rounded-lg">
+        <div id="loading-indicator" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <p class="mt-2 text-gray-600">Cargando registros...</p>
+        </div>
+
+        <div id="tabla-container" class="hidden overflow-x-auto bg-white rounded-lg">
           <table class="w-full border-collapse">
             <thead>
               <tr class="bg-[#d9d9d9]">
                 <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Descripción de cada logro</th>
-               
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Documento</th>
                 <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Acciones</th>
               </tr>
             </thead>
-            <tbody id="tabla-participaciones">
-              <tr>
-                <td colspan="2" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-                  No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
-                </td>
-              </tr>
+            <tbody id="tabla-logros">
             </tbody>
           </table>
+        </div>
+
+        <div id="sin-registros" class="hidden text-center py-8">
+          <p class="text-gray-500">No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.</p>
         </div>
       </div>
 
       <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
-          <h1 class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
-            Experiencia en diseño ingenieril
+          <h1 id="form-titulo" class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
+            Logros profesionales (no académicos)
           </h1>
           <button 
             id="btn-regresar"
@@ -71,90 +84,60 @@ import Sidebar from '../components/Sidebar.astro';
           </button>
         </div>
 
-        <form class="space-y-6 max-w-4xl mx-auto">
-          <div class="flex items-center gap-6">
-            <label for="capacitacion" class="w-48 text-right font-semibold text-black text-[18px]">
-              Tipo de capacitación
+        <form id="logros-form" class="space-y-6 max-w-4xl mx-auto" enctype="multipart/form-data">
+          <input type="hidden" id="registro-id" name="registro_id" value="" />
+          
+          <div class="flex items-start gap-6">
+            <label for="descripcion" class="w-48 text-right font-semibold text-black text-[18px] pt-3">
+              Descripción *
             </label>
-            <input
-              type="text"
-              id="capacitacion"
-              name="capacitacion"
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              rows="6"
               required
-              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            />
+              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-y"
+              placeholder="Describe el logro profesional, incluyendo nombre, relevancia, autores, dónde se realizó..."></textarea>
           </div>
 
-          <div class="flex items-center gap-6">
-            <label for="institucion" class="w-48 text-right font-semibold text-black text-[18px]">
-              Institución
+          <div class="flex items-start gap-6">
+            <label class="w-48 text-right font-semibold text-black text-[18px] pt-3">
+              Documento
             </label>
-            <input
-              type="text"
-              id="institucion"
-              name="institucion"
-              required
-              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            />
+            <div class="flex-1">
+              <div id="drop-zone" class="border-2 border-dashed border-gray-400 rounded-lg p-6 text-center cursor-pointer hover:border-[#1f6818] transition-colors">
+                <input type="file" id="documento" name="archivo" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="hidden" />
+                <svg class="w-10 h-10 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                </svg>
+                <p class="text-gray-600">Haz clic o arrastra un archivo aquí</p>
+                <p class="text-gray-400 text-sm mt-1">PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</p>
+              </div>
+              <div id="archivo-seleccionado" class="hidden mt-3 p-3 bg-green-50 rounded-lg flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/>
+                  </svg>
+                  <span id="nombre-archivo" class="text-green-700 font-medium"></span>
+                </div>
+                <button type="button" id="btn-quitar-archivo" class="text-red-500 hover:text-red-700">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="documento-actual" class="hidden mt-3 p-3 bg-blue-50 rounded-lg">
+                <p class="text-blue-700 text-sm">Documento actual: <a id="link-documento-actual" href="#" target="_blank" class="underline font-medium">Ver documento</a></p>
+              </div>
+            </div>
           </div>
 
-          <div class="flex items-center gap-6">
-            <label for="pais" class="w-48 text-right font-semibold text-black text-[18px]">
-              País
-            </label>
-            <input
-              type="text"
-              id="pais"
-              name="pais"
-              required
-              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            />
-          </div>
-
-          <div class="flex items-center gap-6">
-            <label for="anio_obt" class="w-48 text-right font-semibold text-black text-[18px]">
-              Año de obtención
-            </label>
-            <input
-              type="text"
-              id="anio_obt"
-              name="anio_obt"
-              required
-              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            />
-          </div>
-
-            <div class="flex items-center gap-6">
-            <label for="horas" class="w-48 text-right font-semibold text-black text-[18px]">
-              Horas
-            </label>
-            <input
-              type="text"
-              id="horas"
-              name="horas"
-              required
-              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-            />
-          </div>
-
-          <div class="flex justify-center pt-4">
-            <label for="documento" class="cursor-pointer bg-[#d9d9d9] hover:bg-[#c0c0c0] border-2 border-black rounded-lg px-8 py-4 inline-flex items-center transition-colors duration-200 font-semibold text-[18px]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-              </svg>
-              Subir documento
-            </label>
-            <input
-              type="file"
-              id="documento"
-              name="documento"
-              class="hidden"
-            />
-          </div>
+          <div id="form-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg max-w-4xl mx-auto"></div>
 
           <div class="flex justify-center pt-6">
             <button
               type="submit"
+              id="guardar-btn"
               class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-3 px-16 rounded-lg transition-colors duration-200 text-[18px]">
               Guardar
             </button>
@@ -163,8 +146,439 @@ import Sidebar from '../components/Sidebar.astro';
       </div>
     </main>
 
+    <div id="modal-eliminar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Confirmar eliminación</h3>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.</p>
+        <div class="flex justify-end gap-4">
+          <button id="btn-cancelar-eliminar" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">Cancelar</button>
+          <button id="btn-confirmar-eliminar" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para invalidar documento -->
+    <div id="modal-invalidar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Invalidar documento</h3>
+        <p class="text-gray-600 mb-4">Ingrese el motivo por el cual el documento es inválido:</p>
+        <textarea id="motivo-invalidez" class="w-full border border-gray-300 rounded-lg p-3 mb-4 h-32 resize-none" placeholder="Ej: Documento ilegible, información incorrecta, etc."></textarea>
+        <div class="flex justify-end gap-4">
+          <button id="btn-cancelar-invalidar" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">Cancelar</button>
+          <button id="btn-confirmar-invalidar" class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors">Invalidar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para restaurar documento -->
+    <div id="modal-restaurar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Marcar documento como válido</h3>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas marcar este documento como válido nuevamente?</p>
+        <div class="flex justify-end gap-4">
+          <button id="btn-cancelar-restaurar" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">Cancelar</button>
+          <button id="btn-confirmar-restaurar" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">Marcar válido</button>
+        </div>
+      </div>
+    </div>
+
     <Footer />
   </div>
 </BaseLayout>
 
-<script type="module" src="/js/logros-prof-no-academicos.js"></script>
+<script>
+  import { 
+    getExpedienteByModulo, 
+    getExpedienteByModuloAndUser,
+    createExpediente, 
+    updateExpediente,
+    deleteExpediente,
+    getExpedienteDownloadUrl,
+    marcarDocumentoInvalido,
+    restaurarDocumentoValido,
+    type ExpedienteRegistro
+  } from '../lib/api';
+
+  const MODULO = 'logros-prof-no-academicos';
+  
+  let registros: ExpedienteRegistro[] = [];
+  let isViewingOtherUser = false;
+  let viewingUserId: number | null = null;
+  let registroAEliminar: number | null = null;
+  let editandoId: number | null = null;
+  let isAdmin = false;
+  let invalidarDocId: number | null = null;
+  let restaurarDocId: number | null = null;
+
+  function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      userId: params.get('userId'),
+      userName: params.get('userName')
+    };
+  }
+
+  function renderTabla() {
+    const tabla = document.getElementById('tabla-logros');
+    const tablaContainer = document.getElementById('tabla-container');
+    const sinRegistros = document.getElementById('sin-registros');
+    const btnAgregar = document.getElementById('btn-agregar');
+
+    if (!tabla) return;
+
+    if (isViewingOtherUser && btnAgregar) {
+      btnAgregar.classList.add('hidden');
+    }
+
+    if (registros.length === 0) {
+      tablaContainer?.classList.add('hidden');
+      sinRegistros?.classList.remove('hidden');
+      return;
+    }
+
+    tablaContainer?.classList.remove('hidden');
+    sinRegistros?.classList.add('hidden');
+
+    tabla.innerHTML = registros.map(reg => {
+      const tieneDocumento = reg.documento?.ruta_archivo;
+      const esInvalido = reg.documento?.valido === false;
+      const motivoInvalidez = reg.documento?.motivo_invalidez || '';
+
+      return `
+        <tr class="hover:bg-gray-50 ${esInvalido ? 'bg-red-50' : ''}">
+          <td class="border border-gray-300 px-4 py-3 text-gray-700">
+            ${reg.descripcion}
+            ${esInvalido ? `<span class="block text-red-600 text-sm mt-1">Documento inválido: ${motivoInvalidez}</span>` : ''}
+          </td>
+          <td class="border border-gray-300 px-4 py-3 text-center">
+            ${tieneDocumento ? `
+              <a href="${getExpedienteDownloadUrl(reg.documento!.iddocumento_detalle)}" target="_blank" 
+                class="text-blue-600 hover:text-blue-800 underline">Ver</a>
+            ` : '<span class="text-gray-400">Sin documento</span>'}
+          </td>
+          <td class="border border-gray-300 px-4 py-3 text-center">
+            ${!isViewingOtherUser ? `
+              <div class="flex justify-center items-center gap-3">
+                <button class="btn-editar bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-1 rounded text-sm" data-id="${reg.id_registro}">Editar</button>
+                <button class="btn-eliminar bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" data-id="${reg.id_registro}">Eliminar</button>
+              </div>
+            ` : `
+              <div class="flex justify-center items-center gap-3">
+                ${isAdmin && tieneDocumento ? (
+                  esInvalido ? `
+                    <button class="btn-restaurar bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm" data-doc-id="${reg.documento!.iddocumento_detalle}">Marcar válido</button>
+                  ` : `
+                    <button class="btn-invalidar bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-sm" data-doc-id="${reg.documento!.iddocumento_detalle}">Invalidar</button>
+                  `
+                ) : '<span class="text-gray-400">-</span>'}
+              </div>
+            `}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.btn-editar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = parseInt((btn as HTMLElement).dataset.id || '0');
+        editarRegistro(id);
+      });
+    });
+
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        registroAEliminar = parseInt((btn as HTMLElement).dataset.id || '0');
+        document.getElementById('modal-eliminar')?.classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.btn-invalidar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        invalidarDocId = parseInt((btn as HTMLElement).dataset.docId || '0');
+        document.getElementById('modal-invalidar')?.classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.btn-restaurar').forEach(btn => {
+      btn.addEventListener('click', () => {
+        restaurarDocId = parseInt((btn as HTMLElement).dataset.docId || '0');
+        document.getElementById('modal-restaurar')?.classList.remove('hidden');
+      });
+    });
+  }
+
+  function editarRegistro(id: number) {
+    const registro = registros.find(r => r.id_registro === id);
+    if (!registro) return;
+
+    editandoId = id;
+
+    const formTitulo = document.getElementById('form-titulo');
+    const descripcionInput = document.getElementById('descripcion') as HTMLTextAreaElement;
+    const documentoActual = document.getElementById('documento-actual');
+    const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
+
+    if (formTitulo) formTitulo.textContent = 'EDITAR LOGRO PROFESIONAL';
+    if (descripcionInput) descripcionInput.value = registro.descripcion || '';
+
+    if (registro.documento?.ruta_archivo && documentoActual && linkDocumento) {
+      documentoActual.classList.remove('hidden');
+      linkDocumento.href = getExpedienteDownloadUrl(registro.documento.iddocumento_detalle);
+    }
+
+    document.getElementById('vista-lista')?.classList.add('hidden');
+    document.getElementById('vista-formulario')?.classList.remove('hidden');
+  }
+
+  function resetFormulario() {
+    editandoId = null;
+    const form = document.getElementById('logros-form') as HTMLFormElement;
+    const formTitulo = document.getElementById('form-titulo');
+    const documentoActual = document.getElementById('documento-actual');
+    const archivoSeleccionado = document.getElementById('archivo-seleccionado');
+    const dropZone = document.getElementById('drop-zone');
+
+    if (form) form.reset();
+    if (formTitulo) formTitulo.textContent = 'LOGROS PROFESIONALES (NO ACADÉMICOS)';
+    if (documentoActual) documentoActual.classList.add('hidden');
+    if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
+    if (dropZone) dropZone.classList.remove('hidden');
+    document.getElementById('form-error')?.classList.add('hidden');
+  }
+
+  async function loadRegistros() {
+    try {
+      let response;
+      if (isViewingOtherUser && viewingUserId) {
+        response = await getExpedienteByModuloAndUser(MODULO, viewingUserId);
+      } else {
+        response = await getExpedienteByModulo(MODULO);
+      }
+
+      if (response.status === 'success') {
+        registros = response.data;
+      }
+    } catch (error) {
+      console.error('Error al cargar registros:', error);
+      registros = [];
+    }
+  }
+
+  async function init() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.href = '/';
+      return;
+    }
+
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const { userId, userName } = getUrlParams();
+
+    // Detectar si es admin/coordinador (acepta diferentes formatos)
+    const userRol = localStorage.getItem('user_rol');
+    const rolLower = userRol?.toLowerCase() || '';
+    isAdmin = rolLower === 'admin' || rolLower === 'administrativo' || rolLower === 'coordinador';
+
+    if (userId) {
+      isViewingOtherUser = true;
+      viewingUserId = parseInt(userId);
+      
+      const banner = document.getElementById('viewing-user-banner');
+      const userNameSpan = document.getElementById('viewing-user-name');
+      if (banner && userNameSpan) {
+        banner.classList.remove('hidden');
+        userNameSpan.textContent = decodeURIComponent(userName || 'Usuario');
+      }
+    }
+
+    await loadRegistros();
+
+    if (loadingIndicator) loadingIndicator.classList.add('hidden');
+    renderTabla();
+
+    const btnAgregar = document.getElementById('btn-agregar');
+    const btnRegresar = document.getElementById('btn-regresar');
+    const form = document.getElementById('logros-form') as HTMLFormElement;
+    const dropZone = document.getElementById('drop-zone');
+    const archivoInput = document.getElementById('documento') as HTMLInputElement;
+    const archivoSeleccionado = document.getElementById('archivo-seleccionado');
+    const nombreArchivo = document.getElementById('nombre-archivo');
+    const btnQuitarArchivo = document.getElementById('btn-quitar-archivo');
+
+    btnAgregar?.addEventListener('click', () => {
+      resetFormulario();
+      document.getElementById('vista-lista')?.classList.add('hidden');
+      document.getElementById('vista-formulario')?.classList.remove('hidden');
+    });
+
+    btnRegresar?.addEventListener('click', () => {
+      resetFormulario();
+      document.getElementById('vista-formulario')?.classList.add('hidden');
+      document.getElementById('vista-lista')?.classList.remove('hidden');
+    });
+
+    dropZone?.addEventListener('click', () => archivoInput?.click());
+    
+    dropZone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-[#1f6818]', 'bg-green-50');
+    });
+
+    dropZone?.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-[#1f6818]', 'bg-green-50');
+    });
+
+    dropZone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-[#1f6818]', 'bg-green-50');
+      const files = (e as DragEvent).dataTransfer?.files;
+      if (files && files.length > 0 && archivoInput) {
+        const dt = new DataTransfer();
+        dt.items.add(files[0]);
+        archivoInput.files = dt.files;
+        archivoInput.dispatchEvent(new Event('change'));
+      }
+    });
+
+    archivoInput?.addEventListener('change', () => {
+      const file = archivoInput.files?.[0];
+      if (file && nombreArchivo && archivoSeleccionado && dropZone) {
+        nombreArchivo.textContent = file.name;
+        archivoSeleccionado.classList.remove('hidden');
+        dropZone.classList.add('hidden');
+      }
+    });
+
+    btnQuitarArchivo?.addEventListener('click', () => {
+      if (archivoInput) archivoInput.value = '';
+      archivoSeleccionado?.classList.add('hidden');
+      dropZone?.classList.remove('hidden');
+    });
+
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formError = document.getElementById('form-error');
+      const guardarBtn = document.getElementById('guardar-btn') as HTMLButtonElement;
+      const originalText = guardarBtn?.textContent || 'Guardar';
+
+      formError?.classList.add('hidden');
+
+      if (guardarBtn) {
+        guardarBtn.disabled = true;
+        guardarBtn.textContent = 'Guardando...';
+      }
+
+      try {
+        const formData = new FormData(form);
+
+        let response;
+        if (editandoId) {
+          response = await updateExpediente(MODULO, editandoId, formData);
+        } else {
+          response = await createExpediente(MODULO, formData);
+        }
+
+        if (response.status === 'success') {
+          await loadRegistros();
+          renderTabla();
+          resetFormulario();
+          document.getElementById('vista-formulario')?.classList.add('hidden');
+          document.getElementById('vista-lista')?.classList.remove('hidden');
+        } else {
+          throw new Error(response.message || 'Error al guardar');
+        }
+      } catch (error: any) {
+        if (formError) {
+          formError.textContent = error.message || 'Error al guardar el registro';
+          formError.classList.remove('hidden');
+        }
+      } finally {
+        if (guardarBtn) {
+          guardarBtn.disabled = false;
+          guardarBtn.textContent = originalText;
+        }
+      }
+    });
+
+    document.getElementById('btn-cancelar-eliminar')?.addEventListener('click', () => {
+      document.getElementById('modal-eliminar')?.classList.add('hidden');
+      registroAEliminar = null;
+    });
+
+    document.getElementById('btn-confirmar-eliminar')?.addEventListener('click', async () => {
+      if (!registroAEliminar) return;
+
+      try {
+        const response = await deleteExpediente(MODULO, registroAEliminar);
+        if (response.status === 'success') {
+          await loadRegistros();
+          renderTabla();
+        }
+      } catch (error) {
+        alert('Error al eliminar el registro');
+      } finally {
+        document.getElementById('modal-eliminar')?.classList.add('hidden');
+        registroAEliminar = null;
+      }
+    });
+
+    // Event listeners para modal de invalidar
+    document.getElementById('btn-cancelar-invalidar')?.addEventListener('click', () => {
+      document.getElementById('modal-invalidar')?.classList.add('hidden');
+      (document.getElementById('motivo-invalidez') as HTMLTextAreaElement).value = '';
+      invalidarDocId = null;
+    });
+
+    document.getElementById('btn-confirmar-invalidar')?.addEventListener('click', async () => {
+      if (!invalidarDocId) return;
+
+      const motivo = (document.getElementById('motivo-invalidez') as HTMLTextAreaElement)?.value?.trim();
+      if (!motivo) {
+        alert('Debe ingresar un motivo de invalidación');
+        return;
+      }
+
+      try {
+        const response = await marcarDocumentoInvalido(invalidarDocId, motivo);
+        if (response.status === 'success') {
+          await loadRegistros();
+          renderTabla();
+        }
+      } catch (error) {
+        alert('Error al invalidar el documento');
+      } finally {
+        document.getElementById('modal-invalidar')?.classList.add('hidden');
+        (document.getElementById('motivo-invalidez') as HTMLTextAreaElement).value = '';
+        invalidarDocId = null;
+      }
+    });
+
+    document.getElementById('btn-cancelar-restaurar')?.addEventListener('click', () => {
+      document.getElementById('modal-restaurar')?.classList.add('hidden');
+      restaurarDocId = null;
+    });
+
+    document.getElementById('btn-confirmar-restaurar')?.addEventListener('click', async () => {
+      if (!restaurarDocId) return;
+
+      try {
+        const response = await restaurarDocumentoValido(restaurarDocId);
+        if (response.status === 'success') {
+          await loadRegistros();
+          renderTabla();
+          alert('Documento marcado como válido correctamente');
+        }
+      } catch (error) {
+        alert('Error al marcar el documento como válido');
+      } finally {
+        document.getElementById('modal-restaurar')?.classList.add('hidden');
+        restaurarDocId = null;
+      }
+    });
+  }
+
+  init();
+</script>
+
+<script is:inline src="/js/back-navigation.js"></script>

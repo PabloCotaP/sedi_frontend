@@ -26,3 +26,8 @@ import Sidebar from '../components/Sidebar.astro';
     <Footer />
   </div>
 </BaseLayout>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  requireAuth();
+</script>

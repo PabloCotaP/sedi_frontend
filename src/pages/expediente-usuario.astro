@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const categorias = [
+  {
+    id: 1,
+    titulo: 'Información personal',
+    ruta: 'informacion-personal',
+    icono: '/images/icons/educacion.png'
+  },
+  {
+    id: 2,
+    titulo: 'Formación académica',
+    ruta: 'formacion-academica',
+    icono: '/images/icons/formacion.png'
+  },
+  {
+    id: 3,
+    titulo: 'Capacitación docente',
+    ruta: 'capacitacion-docente',
+    icono: '/images/icons/capacitacion.png'
+  },
+  {
+    id: 4,
+    titulo: 'Actualización disciplinar',
+    ruta: 'actualizacion-disciplinar',
+    icono: '/images/icons/disciplina.png'
+  },
+  {
+    id: 5,
+    titulo: 'Gestión académica',
+    ruta: 'gestion-academica',
+    icono: '/images/icons/gestion.png'
+  },
+  {
+    id: 6,
+    titulo: 'Productos académicos relevantes',
+    ruta: 'productos_aca_relevantes',
+    icono: '/images/icons/libro.png'
+  },
+  {
+    id: 7,
+    titulo: 'Experiencia profesional no académica',
+    ruta: 'exp-prof-no-academica',
+    icono: '/images/icons/compartir.png'
+  },
+  {
+    id: 8,
+    titulo: 'Experiencia en diseño ingenieril',
+    ruta: 'exp-diseno-ingenieril',
+    icono: '/images/icons/ingeniero.png'
+  },
+  {
+    id: 9,
+    titulo: 'Logros profesionales no académicos',
+    ruta: 'logros-prof-no-academicos',
+    icono: '/images/icons/medalla.png'
+  },
+  {
+    id: 10,
+    titulo: 'Participación en colegios, cámaras, asociaciones científicas, etc.',
+    ruta: 'participacion-colegios',
+    icono: '/images/icons/participacion.png'
+  },
+  {
+    id: 11,
+    titulo: 'Premios, distinciones o reconocimientos recibidos',
+    ruta: 'premios-distinciones',
+    icono: '/images/icons/premio.png'
+  },
+  {
+    id: 12,
+    titulo: 'Aportaciones relevantes a la mejora del PE',
+    ruta: 'aportaciones-mejora-pe',
+    icono: '/images/icons/aporte.png'
+  }
+];
+---
+
+<BaseLayout title="Expediente de Usuario - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
+        <div class="flex justify-between items-start mb-6">
+          <div class="flex-1">
+            <div id="userInfoCard" class="bg-[#d9d9d9] rounded-[44px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 mb-6 max-w-4xl">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h1 id="userName" class="text-3xl sm:text-4xl font-normal italic text-black mb-2">Cargando...</h1>
+                  <p id="userEmail" class="text-xl italic text-black">...</p>
+                </div>
+                <div id="userStatus" class="hidden bg-[#1f6818] text-white px-6 py-2 rounded-lg text-2xl font-bold">
+                  Completo
+                </div>
+              </div>
+            </div>
+          </div>
+          <a 
+            href="/panel-administrador" 
+            class="bg-[#93622f] text-white px-8 py-3 rounded-[15px] text-xl font-bold no-underline shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#7a5127] transition-colors border border-black flex-shrink-0 ml-4"
+          >
+            Regresar
+          </a>
+        </div>
+
+        <h2 class="text-3xl font-normal italic text-black mb-2">Expediente - Categorias de documentos</h2>
+        <p class="text-base italic text-black mb-8">Seleccione una categoria para ver los documentos correspondientes.</p>
+
+        <div id="loadingIndicator" class="text-center py-8">
+          <p class="text-lg text-gray-600">Cargando información del usuario...</p>
+        </div>
+
+        <div id="errorMessage" class="hidden text-center py-8">
+          <p class="text-lg text-red-600"></p>
+        </div>
+
+        <div id="categoriasGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          {categorias.map((categoria) => (
+            <a
+              href="#"
+              data-categoria={categoria.id}
+              data-ruta={categoria.ruta}
+              class="categoria-card bg-[#d9d9d9] rounded-[44px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 no-underline transition-all duration-300 hover:-translate-y-2 hover:shadow-xl h-[170px] flex flex-col items-center justify-between relative"
+            >
+              <div class="flex items-center justify-center flex-1">
+                <svg class="w-20 h-20 text-gray-700" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+              </div>
+              <p class="text-black text-center text-lg font-light leading-tight max-w-[321px] m-0">
+                {categoria.titulo}
+              </p>
+              <div 
+                class="categoria-badge absolute top-4 right-4 bg-[#1f6818] text-white w-12 h-12 rounded-lg flex items-center justify-center text-lg font-bold"
+                data-categoria-id={categoria.id}
+              >
+                0
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  import { getUserById, checkSession, getExpedienteByModuloAndUser, type Usuario, type ModuloExpediente } from '../lib/api';
+
+  const modulosPorCategoria: { [key: number]: ModuloExpediente | null } = {
+    1: null,
+    2: 'formacion-academica',
+    3: 'capacitacion-docente',
+    4: 'actualizacion-disciplinar',
+    5: 'gestion-academica',
+    6: 'productos-academicos',
+    7: 'exp-prof-no-academica',
+    8: 'exp-diseno-ingenieril',
+    9: 'logros-prof-no-academicos',
+    10: 'participacion-colegios',
+    11: 'premios-distinciones',
+    12: 'aportaciones-mejora-pe'
+  };
+
+  async function checkAdminAccess() {
+    try {
+      const response = await checkSession();
+      if (response.status === 'success' && response.user) {
+        if (response.user.rol !== 'admin' && response.user.rol !== 'administrador') {
+          window.location.href = '/dashboard';
+          return false;
+        }
+        return true;
+      }
+      window.location.href = '/';
+      return false;
+    } catch (error) {
+      window.location.href = '/';
+      return false;
+    }
+  }
+
+  function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      userId: params.get('id')
+    };
+  }
+
+  async function init() {
+    await requireAuth();
+    
+    const isAdmin = await checkAdminAccess();
+    if (!isAdmin) return;
+
+    const { userId } = getUrlParams();
+
+    if (!userId) {
+      window.location.href = '/panel-administrador';
+      return;
+    }
+
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+    const categoriasGrid = document.getElementById('categoriasGrid');
+    const userName = document.getElementById('userName');
+    const userEmail = document.getElementById('userEmail');
+    const userStatus = document.getElementById('userStatus');
+
+    let nombreCompleto = '';
+
+    try {
+      const userResponse = await getUserById(parseInt(userId));
+      
+      if (userResponse.status === 'success' && userResponse.user) {
+        const user = userResponse.user;
+        nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.trim();
+        
+        if (userName) userName.textContent = nombreCompleto;
+        if (userEmail) userEmail.textContent = user.correo;
+        if (userStatus) userStatus.classList.remove('hidden');
+      }
+
+      const contadorPorCategoria: { [key: number]: number } = {};
+      for (let i = 1; i <= 12; i++) {
+        contadorPorCategoria[i] = 0;
+      }
+
+      for (const [categoriaId, modulo] of Object.entries(modulosPorCategoria)) {
+        if (modulo) {
+          try {
+            const response = await getExpedienteByModuloAndUser(modulo, parseInt(userId));
+            if (response.status === 'success') {
+              contadorPorCategoria[parseInt(categoriaId)] = response.data.length;
+            }
+          } catch (e) {
+          }
+        }
+      }
+
+      document.querySelectorAll('.categoria-badge').forEach(badge => {
+        const categoriaId = badge.getAttribute('data-categoria-id');
+        if (categoriaId) {
+          const count = contadorPorCategoria[parseInt(categoriaId)] || 0;
+          badge.textContent = count.toString();
+        }
+      });
+
+      document.querySelectorAll('.categoria-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          const ruta = card.getAttribute('data-ruta');
+          const categoriaId = card.getAttribute('data-categoria');
+          
+          if (categoriaId === '1') {
+            window.location.href = `/informacion-personal?userId=${userId}&userName=${encodeURIComponent(nombreCompleto)}`;
+          } else {
+            window.location.href = `/${ruta}?userId=${userId}&userName=${encodeURIComponent(nombreCompleto)}`;
+          }
+        });
+      });
+
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      if (categoriasGrid) categoriasGrid.classList.remove('hidden');
+
+    } catch (error) {
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      
+      if (errorMessage) {
+        const errorP = errorMessage.querySelector('p');
+        if (errorP) {
+          errorP.textContent = 'Error al cargar la información del usuario. Por favor, intente nuevamente.';
+        }
+        errorMessage.classList.remove('hidden');
+      }
+    }
+  }
+
+  init();
+</script>

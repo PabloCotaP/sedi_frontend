@@ -1,0 +1,577 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Documentos - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+        
+        <div id="viewing-user-banner" class="hidden mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+          <div class="flex items-center">
+            <svg class="w-6 h-6 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+            <span class="text-blue-700 font-medium">
+              Viendo documentos de: <strong id="viewing-user-name"></strong>
+            </span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg p-8">
+          <div id="loading-indicator" class="text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+            <p class="mt-2 text-gray-600">Cargando documentos...</p>
+          </div>
+
+          <div id="vista-lista" class="space-y-6 hidden">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div class="flex-1">
+                <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic underline underline-offset-4 decoration-2">Mis Documentos</h1>
+                <p class="text-gray-600">Gestiona tus documentos del expediente académico</p>
+              </div>
+              <div class="flex gap-3">
+                <button id="btn-agregar" class="bg-[#1f6818] hover:bg-[#185513] text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                  </svg>
+                  Subir Documento
+                </button>
+                <a href="/dashboard" class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">Regresar</a>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap gap-4 mb-6">
+              <select id="filtro-tipo" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355]">
+                <option value="">Todos los tipos</option>
+              </select>
+              <select id="filtro-estado" class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355]">
+                <option value="">Todos los estados</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="aprobado">Aprobado</option>
+                <option value="rechazado">Rechazado</option>
+              </select>
+            </div>
+
+            <div id="tabla-documentos" class="overflow-x-auto">
+              <table class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Descripción</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tipo</th>
+                    <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Fecha de Subida</th>
+                    <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Estado</th>
+                    <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="documentos-body" class="divide-y divide-gray-200">
+                </tbody>
+              </table>
+            </div>
+
+            <div id="sin-documentos" class="hidden text-center py-12">
+              <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              <p class="text-gray-500 text-lg">No hay documentos registrados</p>
+              <p class="text-gray-400 text-sm mt-2">Sube tu primer documento haciendo clic en "Subir Documento"</p>
+            </div>
+          </div>
+
+          <div id="vista-formulario" class="space-y-6 hidden">
+            <div class="flex justify-between items-center mb-6">
+              <h2 class="text-[28px] sm:text-[32px] font-normal text-black italic underline underline-offset-4 decoration-2">Subir Documento</h2>
+              <button id="btn-regresar" class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+                Regresar
+              </button>
+            </div>
+
+            <form id="upload-form" class="space-y-6" enctype="multipart/form-data">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                  <label for="descripcion" class="block text-sm font-semibold text-gray-700 mb-2">Descripción del documento *</label>
+                  <input 
+                    type="text" 
+                    id="descripcion" 
+                    name="descripcion_doc" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355]"
+                    placeholder="Ej: Título de Licenciatura en Ingeniería"
+                  />
+                </div>
+
+                <div>
+                  <label for="tipo-documento" class="block text-sm font-semibold text-gray-700 mb-2">Tipo de documento *</label>
+                  <select 
+                    id="tipo-documento" 
+                    name="tipo_documento_idtipo_documento" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355]"
+                  >
+                    <option value="">Seleccione un tipo</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label for="institucion" class="block text-sm font-semibold text-gray-700 mb-2">Institución (opcional)</label>
+                  <select 
+                    id="institucion" 
+                    name="institucion_idinstitucion"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#8b7355]"
+                  >
+                    <option value="">Seleccione una institución</option>
+                  </select>
+                </div>
+
+                <div class="md:col-span-2">
+                  <label for="archivo" class="block text-sm font-semibold text-gray-700 mb-2">Archivo *</label>
+                  <div id="drop-zone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#8b7355] transition-colors cursor-pointer">
+                    <input 
+                      type="file" 
+                      id="archivo" 
+                      name="archivo" 
+                      required
+                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      class="hidden"
+                    />
+                    <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    <p class="text-gray-600 mb-2">Arrastra y suelta tu archivo aquí</p>
+                    <p class="text-gray-400 text-sm">o haz clic para seleccionar</p>
+                    <p class="text-gray-400 text-xs mt-2">Formatos permitidos: PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</p>
+                  </div>
+                  <div id="archivo-seleccionado" class="hidden mt-3 p-3 bg-gray-50 rounded-lg flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <svg class="w-8 h-8 text-green-500" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zm-3 9v4h2v-4h2l-3-3-3 3h2z"/>
+                      </svg>
+                      <div>
+                        <p id="nombre-archivo" class="font-medium text-gray-700"></p>
+                        <p id="tamano-archivo" class="text-sm text-gray-500"></p>
+                      </div>
+                    </div>
+                    <button type="button" id="btn-quitar-archivo" class="text-red-500 hover:text-red-700">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="form-error" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg"></div>
+
+              <div class="flex justify-start gap-4">
+                <button 
+                  type="submit" 
+                  id="btn-submit"
+                  class="bg-[#0891b2] hover:bg-[#0e7490] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 flex items-center gap-2"
+                >
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                  </svg>
+                  Subir Documento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <div id="modal-eliminar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">Confirmar eliminación</h3>
+        <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este documento? Esta acción no se puede deshacer.</p>
+        <div class="flex justify-end gap-4">
+          <button id="btn-cancelar-eliminar" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors">Cancelar</button>
+          <button id="btn-confirmar-eliminar" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">Eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  import { 
+    getMyDocuments, 
+    getUserDocuments, 
+    getAllTiposDocumento, 
+    getAllInstituciones,
+    uploadDocument, 
+    deleteDocument,
+    API_BASE_URL,
+    type DocumentoDetalle, 
+    type TipoDocumento, 
+    type Institucion 
+  } from '../lib/api';
+
+  let isViewingOtherUser = false;
+  let viewingUserId: number | null = null;
+  let documentos: DocumentoDetalle[] = [];
+  let tiposDocumento: TipoDocumento[] = [];
+  let instituciones: Institucion[] = [];
+  let documentoAEliminar: number | null = null;
+
+  function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      userId: params.get('userId'),
+      userName: params.get('userName')
+    };
+  }
+
+  function formatDate(dateString: string | null): string {
+    if (!dateString) return 'No especificado';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  }
+
+  function getEstadoBadge(estado: string): string {
+    const estados: { [key: string]: { bg: string; text: string; label: string } } = {
+      'pendiente': { bg: 'bg-yellow-100', text: 'text-yellow-800', label: 'Pendiente' },
+      'aprobado': { bg: 'bg-green-100', text: 'text-green-800', label: 'Aprobado' },
+      'rechazado': { bg: 'bg-red-100', text: 'text-red-800', label: 'Rechazado' },
+    };
+    const config = estados[estado.toLowerCase()] || { bg: 'bg-gray-100', text: 'text-gray-800', label: estado };
+    return `<span class="px-3 py-1 rounded-full text-sm font-medium ${config.bg} ${config.text}">${config.label}</span>`;
+  }
+
+  function getTipoNombre(tipoId: number): string {
+    const tipo = tiposDocumento.find(t => t.idtipo_documento === tipoId);
+    return tipo?.tipo_documento || 'Desconocido';
+  }
+
+  function formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  function renderDocumentos(docs: DocumentoDetalle[]) {
+    const tbody = document.getElementById('documentos-body');
+    const sinDocumentos = document.getElementById('sin-documentos');
+    const tablaDocumentos = document.getElementById('tabla-documentos');
+
+    if (!tbody) return;
+
+    if (docs.length === 0) {
+      tablaDocumentos?.classList.add('hidden');
+      sinDocumentos?.classList.remove('hidden');
+      return;
+    }
+
+    tablaDocumentos?.classList.remove('hidden');
+    sinDocumentos?.classList.add('hidden');
+
+    tbody.innerHTML = docs.map(doc => `
+      <tr class="hover:bg-gray-50 transition-colors">
+        <td class="px-6 py-4">
+          <p class="font-medium text-gray-900">${doc.descripcion_doc}</p>
+          <p class="text-sm text-gray-500">${doc.ruta_archivo.split('/').pop()}</p>
+        </td>
+        <td class="px-6 py-4 text-gray-700">${getTipoNombre(doc.tipo_documento_idtipo_documento)}</td>
+        <td class="px-6 py-4 text-gray-700">${formatDate(doc.fecha_subida)}</td>
+        <td class="px-6 py-4 text-center">${getEstadoBadge(doc.estado_documento)}</td>
+        <td class="px-6 py-4 text-center">
+          <div class="flex items-center justify-center gap-2">
+            <a 
+              href="${API_BASE_URL}/Documento/download/${doc.iddocumento_detalle}" 
+              target="_blank"
+              class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+              title="Descargar"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+            </a>
+            ${!isViewingOtherUser ? `
+            <button 
+              class="btn-eliminar p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              data-id="${doc.iddocumento_detalle}"
+              title="Eliminar"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+            </button>
+            ` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLButtonElement;
+        documentoAEliminar = parseInt(target.dataset.id || '0');
+        document.getElementById('modal-eliminar')?.classList.remove('hidden');
+      });
+    });
+  }
+
+  function filterDocumentos() {
+    const filtroTipo = (document.getElementById('filtro-tipo') as HTMLSelectElement)?.value;
+    const filtroEstado = (document.getElementById('filtro-estado') as HTMLSelectElement)?.value;
+
+    let filtered = [...documentos];
+
+    if (filtroTipo) {
+      filtered = filtered.filter(d => d.tipo_documento_idtipo_documento === parseInt(filtroTipo));
+    }
+
+    if (filtroEstado) {
+      filtered = filtered.filter(d => d.estado_documento.toLowerCase() === filtroEstado.toLowerCase());
+    }
+
+    renderDocumentos(filtered);
+  }
+
+  async function loadTiposDocumento() {
+    try {
+      const response = await getAllTiposDocumento();
+      if (response.status === 'success' && response.data) {
+        tiposDocumento = response.data;
+        
+        const selectTipo = document.getElementById('tipo-documento') as HTMLSelectElement;
+        if (selectTipo) {
+          selectTipo.innerHTML = '<option value="">Seleccione un tipo</option>' +
+            tiposDocumento.map(t => `<option value="${t.idtipo_documento}">${t.tipo_documento}</option>`).join('');
+        }
+
+        const filtroTipo = document.getElementById('filtro-tipo') as HTMLSelectElement;
+        if (filtroTipo) {
+          filtroTipo.innerHTML = '<option value="">Todos los tipos</option>' +
+            tiposDocumento.map(t => `<option value="${t.idtipo_documento}">${t.tipo_documento}</option>`).join('');
+        }
+      }
+    } catch (error) {
+      console.error('Error al cargar tipos de documento:', error);
+    }
+  }
+
+  async function loadInstituciones() {
+    try {
+      const response = await getAllInstituciones();
+      if (response.status === 'success' && response.data) {
+        instituciones = response.data;
+        
+        const selectInstitucion = document.getElementById('institucion') as HTMLSelectElement;
+        if (selectInstitucion) {
+          selectInstitucion.innerHTML = '<option value="">Seleccione una institución</option>' +
+            instituciones.map(i => `<option value="${i.idinstitucion}">${i.nombre}</option>`).join('');
+        }
+      }
+    } catch (error) {
+      console.error('Error al cargar instituciones:', error);
+    }
+  }
+
+  async function loadDocumentos() {
+    try {
+      let response;
+      if (isViewingOtherUser && viewingUserId) {
+        response = await getUserDocuments(viewingUserId);
+      } else {
+        response = await getMyDocuments();
+      }
+
+      if (response.status === 'success' && response.data) {
+        documentos = response.data;
+        renderDocumentos(documentos);
+      }
+    } catch (error) {
+      documentos = [];
+      renderDocumentos([]);
+    }
+  }
+
+  async function init() {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      window.location.href = '/';
+      return;
+    }
+
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const vistaLista = document.getElementById('vista-lista');
+    const vistaFormulario = document.getElementById('vista-formulario');
+    const btnAgregar = document.getElementById('btn-agregar');
+    const btnRegresar = document.getElementById('btn-regresar');
+    const uploadForm = document.getElementById('upload-form') as HTMLFormElement;
+    const viewingBanner = document.getElementById('viewing-user-banner');
+    const viewingUserName = document.getElementById('viewing-user-name');
+    const dropZone = document.getElementById('drop-zone');
+    const archivoInput = document.getElementById('archivo') as HTMLInputElement;
+    const archivoSeleccionado = document.getElementById('archivo-seleccionado');
+    const nombreArchivo = document.getElementById('nombre-archivo');
+    const tamanoArchivo = document.getElementById('tamano-archivo');
+    const btnQuitarArchivo = document.getElementById('btn-quitar-archivo');
+
+    const { userId, userName } = getUrlParams();
+
+    if (userId) {
+      isViewingOtherUser = true;
+      viewingUserId = parseInt(userId);
+      
+      if (viewingBanner && viewingUserName) {
+        viewingBanner.classList.remove('hidden');
+        viewingUserName.textContent = decodeURIComponent(userName || 'Usuario');
+      }
+
+      btnAgregar?.classList.add('hidden');
+    }
+
+    await Promise.all([
+      loadTiposDocumento(),
+      loadInstituciones(),
+      loadDocumentos()
+    ]);
+
+    if (loadingIndicator) loadingIndicator.classList.add('hidden');
+    if (vistaLista) vistaLista.classList.remove('hidden');
+
+    btnAgregar?.addEventListener('click', () => {
+      vistaLista?.classList.add('hidden');
+      vistaFormulario?.classList.remove('hidden');
+    });
+
+    btnRegresar?.addEventListener('click', () => {
+      vistaFormulario?.classList.add('hidden');
+      vistaLista?.classList.remove('hidden');
+      uploadForm?.reset();
+      archivoSeleccionado?.classList.add('hidden');
+      document.getElementById('form-error')?.classList.add('hidden');
+    });
+
+    document.getElementById('filtro-tipo')?.addEventListener('change', filterDocumentos);
+    document.getElementById('filtro-estado')?.addEventListener('change', filterDocumentos);
+
+    dropZone?.addEventListener('click', () => archivoInput?.click());
+    
+    dropZone?.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('border-[#8b7355]', 'bg-gray-50');
+    });
+
+    dropZone?.addEventListener('dragleave', () => {
+      dropZone.classList.remove('border-[#8b7355]', 'bg-gray-50');
+    });
+
+    dropZone?.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('border-[#8b7355]', 'bg-gray-50');
+      
+      const files = (e as DragEvent).dataTransfer?.files;
+      if (files && files.length > 0 && archivoInput) {
+        const dt = new DataTransfer();
+        dt.items.add(files[0]);
+        archivoInput.files = dt.files;
+        archivoInput.dispatchEvent(new Event('change'));
+      }
+    });
+
+    archivoInput?.addEventListener('change', () => {
+      const file = archivoInput.files?.[0];
+      if (file) {
+        if (nombreArchivo) nombreArchivo.textContent = file.name;
+        if (tamanoArchivo) tamanoArchivo.textContent = formatFileSize(file.size);
+        archivoSeleccionado?.classList.remove('hidden');
+        dropZone?.classList.add('hidden');
+      }
+    });
+
+    btnQuitarArchivo?.addEventListener('click', () => {
+      if (archivoInput) archivoInput.value = '';
+      archivoSeleccionado?.classList.add('hidden');
+      dropZone?.classList.remove('hidden');
+    });
+
+    uploadForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formError = document.getElementById('form-error');
+      const btnSubmit = document.getElementById('btn-submit') as HTMLButtonElement;
+      const originalText = btnSubmit?.innerHTML || 'Subir Documento';
+
+      formError?.classList.add('hidden');
+
+      if (btnSubmit) {
+        btnSubmit.disabled = true;
+        btnSubmit.innerHTML = '<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div> Subiendo...';
+      }
+
+      try {
+        const formData = new FormData(uploadForm);
+        
+        const response = await uploadDocument(formData);
+
+        if (response.status === 'success') {
+          await loadDocumentos();
+          vistaFormulario?.classList.add('hidden');
+          vistaLista?.classList.remove('hidden');
+          uploadForm.reset();
+          archivoSeleccionado?.classList.add('hidden');
+          dropZone?.classList.remove('hidden');
+        } else {
+          throw new Error(response.message || 'Error al subir el documento');
+        }
+      } catch (error: any) {
+        if (formError) {
+          formError.textContent = error.message || 'Error al subir el documento';
+          formError.classList.remove('hidden');
+        }
+      } finally {
+        if (btnSubmit) {
+          btnSubmit.disabled = false;
+          btnSubmit.innerHTML = originalText;
+        }
+      }
+    });
+
+    document.getElementById('btn-cancelar-eliminar')?.addEventListener('click', () => {
+      document.getElementById('modal-eliminar')?.classList.add('hidden');
+      documentoAEliminar = null;
+    });
+
+    document.getElementById('btn-confirmar-eliminar')?.addEventListener('click', async () => {
+      if (!documentoAEliminar) return;
+
+      try {
+        const response = await deleteDocument(documentoAEliminar);
+        if (response.status === 'success') {
+          await loadDocumentos();
+        }
+      } catch (error) {
+        alert('Error al eliminar el documento');
+      } finally {
+        document.getElementById('modal-eliminar')?.classList.add('hidden');
+        documentoAEliminar = null;
+      }
+    });
+  }
+
+  init();
+</script>
+
+<script is:inline src="/js/back-navigation.js"></script>
