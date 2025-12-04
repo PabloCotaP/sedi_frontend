@@ -23,7 +23,7 @@ import Sidebar from '../components/Sidebar.astro';
           <div class="flex gap-4">
             <button 
               id="btnAddDocente"
-              class="bg-[#1f6818] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#185513] transition-colors border border-black flex items-center gap-2"
+              class="hidden bg-[#1f6818] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#185513] transition-colors border border-black flex items-center gap-2"
             >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -32,7 +32,7 @@ import Sidebar from '../components/Sidebar.astro';
             </button>
             <button 
               id="btnAddCoordinador"
-              class="bg-[#2563eb] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#1d4ed8] transition-colors border border-black flex items-center gap-2"
+              class="hidden bg-[#2563eb] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#1d4ed8] transition-colors border border-black flex items-center gap-2"
             >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
@@ -463,6 +463,16 @@ import Sidebar from '../components/Sidebar.astro';
     const addEmployeeForm = document.getElementById('addEmployeeForm');
     const modal = document.getElementById('addEmployeeModal');
 
+    // Verificar rol para mostrar botones de agregar (solo admin)
+    const userRol = localStorage.getItem('user_rol');
+    const rolLower = userRol?.toLowerCase() || '';
+    const isAdmin = rolLower === 'admin' || rolLower === 'administrativo';
+    
+    if (isAdmin) {
+      if (btnAddDocente) btnAddDocente.classList.remove('hidden');
+      if (btnAddCoordinador) btnAddCoordinador.classList.remove('hidden');
+    }
+
     let allUsers: Usuario[] = [];
 
     try {
@@ -471,8 +481,8 @@ import Sidebar from '../components/Sidebar.astro';
       if (loadingIndicator) loadingIndicator.classList.add('hidden');
 
       if (response.status === 'success' && response.users && response.users.length > 0) {
-        // Filtrar usuarios activos y excluir administradores (rol ID 1)
-        allUsers = response.users.filter(u => u.activo && u.roles_id_role !== 1);
+        // Filtrar solo usuarios activos (el backend ya filtra por rol)
+        allUsers = response.users.filter(u => u.activo);
         
         if (allUsers.length > 0) {
           if (usersTable) usersTable.classList.remove('hidden');

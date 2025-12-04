@@ -38,25 +38,25 @@ const categorias = [
   {
     id: 6,
     titulo: 'Productos académicos relevantes',
-    ruta: 'productos-academicos',
+    ruta: 'productos_aca_relevantes',
     icono: '/images/icons/libro.png'
   },
   {
     id: 7,
     titulo: 'Experiencia profesional no académica',
-    ruta: 'exp-profesional',
+    ruta: 'exp-prof-no-academica',
     icono: '/images/icons/compartir.png'
   },
   {
     id: 8,
     titulo: 'Experiencia en diseño ingenieril',
-    ruta: 'exp-diseno',
+    ruta: 'exp-diseno-ingenieril',
     icono: '/images/icons/ingeniero.png'
   },
   {
     id: 9,
     titulo: 'Logros profesionales no académicos',
-    ruta: 'logros-profesionales',
+    ruta: 'logros-prof-no-academicos',
     icono: '/images/icons/medalla.png'
   },
   {
@@ -74,7 +74,7 @@ const categorias = [
   {
     id: 12,
     titulo: 'Aportaciones relevantes a la mejora del PE',
-    ruta: 'aportaciones-pe',
+    ruta: 'aportaciones-mejora-pe',
     icono: '/images/icons/aporte.png'
   }
 ];
@@ -155,21 +155,21 @@ const categorias = [
 
 <script>
   import { requireAuth } from '../lib/auth';
-  import { getUserById, getRegistros, checkSession, type Usuario, type Registro } from '../lib/api';
+  import { getUserById, checkSession, getExpedienteByModuloAndUser, type Usuario, type ModuloExpediente } from '../lib/api';
 
-  const tiposDocumentoPorCategoria: { [key: number]: number[] } = {
-    1: [1],
-    2: [2],
-    3: [3],
-    4: [4],
-    5: [5],
-    6: [6],
-    7: [7],
-    8: [8],
-    9: [9],
-    10: [10],
-    11: [11],
-    12: [12]
+  const modulosPorCategoria: { [key: number]: ModuloExpediente | null } = {
+    1: null,
+    2: 'formacion-academica',
+    3: 'capacitacion-docente',
+    4: 'actualizacion-disciplinar',
+    5: 'gestion-academica',
+    6: 'productos-academicos',
+    7: 'exp-prof-no-academica',
+    8: 'exp-diseno-ingenieril',
+    9: 'logros-prof-no-academicos',
+    10: 'participacion-colegios',
+    11: 'premios-distinciones',
+    12: 'aportaciones-mejora-pe'
   };
 
   async function checkAdminAccess() {
@@ -217,25 +217,18 @@ const categorias = [
     const userEmail = document.getElementById('userEmail');
     const userStatus = document.getElementById('userStatus');
 
+    let nombreCompleto = '';
+
     try {
       const userResponse = await getUserById(parseInt(userId));
       
       if (userResponse.status === 'success' && userResponse.user) {
         const user = userResponse.user;
-        const nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.trim();
+        nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.trim();
         
         if (userName) userName.textContent = nombreCompleto;
         if (userEmail) userEmail.textContent = user.correo;
         if (userStatus) userStatus.classList.remove('hidden');
-      }
-
-      let registros: Registro[] = [];
-      try {
-        const registrosResponse = await getRegistros();
-        if (Array.isArray(registrosResponse)) {
-          registros = registrosResponse.filter(r => r.usuario_id_usuario === parseInt(userId));
-        }
-      } catch (e) {
       }
 
       const contadorPorCategoria: { [key: number]: number } = {};
@@ -243,13 +236,17 @@ const categorias = [
         contadorPorCategoria[i] = 0;
       }
 
-      registros.forEach(registro => {
-        for (const [categoriaId, tiposDoc] of Object.entries(tiposDocumentoPorCategoria)) {
-          if (tiposDoc.includes(registro.tipos_documento_id_tipo_documento)) {
-            contadorPorCategoria[parseInt(categoriaId)]++;
+      for (const [categoriaId, modulo] of Object.entries(modulosPorCategoria)) {
+        if (modulo) {
+          try {
+            const response = await getExpedienteByModuloAndUser(modulo, parseInt(userId));
+            if (response.status === 'success') {
+              contadorPorCategoria[parseInt(categoriaId)] = response.data.length;
+            }
+          } catch (e) {
           }
         }
-      });
+      }
 
       document.querySelectorAll('.categoria-badge').forEach(badge => {
         const categoriaId = badge.getAttribute('data-categoria-id');
@@ -264,7 +261,12 @@ const categorias = [
           e.preventDefault();
           const ruta = card.getAttribute('data-ruta');
           const categoriaId = card.getAttribute('data-categoria');
-          window.location.href = `/documentos-usuario?id=${userId}&categoria=${categoriaId}&ruta=${ruta}`;
+          
+          if (categoriaId === '1') {
+            window.location.href = `/informacion-personal?userId=${userId}&userName=${encodeURIComponent(nombreCompleto)}`;
+          } else {
+            window.location.href = `/${ruta}?userId=${userId}&userName=${encodeURIComponent(nombreCompleto)}`;
+          }
         });
       });
 

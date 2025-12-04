@@ -6,8 +6,8 @@ export interface Props {
 
 const { showUserInfo = false, userEmail = null } = Astro.props;
 
-const uabcLogo = 'https://www.figma.com/api/mcp/asset/2800c9ce-3082-4b14-a26a-3cfbc2310697';
-const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-487146e4bff0';
+const uabcLogo = 'https://www.figma.com/api/mcp/asset/6f4c4da3-f41a-4bf7-ab0d-1dc384167cc3'; // image 9
+const fiadLogo = 'https://www.figma.com/api/mcp/asset/ddcdd925-8c54-490c-8027-8463aebbb1ba'; // image 10
 ---
 
 <header class="bg-[#3d3d3d] text-white px-4 py-4 sm:px-8 border-b-4  shadow-md">
@@ -35,11 +35,24 @@ const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-48
     <div class="w-24  items-center justify-end pr-0 -mr-4 sm:-mr-8">
       {showUserInfo && (
         <div class="flex items-center gap-0">
-          <button id="notify-btn" aria-label="Notificaciones" class="bg-transparent hover:bg-[#6b5a44] p-3 rounded-md transition-colors">
-            <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
+          <div class="relative">
+            <button id="notify-btn" aria-label="Notificaciones" class="bg-transparent hover:bg-[#6b5a44] p-3 rounded-md transition-colors relative">
+              <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span id="notify-badge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+            </button>
+            
+            <!-- Dropdown de notificaciones -->
+            <div id="notify-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div class="p-3 border-b border-gray-200">
+                <h3 class="font-bold text-gray-800">Notificaciones</h3>
+              </div>
+              <div id="notify-content" class="max-h-64 overflow-y-auto">
+                <p class="p-4 text-gray-500 text-sm text-center">No hay notificaciones</p>
+              </div>
+            </div>
+          </div>
 
           <button 
             id="logout-btn"
@@ -59,9 +72,13 @@ const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-48
 
 <script>
   import { logout } from '../lib/auth';
+  import { getDocumentosInvalidos } from '../lib/api';
   
   const logoutBtn = document.getElementById('logout-btn');
   const notifyBtn = document.getElementById('notify-btn');
+  const notifyBadge = document.getElementById('notify-badge');
+  const notifyDropdown = document.getElementById('notify-dropdown');
+  const notifyContent = document.getElementById('notify-content');
 
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
@@ -69,9 +86,66 @@ const fiadLogo = 'https://www.figma.com/api/mcp/asset/5fbe7da8-d982-49a5-ab8d-48
     });
   }
 
-  if (notifyBtn) {
-    notifyBtn.addEventListener('click', () => {
-      alert('No hay notificaciones nuevas.');
+  async function loadNotifications() {
+    try {
+      const response = await getDocumentosInvalidos();
+      if (response.status === 'success') {
+        const total = response.total || 0;
+        
+        if (notifyBadge) {
+          if (total > 0) {
+            notifyBadge.textContent = total.toString();
+            notifyBadge.classList.remove('hidden');
+            notifyBadge.classList.add('flex');
+          } else {
+            notifyBadge.classList.add('hidden');
+            notifyBadge.classList.remove('flex');
+          }
+        }
+
+        if (notifyContent) {
+          if (total > 0) {
+            notifyContent.innerHTML = `
+              <div class="p-4 bg-red-50 border-b border-red-100">
+                <p class="text-red-700 font-semibold text-sm">
+                  Tienes ${total} documento${total > 1 ? 's' : ''} inválido${total > 1 ? 's' : ''}, favor de corregir
+                </p>
+              </div>
+              ${response.data.map(doc => `
+                <div class="p-3 border-b border-gray-100 hover:bg-gray-50">
+                  <p class="text-gray-800 font-medium text-sm">${doc.descripcion}</p>
+                  <p class="text-red-600 text-xs mt-1"><strong>Motivo:</strong> ${doc.motivo_invalidez}</p>
+                  <p class="text-gray-500 text-xs">${doc.tipo_documento}</p>
+                </div>
+              `).join('')}
+              <div class="p-3 text-center">
+                <a href="/notificaciones" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                  Ver todos los documentos inválidos
+                </a>
+              </div>
+            `;
+          } else {
+            notifyContent.innerHTML = '<p class="p-4 text-gray-500 text-sm text-center">No hay notificaciones</p>';
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando notificaciones:', error);
+    }
+  }
+
+  if (notifyBtn && notifyDropdown) {
+    notifyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notifyDropdown.classList.toggle('hidden');
     });
+
+    document.addEventListener('click', (e) => {
+      if (!notifyDropdown.contains(e.target as Node) && !notifyBtn.contains(e.target as Node)) {
+        notifyDropdown.classList.add('hidden');
+      }
+    });
+
+    loadNotifications();
   }
 </script>

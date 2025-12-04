@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+export const API_BASE_URL = 'http://localhost:8000/api';
 
 function getAccessToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -146,18 +146,192 @@ export interface InfoExtra {
 
 export interface Registro {
   id_registro: number;
-  usuario_id_usuario: number;
-  tipos_documento_id_tipo_documento: number;
-  estado: string;
+  usuarios_id_usuario: number;
+  tipo_documento_idtipo_documento: number;
+  descripcion: string;
+  fecha_creacion: string;
+}
+
+export interface TipoDocumento {
+  idtipo_documento: number;
+  tipo_documento: string;
 }
 
 export interface DocumentoDetalle {
-  id_documento_detalle: number;
-  registro_id_registro: number;
-  url_archivo: string;
-  nombre_archivo: string;
+  iddocumento_detalle: number;
+  documento_idDocumento: number;
+  tipo_documento_idtipo_documento: number;
+  institucion_idinstitucion: number | null;
+  ruta_archivo: string;
+  descripcion_doc: string;
   fecha_subida: string;
-  estado_validacion: string;
+  estado_documento: string;
+  tipo_documento_idtipo_documento_rel?: TipoDocumento;
+  institucion_idinstitucion_rel?: Institucion;
+}
+
+export async function getAllTiposDocumento() {
+  return fetchAPI<{
+    status: string;
+    data: TipoDocumento[];
+  }>('/TipoDocumento/getAll');
+}
+
+export async function getMyDocuments() {
+  return fetchAPI<{
+    status: string;
+    data: DocumentoDetalle[];
+  }>('/Documento/getMy');
+}
+
+export async function getUserDocuments(userId: number) {
+  return fetchAPI<{
+    status: string;
+    data: DocumentoDetalle[];
+  }>(`/Documento/getUser/${userId}`);
+}
+
+export async function uploadDocument(formData: FormData) {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}/Documento/upload`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json',
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function deleteDocument(id: number) {
+  return fetchAPI<{
+    status: string;
+    message: string;
+  }>(`/Documento/delete/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export function getDocumentDownloadUrl(id: number): string {
+  return `${API_BASE_URL}/Documento/download/${id}`;
+}
+
+// === EXPEDIENTE (Módulos con documentos) ===
+
+export interface ExpedienteInfoExtra {
+  idinfo_extra?: number;
+  anio_obtencion?: number;
+  horas?: number;
+  nivel_experiencia?: string;
+  fecha_inicio?: string;
+  fecha_final?: string;
+  puesto?: string;
+  pais_idpais?: number;
+}
+
+export interface ExpedienteDocumento {
+  iddocumento_detalle: number;
+  ruta_archivo: string;
+  descripcion_doc: string;
+  fecha_subida: string;
+  estado_documento: string;
+  institucion_idinstitucion?: number;
+  valido?: boolean;
+  motivo_invalidez?: string;
+}
+
+export interface ExpedienteRegistro {
+  id_registro: number;
+  descripcion: string;
+  fecha_creacion: string;
+  documento?: ExpedienteDocumento;
+  info_extra?: ExpedienteInfoExtra;
+}
+
+export type ModuloExpediente = 
+  | 'capacitacion-docente'
+  | 'actualizacion-disciplinar'
+  | 'gestion-academica'
+  | 'productos-academicos'
+  | 'exp-prof-no-academica'
+  | 'exp-diseno-ingenieril'
+  | 'logros-prof-no-academicos'
+  | 'participacion-colegios'
+  | 'premios-distinciones'
+  | 'aportaciones-mejora-pe'
+  | 'formacion-academica';
+
+export async function getExpedienteByModulo(modulo: ModuloExpediente) {
+  return fetchAPI<{
+    status: string;
+    data: ExpedienteRegistro[];
+  }>(`/Expediente/${modulo}`);
+}
+
+export async function getExpedienteByModuloAndUser(modulo: ModuloExpediente, userId: number) {
+  return fetchAPI<{
+    status: string;
+    data: ExpedienteRegistro[];
+  }>(`/Expediente/${modulo}/user/${userId}`);
+}
+
+export async function createExpediente(modulo: ModuloExpediente, formData: FormData) {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}/Expediente/${modulo}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json',
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function updateExpediente(modulo: ModuloExpediente, id: number, formData: FormData) {
+  const token = localStorage.getItem('access_token');
+  const response = await fetch(`${API_BASE_URL}/Expediente/${modulo}/update/${id}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Accept': 'application/json',
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function deleteExpediente(modulo: ModuloExpediente, id: number) {
+  return fetchAPI<{
+    status: string;
+    message: string;
+  }>(`/Expediente/${modulo}/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+export function getExpedienteDownloadUrl(id: number): string {
+  const token = getAccessToken();
+  return `${API_BASE_URL}/Expediente/download/${id}?token=${encodeURIComponent(token || '')}`;
 }
 
 export async function getAllUsers() {
@@ -204,6 +378,17 @@ export async function getAllInstituciones() {
     status: string;
     data: Institucion[];
   }>('/Institucion/getAll');
+}
+
+export async function createInstitucion(nombre: string) {
+  return fetchAPI<{
+    status: string;
+    message: string;
+    data: Institucion;
+  }>('/Institucion/insert', {
+    method: 'POST',
+    body: JSON.stringify({ nombre }),
+  });
 }
 
 export async function getMyFormaciones() {
@@ -355,5 +540,41 @@ export async function createUser(data: {
       ...data,
       activo: true
     }),
+  });
+}
+
+export interface DocumentoInvalido {
+  iddocumento_detalle: number;
+  descripcion: string;
+  tipo_documento: string;
+  motivo_invalidez: string;
+  fecha_invalidacion: string;
+  ruta_archivo: string;
+}
+
+export async function marcarDocumentoInvalido(documentoId: number, motivo: string) {
+  return fetchAPI<{
+    status: string;
+    message: string;
+  }>(`/Documento/marcar-invalido/${documentoId}`, {
+    method: 'POST',
+    body: JSON.stringify({ motivo }),
+  });
+}
+
+export async function getDocumentosInvalidos() {
+  return fetchAPI<{
+    status: string;
+    data: DocumentoInvalido[];
+    total: number;
+  }>('/Documento/invalidos');
+}
+
+export async function restaurarDocumentoValido(documentoId: number) {
+  return fetchAPI<{
+    status: string;
+    message: string;
+  }>(`/Documento/restaurar-valido/${documentoId}`, {
+    method: 'POST',
   });
 }

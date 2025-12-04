@@ -3,9 +3,11 @@
   class="fixed top-0 left-0 h-screen w-[133px] bg-[#F4AB0D] shadow-lg z-40 flex flex-col"
   aria-label="Sidebar principal">
   <nav class="flex flex-col items-center pt-10 space-y-10 flex-1">
+    <!-- Inicio - Solo visible para Docentes -->
     <a
+      id="inicio-link"
       href="/dashboard"
-      class="w-[81px] h-[79px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      class="w-[81px] h-[79px] flex items-center justify-center hover:opacity-80 transition-opacity hidden"
       aria-label="Inicio"
       title="Inicio"
     >
@@ -14,9 +16,11 @@
       </svg>
     </a>
 
+    <!-- Información Personal - Visible para todos -->
     <a
+      id="info-personal-link"
       href="/informacion-personal"
-      class="w-[81px] h-[80px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      class="w-[81px] h-[80px] flex items-center justify-center hover:opacity-80 transition-opacity hidden"
       aria-label="Información Personal"
       title="Información Personal"
     >
@@ -25,10 +29,11 @@
       </svg>
     </a>
 
+    <!-- Consultar Usuarios - Solo para Admin y Coordinador -->
     <a
       id="admin-link"
       href="/panel-administrador"
-      class="w-[88px] h-[88px] flex items-center justify-center hover:opacity-80 transition-opacity"
+      class="w-[88px] h-[88px] flex items-center justify-center hover:opacity-80 transition-opacity hidden"
       aria-label="Consultar Usuarios"
       title="Consultar Usuarios"
     >
@@ -38,3 +43,37 @@
     </a>
   </nav>
 </aside>
+
+<script>
+  function initSidebar() {
+    const userRol = localStorage.getItem('user_rol');
+    const rolLower = userRol?.toLowerCase() || '';
+    
+    const inicioLink = document.getElementById('inicio-link');
+    const infoPersonalLink = document.getElementById('info-personal-link');
+    const adminLink = document.getElementById('admin-link');
+    
+    // Información Personal - visible para todos
+    if (infoPersonalLink) {
+      infoPersonalLink.classList.remove('hidden');
+    }
+    
+    if (rolLower === 'docente') {
+      // Docente: Inicio e Información Personal
+      if (inicioLink) inicioLink.classList.remove('hidden');
+    } else if (rolLower === 'coordinador') {
+      // Coordinador: Información Personal y Consultar Usuarios
+      if (adminLink) adminLink.classList.remove('hidden');
+    } else if (rolLower === 'admin' || rolLower === 'administrativo') {
+      // Administrador: Información Personal y Consultar Usuarios
+      if (adminLink) adminLink.classList.remove('hidden');
+    }
+  }
+  
+  // Ejecutar cuando el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initSidebar);
+  } else {
+    initSidebar();
+  }
+</script>

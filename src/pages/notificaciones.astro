@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Notificaciones - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div id="loading-indicator" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 flex flex-col items-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+          <p class="text-gray-700">Cargando...</p>
+        </div>
+      </div>
+
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div class="flex-1">
+            <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">
+              Documentos Inválidos
+            </h1>
+            <p class="text-[14px] text-gray-700 leading-snug">
+              Los siguientes documentos han sido marcados como inválidos por un administrador. Por favor, corríjalos subiendo nuevas versiones.
+            </p>
+          </div>
+          <a 
+            href="/dashboard"
+            class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+            Regresar al Dashboard
+          </a>
+        </div>
+
+        <div id="sin-documentos" class="hidden bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 class="text-xl font-semibold text-green-700 mb-2">¡Todo en orden!</h3>
+          <p class="text-green-600">No tienes documentos marcados como inválidos.</p>
+        </div>
+
+        <div id="lista-documentos" class="space-y-4">
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  import { getDocumentosInvalidos, getExpedienteDownloadUrl, type DocumentoInvalido } from '../lib/api';
+
+  let documentos: DocumentoInvalido[] = [];
+
+  async function loadDocumentos() {
+    const loadingIndicator = document.getElementById('loading-indicator');
+    const sinDocumentos = document.getElementById('sin-documentos');
+    const listaDocumentos = document.getElementById('lista-documentos');
+
+    try {
+      const response = await getDocumentosInvalidos();
+      
+      if (response.status === 'success') {
+        documentos = response.data || [];
+        
+        if (documentos.length === 0) {
+          sinDocumentos?.classList.remove('hidden');
+          listaDocumentos?.classList.add('hidden');
+        } else {
+          sinDocumentos?.classList.add('hidden');
+          listaDocumentos?.classList.remove('hidden');
+          renderDocumentos();
+        }
+      }
+    } catch (error) {
+      console.error('Error cargando documentos:', error);
+    } finally {
+      loadingIndicator?.classList.add('hidden');
+    }
+  }
+
+  function renderDocumentos() {
+    const lista = document.getElementById('lista-documentos');
+    if (!lista) return;
+
+    lista.innerHTML = documentos.map(doc => `
+      <div class="bg-white border border-red-200 rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow">
+        <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium">
+                ${doc.tipo_documento}
+              </span>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2">${doc.descripcion}</h3>
+            <div class="bg-red-50 border-l-4 border-red-400 p-3 rounded">
+              <p class="text-red-700 font-medium text-sm">Motivo de invalidación:</p>
+              <p class="text-red-600 mt-1">${doc.motivo_invalidez}</p>
+            </div>
+            ${doc.fecha_invalidacion ? `
+              <p class="text-gray-500 text-sm mt-2">
+                Marcado como inválido el: ${new Date(doc.fecha_invalidacion).toLocaleDateString('es-MX', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </p>
+            ` : ''}
+          </div>
+          <div class="flex flex-col gap-2">
+            <a href="${getExpedienteDownloadUrl(doc.iddocumento_detalle)}" target="_blank"
+              class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium text-center transition-colors">
+              Ver documento actual
+            </a>
+            <a href="/dashboard" 
+              class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium text-center transition-colors">
+              Ir a corregir
+            </a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  const token = localStorage.getItem('access_token');
+  if (!token) {
+    window.location.href = '/';
+  } else {
+    loadDocumentos();
+  }
+</script>

@@ -214,22 +214,22 @@ const categoriasDescripciones: { [key: string]: string } = {
       const row = document.createElement('tr');
       row.className = 'border-b border-gray-400';
       
-      const estadoClase = getEstadoClase(doc.estado_validacion);
+      const estadoClase = getEstadoClase(doc.estado_documento);
       const fechaFormateada = formatDate(doc.fecha_subida);
 
       row.innerHTML = `
-        <td class="py-4 px-6 text-center text-lg italic text-black border-r border-gray-400">${doc.id_documento_detalle}</td>
-        <td class="py-4 px-6 text-left text-lg italic text-black border-r border-gray-400">${doc.nombre_archivo || 'Sin nombre'}</td>
+        <td class="py-4 px-6 text-center text-lg italic text-black border-r border-gray-400">${doc.iddocumento_detalle}</td>
+        <td class="py-4 px-6 text-left text-lg italic text-black border-r border-gray-400">${doc.descripcion_doc || 'Sin nombre'}</td>
         <td class="py-4 px-6 text-center text-lg italic text-black border-r border-gray-400">${fechaFormateada}</td>
         <td class="py-4 px-6 text-center border-r border-gray-400">
           <span class="px-4 py-2 rounded-lg text-sm font-bold ${estadoClase}">
-            ${doc.estado_validacion || 'Pendiente'}
+            ${doc.estado_documento || 'Pendiente'}
           </span>
         </td>
         <td class="py-4 px-6 text-center">
-          ${doc.url_archivo ? `
+          ${doc.ruta_archivo ? `
             <a 
-              href="${doc.url_archivo}"
+              href="/api/Documento/download/${doc.iddocumento_detalle}"
               target="_blank"
               class="inline-flex items-center gap-2 bg-[#3b82f6] text-white px-4 py-2 rounded-lg text-sm font-bold no-underline hover:bg-[#2563eb] transition-colors"
             >
@@ -291,8 +291,8 @@ const categoriasDescripciones: { [key: string]: string } = {
         if (Array.isArray(registrosResponse)) {
           const tiposDocCategoria = tiposDocumentoPorCategoria[parseInt(categoriaId)] || [];
           registros = registrosResponse.filter(r => 
-            r.usuario_id_usuario === parseInt(userId) && 
-            tiposDocCategoria.includes(r.tipos_documento_id_tipo_documento)
+            r.usuarios_id_usuario === parseInt(userId) && 
+            tiposDocCategoria.includes(r.tipo_documento_idtipo_documento)
           );
         }
       } catch (e) {
@@ -303,7 +303,7 @@ const categoriasDescripciones: { [key: string]: string } = {
           const documentosResponse = await getDocumentoDetalles();
           if (Array.isArray(documentosResponse)) {
             const registroIds = registros.map(r => r.id_registro);
-            documentos = documentosResponse.filter(d => registroIds.includes(d.registro_id_registro));
+            documentos = documentosResponse.filter(d => registroIds.includes(d.documento_idDocumento));
           }
         } catch (e) {
         }

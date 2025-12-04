@@ -12,6 +12,11 @@ import Sidebar from '../components/Sidebar.astro';
     <Header showUserInfo={true} userEmail="" />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div id="viewing-user-banner" class="hidden max-w-[1728px] mx-auto mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg">
+        <span class="font-semibold">Viendo expediente de: </span>
+        <span id="viewing-user-name"></span>
+      </div>
+
       <div id="vista-lista" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div class="flex-1">
@@ -19,7 +24,7 @@ import Sidebar from '../components/Sidebar.astro';
               Formación Académica
             </h1>
             <p class="text-[14px] text-gray-700 leading-snug">
-              Grados académicos del profesor, y especialidad en su caso, institución, país, año de obtención del título o grado académico y número de cédula obtenida, según aplique para cada caso. Se señala ND si no se cuenta con ella o EP si está en trámite.
+              Grados académicos del profesor, y especialidad en su caso, institución, país, año de obtención del título o grado académico y número de cédula obtenida.
             </p>
           </div>
           <div class="flex gap-3">
@@ -36,33 +41,35 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
         </div>
 
-        <div class="overflow-x-auto bg-white rounded-lg">
+        <div id="loading-indicator" class="text-center py-8">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <p class="mt-2 text-gray-600">Cargando registros...</p>
+        </div>
+
+        <div id="tabla-container" class="hidden overflow-x-auto bg-white rounded-lg">
           <table class="w-full border-collapse">
             <thead>
               <tr class="bg-[#d9d9d9]">
-                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nivel</th>
-                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nombre (Incluir especialidad)</th>
-                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Institución</th>
-                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">País</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Año de obtención</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Cédula profesional</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Acciones</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[18px] text-black">Nivel / Descripción</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Año</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Cédula</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Documento</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Acciones</th>
               </tr>
             </thead>
             <tbody id="tabla-formacion">
-              <tr>
-                <td colspan="7" class="border border-gray-400 px-4 py-8 text-center text-gray-500">
-                  No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
+
+        <div id="sin-registros" class="hidden text-center py-8">
+          <p class="text-gray-500">No hay registros aún. Haz clic en "Agregar" para crear uno nuevo.</p>
+        </div>
       </div>
 
-      <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
+      <div id="vista-formulario"class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
-          <h1 class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
+          <h1 id="form-title" class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
             FORMACIÓN ACADÉMICA
           </h1>
           <button 
@@ -72,7 +79,9 @@ import Sidebar from '../components/Sidebar.astro';
           </button>
         </div>
 
-        <form class="space-y-6 max-w-4xl mx-auto">
+        <form id="form-formacion" class="space-y-6 max-w-4xl mx-auto">
+          <input type="hidden" id="edit-id" value="" />
+
           <div class="flex items-center gap-6">
             <label for="nivel-select" class="w-48 text-right font-semibold text-black text-[18px]">
               Nivel
@@ -90,57 +99,86 @@ import Sidebar from '../components/Sidebar.astro';
 
           <div class="flex items-center gap-6">
             <label for="nombre-input" class="w-48 text-right font-semibold text-black text-[18px]">
-              Nombre (Incluir especialidad)
+              Descripción
             </label>
-            <input id="nombre-input" name="nombre" type="text" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
-          </div>
-
-          <div class="flex items-center gap-6">
-            <label for="institucion-input" class="w-48 text-right font-semibold text-black text-[18px]">
-              Institución
-            </label>
-            <select id="institucion-input" name="institucion" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-              <option value="">Cargando instituciones...</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-6">
-            <label for="pais-input" class="w-48 text-right font-semibold text-black text-[18px]">
-              País
-            </label>
-            <select id="pais-input" name="pais" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
-              <option value="">Cargando países...</option>
-            </select>
-          </div>
+            <input id="nombre-input" name="nombre" type="text" required 
+              placeholder="Ej: Ingeniería en Sistemas Computacionales"
+              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
           </div>
 
           <div class="flex items-center gap-6">
             <label for="anio-input" class="w-48 text-right font-semibold text-black text-[18px]">
               Año de obtención
             </label>
-            <input id="anio-input" name="anio" type="number" min="1900" max="2100" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+            <input id="anio-input" name="anio" type="number" min="1900" max="2100" required 
+              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
           </div>
 
           <div class="flex items-center gap-6">
             <label for="cedula-input" class="w-48 text-right font-semibold text-black text-[18px]">
               Cédula profesional
             </label>
-            <input id="cedula-input" name="cedula" type="text" class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+            <input id="cedula-input" name="cedula" type="text" 
+              placeholder="Ej: 12345678 (opcional)"
+              class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
           </div>
 
-          <div class="flex justify-center pt-4">
-            <label for="documento" class="cursor-pointer bg-[#d9d9d9] hover:bg-[#c0c0c0] border-2 border-black rounded-lg px-8 py-4 inline-flex items-center transition-colors duration-200 font-semibold text-[18px]">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="flex items-center gap-6">
+            <label for="institucion-input" class="w-48 text-right font-semibold text-black text-[18px]">
+              Institución <span class="text-red-500">*</span>
+            </label>
+            <div class="flex-1 relative">
+              <input type="hidden" id="institucion-id" name="institucion_idinstitucion" value="" />
+              <input id="institucion-input" type="text" required
+                placeholder="Escribe para buscar o crear nueva institución"
+                autocomplete="off"
+                class="w-full border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
+              <div id="institucion-dropdown" class="absolute z-10 w-full bg-white border-2 border-gray-300 rounded-b-lg shadow-lg max-h-48 overflow-y-auto hidden">
+              </div>
+              <p id="institucion-hint" class="text-sm text-green-600 mt-1 hidden">
+                ✓ Se creará una nueva institución al guardar
+              </p>
+            </div>
+            <button type="button" id="btn-nueva-institucion" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg whitespace-nowrap">
+              + Nueva
+            </button>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <label for="pais-select" class="w-48 text-right font-semibold text-black text-[18px]">
+              País <span class="text-red-500">*</span>
+            </label>
+            <select id="pais-select" name="pais_idpais" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <option value="">Seleccione un país</option>
+            </select>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <label class="font-semibold text-black text-[18px] text-center">Documento (Título o Cédula)</label>
+            <div 
+              id="drop-zone"
+              class="border-2 border-dashed border-gray-400 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
-              Subir documento
-            </label>
-            <input
-              type="file"
-              id="documento"
-              name="documento"
-              class="hidden"
-            />
+              <p class="text-gray-600 mb-2">Arrastra y suelta tu archivo aquí</p>
+              <p class="text-gray-400 text-sm">o haz clic para seleccionar</p>
+              <input type="file" id="documento" name="documento" class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+            </div>
+            <div id="file-preview" class="hidden bg-green-50 border border-green-300 rounded-lg p-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                <span id="file-name" class="text-green-700 font-medium"></span>
+              </div>
+              <button type="button" id="remove-file" class="text-red-500 hover:text-red-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div class="flex justify-center pt-6">
@@ -153,11 +191,698 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
         </form>
       </div>
+
+      <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Confirmar eliminación</h3>
+          <p class="text-gray-600 mb-6">¿Estás seguro de que deseas eliminar este registro? Esta acción no se puede deshacer.</p>
+          <div class="flex justify-end gap-4">
+            <button id="cancel-delete" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition-colors">
+              Cancelar
+            </button>
+            <button id="confirm-delete" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="invalidar-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Marcar documento como inválido</h3>
+          <p class="text-gray-600 mb-4">Ingresa el motivo por el cual el documento es inválido:</p>
+          <textarea id="motivo-invalidez" rows="3" class="w-full border-2 border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 mb-4" placeholder="Ej: El documento está ilegible, falta firma, fecha incorrecta..."></textarea>
+          <div class="flex justify-end gap-4">
+            <button id="cancel-invalidar" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition-colors">
+              Cancelar
+            </button>
+            <button id="confirm-invalidar" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+              Marcar inválido
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div id="restaurar-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Marcar documento como válido</h3>
+          <p class="text-gray-600 mb-4">¿Estás seguro de que deseas marcar este documento como válido nuevamente?</p>
+          <div class="flex justify-end gap-4">
+            <button id="cancel-restaurar" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition-colors">
+              Cancelar
+            </button>
+            <button id="confirm-restaurar" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors">
+              Marcar válido
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <Footer />
   </div>
 </BaseLayout>
 
-<script type="module" src="/js/formacion.js"></script>
+<script>
+  import { 
+    getExpedienteByModulo, 
+    getExpedienteByModuloAndUser, 
+    createExpediente, 
+    updateExpediente, 
+    deleteExpediente,
+    getExpedienteDownloadUrl,
+    getAllPaises,
+    getAllInstituciones,
+    createInstitucion,
+    marcarDocumentoInvalido,
+    restaurarDocumentoValido,
+    type ExpedienteRegistro,
+    type ModuloExpediente,
+    type Pais,
+    type Institucion
+  } from '../lib/api';
+
+  const MODULO: ModuloExpediente = 'formacion-academica';
+  
+  let registros: ExpedienteRegistro[] = [];
+  let selectedFile: File | null = null;
+  let deleteId: number | null = null;
+  let invalidarDocId: number | null = null;
+  let restaurarDocId: number | null = null;
+  let viewingUserId: number | null = null;
+  let isReadOnly = false;
+  let isAdmin = false;
+  let paises: Pais[] = [];
+  let instituciones: Institucion[] = [];
+  let paisesMap: { [key: number]: string } = {};
+  let institucionesMap: { [key: number]: string } = {};
+  let selectedInstitucionId: number | null = null;
+  let isNewInstitucion = false;
+
+  // DOM Elements
+  const vistaLista = document.getElementById('vista-lista') as HTMLDivElement;
+  const vistaFormulario = document.getElementById('vista-formulario') as HTMLDivElement;
+  const btnAgregar = document.getElementById('btn-agregar') as HTMLButtonElement;
+  const btnRegresar = document.getElementById('btn-regresar') as HTMLButtonElement;
+  const formFormacion = document.getElementById('form-formacion') as HTMLFormElement;
+  const tablaFormacion = document.getElementById('tabla-formacion') as HTMLTableSectionElement;
+  const tablaContainer = document.getElementById('tabla-container') as HTMLDivElement;
+  const sinRegistros = document.getElementById('sin-registros') as HTMLDivElement;
+  const loadingIndicator = document.getElementById('loading-indicator') as HTMLDivElement;
+  const viewingUserBanner = document.getElementById('viewing-user-banner') as HTMLDivElement;
+  const viewingUserName = document.getElementById('viewing-user-name') as HTMLSpanElement;
+  const formTitle = document.getElementById('form-title') as HTMLHeadingElement;
+  const editIdInput = document.getElementById('edit-id') as HTMLInputElement;
+  const nivelSelect = document.getElementById('nivel-select') as HTMLSelectElement;
+  const nombreInput = document.getElementById('nombre-input') as HTMLInputElement;
+  const anioInput = document.getElementById('anio-input') as HTMLInputElement;
+  const cedulaInput = document.getElementById('cedula-input') as HTMLInputElement;
+  const institucionInput = document.getElementById('institucion-input') as HTMLInputElement;
+  const institucionIdInput = document.getElementById('institucion-id') as HTMLInputElement;
+  const institucionDropdown = document.getElementById('institucion-dropdown') as HTMLDivElement;
+  const institucionHint = document.getElementById('institucion-hint') as HTMLParagraphElement;
+  const btnNuevaInstitucion = document.getElementById('btn-nueva-institucion') as HTMLButtonElement;
+  const paisSelect = document.getElementById('pais-select') as HTMLSelectElement;
+  const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
+  const fileInput = document.getElementById('documento') as HTMLInputElement;
+  const filePreview = document.getElementById('file-preview') as HTMLDivElement;
+  const fileName = document.getElementById('file-name') as HTMLSpanElement;
+  const removeFileBtn = document.getElementById('remove-file') as HTMLButtonElement;
+  const deleteModal = document.getElementById('delete-modal') as HTMLDivElement;
+  const cancelDeleteBtn = document.getElementById('cancel-delete') as HTMLButtonElement;
+  const confirmDeleteBtn = document.getElementById('confirm-delete') as HTMLButtonElement;
+  const invalidarModal = document.getElementById('invalidar-modal') as HTMLDivElement;
+  const cancelInvalidarBtn = document.getElementById('cancel-invalidar') as HTMLButtonElement;
+  const confirmInvalidarBtn = document.getElementById('confirm-invalidar') as HTMLButtonElement;
+  const motivoInvalidezInput = document.getElementById('motivo-invalidez') as HTMLTextAreaElement;
+  const restaurarModal = document.getElementById('restaurar-modal') as HTMLDivElement;
+  const cancelRestaurarBtn = document.getElementById('cancel-restaurar') as HTMLButtonElement;
+  const confirmRestaurarBtn = document.getElementById('confirm-restaurar') as HTMLButtonElement;
+
+  function showLoading() {
+    loadingIndicator.classList.remove('hidden');
+  }
+
+  function hideLoading() {
+    loadingIndicator.classList.add('hidden');
+  }
+
+  function checkViewingUser() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const userId = urlParams.get('userId');
+    const userName = urlParams.get('userName');
+    const userRol = localStorage.getItem('user_rol');
+    
+    // Verificar si es admin o coordinador (acepta diferentes formatos)
+    const rolLower = userRol?.toLowerCase() || '';
+    isAdmin = rolLower === 'admin' || rolLower === 'administrativo' || rolLower === 'coordinador';
+    
+    if (userId) {
+      viewingUserId = parseInt(userId);
+      isReadOnly = true;
+      viewingUserName.textContent = userName || `Usuario ${userId}`;
+      viewingUserBanner.classList.remove('hidden');
+      btnAgregar.classList.add('hidden');
+    }
+  }
+
+  async function loadCatalogos() {
+    try {
+      const [paisesRes, institucionesRes] = await Promise.all([
+        getAllPaises(),
+        getAllInstituciones()
+      ]);
+
+      if (paisesRes.status === 'success' && paisesRes.data) {
+        paises = paisesRes.data;
+        paisSelect.innerHTML = '<option value="">Seleccione un país</option>' +
+          paises.map(p => `<option value="${p.idpais}">${p.pais}</option>`).join('');
+        paises.forEach(p => paisesMap[p.idpais] = p.pais);
+      }
+
+      if (institucionesRes.status === 'success' && institucionesRes.data) {
+        instituciones = institucionesRes.data;
+        instituciones.forEach(i => institucionesMap[i.idinstitucion] = i.nombre);
+      }
+    } catch (error) {
+      console.error('Error al cargar catálogos:', error);
+    }
+  }
+
+  function setupInstitucionAutocomplete() {
+    function showDropdown(filtered: Institucion[]) {
+      if (filtered.length === 0) {
+        institucionDropdown.classList.add('hidden');
+        return;
+      }
+
+      institucionDropdown.innerHTML = filtered.map(inst => `
+        <div class="institucion-option px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0" 
+             data-id="${inst.idinstitucion}" data-nombre="${inst.nombre}">
+          ${inst.nombre}
+        </div>
+      `).join('');
+
+      institucionDropdown.classList.remove('hidden');
+
+      institucionDropdown.querySelectorAll('.institucion-option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          const id = opt.getAttribute('data-id');
+          const nombre = opt.getAttribute('data-nombre');
+          if (id && nombre) {
+            selectInstitucion(parseInt(id), nombre);
+          }
+        });
+      });
+    }
+
+    function selectInstitucion(id: number, nombre: string) {
+      institucionInput.value = nombre;
+      institucionIdInput.value = id.toString();
+      selectedInstitucionId = id;
+      isNewInstitucion = false;
+      institucionDropdown.classList.add('hidden');
+      institucionHint.classList.add('hidden');
+      institucionInput.classList.remove('border-green-500');
+      institucionInput.classList.add('border-black');
+    }
+
+    function markAsNew() {
+      const nombre = institucionInput.value.trim();
+      if (nombre) {
+        institucionIdInput.value = '';
+        selectedInstitucionId = null;
+        isNewInstitucion = true;
+        institucionHint.classList.remove('hidden');
+        institucionInput.classList.remove('border-black');
+        institucionInput.classList.add('border-green-500');
+      }
+    }
+
+    institucionInput.addEventListener('input', () => {
+      const query = institucionInput.value.toLowerCase().trim();
+      
+      institucionIdInput.value = '';
+      selectedInstitucionId = null;
+      isNewInstitucion = false;
+      institucionHint.classList.add('hidden');
+      institucionInput.classList.remove('border-green-500');
+      institucionInput.classList.add('border-black');
+
+      if (query.length < 1) {
+        institucionDropdown.classList.add('hidden');
+        return;
+      }
+
+      const filtered = instituciones.filter(i => 
+        i.nombre.toLowerCase().includes(query)
+      ).slice(0, 10);
+
+      showDropdown(filtered);
+
+      const exactMatch = instituciones.find(i => i.nombre.toLowerCase() === query);
+      if (exactMatch) {
+        selectInstitucion(exactMatch.idinstitucion, exactMatch.nombre);
+      }
+    });
+
+    institucionInput.addEventListener('blur', () => {
+      setTimeout(() => {
+        institucionDropdown.classList.add('hidden');
+        if (institucionInput.value.trim() && !selectedInstitucionId) {
+          markAsNew();
+        }
+      }, 200);
+    });
+
+    btnNuevaInstitucion.addEventListener('click', () => {
+      const nombre = institucionInput.value.trim();
+      if (nombre) {
+        markAsNew();
+      } else {
+        institucionInput.focus();
+        alert('Escribe el nombre de la nueva institución primero');
+      }
+    });
+  }
+
+  async function loadRegistros() {
+    showLoading();
+    try {
+      let response;
+      if (viewingUserId) {
+        response = await getExpedienteByModuloAndUser(MODULO, viewingUserId);
+      } else {
+        response = await getExpedienteByModulo(MODULO);
+      }
+      
+      if (response.status === 'success') {
+        registros = response.data;
+        renderTable();
+      }
+    } catch (error) {
+      console.error('Error cargando registros:', error);
+      alert('Error al cargar los registros');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function renderTable() {
+    if (registros.length === 0) {
+      tablaContainer?.classList.add('hidden');
+      sinRegistros?.classList.remove('hidden');
+      return;
+    }
+
+    tablaContainer?.classList.remove('hidden');
+    sinRegistros?.classList.add('hidden');
+
+    tablaFormacion.innerHTML = registros.map(reg => {
+      const docUrl = reg.documento ? getExpedienteDownloadUrl(reg.documento.iddocumento_detalle) : null;
+      const anio = reg.info_extra?.anio_obtencion || '-';
+      const cedula = reg.info_extra?.nivel_experiencia || '-';
+      const esInvalido = reg.documento && reg.documento.valido === false;
+      const motivoInvalido = reg.documento?.motivo_invalidez || '';
+      
+      return `
+        <tr class="hover:bg-gray-50 ${esInvalido ? 'bg-red-50' : ''}">
+          <td class="border border-gray-400 px-4 py-3 text-black">
+            ${reg.descripcion}
+            ${esInvalido ? `<span class="block text-red-600 text-xs mt-1">⚠️ Documento inválido: ${motivoInvalido}</span>` : ''}
+          </td>
+          <td class="border border-gray-400 px-4 py-3 text-center text-black">${anio}</td>
+          <td class="border border-gray-400 px-4 py-3 text-center text-black">${cedula}</td>
+          <td class="border border-gray-400 px-4 py-3 text-center">
+            ${docUrl ? `
+              <a href="${docUrl}" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Ver
+              </a>
+            ` : '<span class="text-gray-400">-</span>'}
+          </td>
+          <td class="border border-gray-400 px-4 py-3 text-center">
+            ${!isReadOnly ? `
+              <div class="flex justify-center gap-2">
+                <button class="btn-edit bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded text-sm" data-id="${reg.id_registro}">
+                  Editar
+                </button>
+                <button class="btn-delete bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm" data-id="${reg.id_registro}">
+                  Eliminar
+                </button>
+              </div>
+            ` : `
+              ${isAdmin && reg.documento ? (
+                reg.documento.valido === false ? `
+                  <button class="btn-restaurar bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm" data-doc-id="${reg.documento.iddocumento_detalle}">
+                    Marcar válido
+                  </button>
+                ` : `
+                  <button class="btn-invalidar bg-orange-500 hover:bg-orange-600 text-white px-3 py-1 rounded text-sm" data-doc-id="${reg.documento.iddocumento_detalle}">
+                    Marcar inválido
+                  </button>
+                `
+              ) : esInvalido ? '<span class="text-red-500 text-sm">⚠️ Inválido</span>' : '<span class="text-gray-400">-</span>'}
+            `}
+          </td>
+        </tr>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt((e.currentTarget as HTMLButtonElement).dataset.id || '0');
+        editRegistro(id);
+      });
+    });
+
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt((e.currentTarget as HTMLButtonElement).dataset.id || '0');
+        showDeleteModal(id);
+      });
+    });
+
+    document.querySelectorAll('.btn-invalidar').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const docId = parseInt((e.currentTarget as HTMLButtonElement).dataset.docId || '0');
+        showInvalidarModal(docId);
+      });
+    });
+
+    document.querySelectorAll('.btn-restaurar').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const docId = parseInt((e.currentTarget as HTMLButtonElement).dataset.docId || '0');
+        showRestaurarModal(docId);
+      });
+    });
+  }
+
+  function showForm(isEdit = false) {
+    vistaLista.classList.add('hidden');
+    vistaFormulario.classList.remove('hidden');
+    formTitle.textContent = isEdit ? 'EDITAR FORMACIÓN ACADÉMICA' : 'AGREGAR FORMACIÓN ACADÉMICA';
+  }
+
+  function showList() {
+    vistaFormulario.classList.add('hidden');
+    vistaLista.classList.remove('hidden');
+    resetForm();
+  }
+
+  function resetForm() {
+    formFormacion.reset();
+    editIdInput.value = '';
+    selectedFile = null;
+    filePreview.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+    institucionInput.value = '';
+    institucionIdInput.value = '';
+    selectedInstitucionId = null;
+    isNewInstitucion = false;
+    institucionHint.classList.add('hidden');
+    institucionInput.classList.remove('border-green-500');
+    institucionInput.classList.add('border-black');
+  }
+
+  function editRegistro(id: number) {
+    const reg = registros.find(r => r.id_registro === id);
+    if (!reg) return;
+
+    editIdInput.value = id.toString();
+    
+    const descripcion = reg.descripcion;
+    const niveles = ['Licenciatura', 'Maestría', 'Doctorado', 'Especialidad'];
+    let nivelFound = '';
+    let nombreValue = descripcion;
+    
+    for (const nivel of niveles) {
+      if (descripcion.toLowerCase().includes(nivel.toLowerCase())) {
+        nivelFound = nivel;
+        nombreValue = descripcion.replace(new RegExp(`^${nivel}[:\\s-]*`, 'i'), '').trim();
+        break;
+      }
+    }
+    
+    nivelSelect.value = nivelFound;
+    nombreInput.value = nombreValue || descripcion;
+    anioInput.value = reg.info_extra?.anio_obtencion?.toString() || '';
+    cedulaInput.value = reg.info_extra?.nivel_experiencia || '';
+
+    if (reg.documento?.institucion_idinstitucion) {
+      const instId = reg.documento.institucion_idinstitucion;
+      const instNombre = institucionesMap[instId] || '';
+      institucionInput.value = instNombre;
+      institucionIdInput.value = instId.toString();
+      selectedInstitucionId = instId;
+    }
+
+    if (reg.info_extra?.pais_idpais) {
+      paisSelect.value = reg.info_extra.pais_idpais.toString();
+    }
+    
+    if (reg.documento?.ruta_archivo) {
+      fileName.textContent = 'Documento existente (subir nuevo para reemplazar)';
+      filePreview.classList.remove('hidden');
+    }
+    
+    showForm(true);
+  }
+
+  function showDeleteModal(id: number) {
+    deleteId = id;
+    deleteModal.classList.remove('hidden');
+  }
+
+  function hideDeleteModal() {
+    deleteId = null;
+    deleteModal.classList.add('hidden');
+  }
+
+  function showInvalidarModal(docId: number) {
+    invalidarDocId = docId;
+    motivoInvalidezInput.value = '';
+    invalidarModal.classList.remove('hidden');
+  }
+
+  function hideInvalidarModal() {
+    invalidarDocId = null;
+    motivoInvalidezInput.value = '';
+    invalidarModal.classList.add('hidden');
+  }
+
+  async function handleInvalidar() {
+    if (!invalidarDocId) return;
+    
+    const motivo = motivoInvalidezInput.value.trim();
+    if (!motivo) {
+      alert('Por favor ingresa el motivo de la invalidación');
+      return;
+    }
+    
+    showLoading();
+    try {
+      await marcarDocumentoInvalido(invalidarDocId, motivo);
+      await loadRegistros();
+      hideInvalidarModal();
+      alert('Documento marcado como inválido correctamente');
+    } catch (error) {
+      console.error('Error invalidando:', error);
+      alert('Error al marcar el documento como inválido');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function showRestaurarModal(docId: number) {
+    restaurarDocId = docId;
+    restaurarModal.classList.remove('hidden');
+  }
+
+  function hideRestaurarModal() {
+    restaurarDocId = null;
+    restaurarModal.classList.add('hidden');
+  }
+
+  async function handleRestaurar() {
+    if (!restaurarDocId) return;
+    
+    showLoading();
+    try {
+      await restaurarDocumentoValido(restaurarDocId);
+      await loadRegistros();
+      hideRestaurarModal();
+      alert('Documento marcado como válido correctamente');
+    } catch (error) {
+      console.error('Error restaurando:', error);
+      alert('Error al marcar el documento como válido');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function handleDelete() {
+    if (!deleteId) return;
+    
+    showLoading();
+    try {
+      await deleteExpediente(MODULO, deleteId);
+      await loadRegistros();
+      hideDeleteModal();
+    } catch (error) {
+      console.error('Error eliminando:', error);
+      alert('Error al eliminar el registro');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  async function handleSubmit(e: Event) {
+    e.preventDefault();
+    
+    const nivel = nivelSelect.value;
+    const nombre = nombreInput.value.trim();
+    const anio = anioInput.value;
+    const cedula = cedulaInput.value.trim();
+    const paisId = paisSelect.value;
+    
+    if (!nombre) {
+      alert('Por favor ingresa la descripción de la formación');
+      return;
+    }
+
+    if (!selectedInstitucionId && !isNewInstitucion) {
+      alert('Por favor selecciona o crea una institución');
+      institucionInput.focus();
+      return;
+    }
+
+    if (!paisId) {
+      alert('Por favor selecciona un país');
+      paisSelect.focus();
+      return;
+    }
+
+    let institucionId = selectedInstitucionId;
+    if (isNewInstitucion && institucionInput.value.trim()) {
+      try {
+        const res = await createInstitucion(institucionInput.value.trim());
+        if (res.status === 'success' && res.data) {
+          institucionId = res.data.idinstitucion;
+          instituciones.push(res.data);
+          institucionesMap[res.data.idinstitucion] = res.data.nombre;
+        } else {
+          throw new Error('No se pudo crear la institución');
+        }
+      } catch (error) {
+        console.error('Error creando institución:', error);
+        alert('Error al crear la nueva institución');
+        return;
+      }
+    }
+    
+    const descripcion = nivel ? `${nivel}: ${nombre}` : nombre;
+    
+    const formData = new FormData();
+    formData.append('descripcion', descripcion);
+    formData.append('institucion_idinstitucion', institucionId!.toString());
+    formData.append('pais_idpais', paisId);
+    
+    if (anio) {
+      formData.append('anio_obtencion', anio);
+    }
+    
+    if (cedula) {
+      formData.append('nivel_experiencia', cedula);
+    }
+    
+    if (selectedFile) {
+      formData.append('archivo', selectedFile);
+    }
+    
+    showLoading();
+    try {
+      const editId = editIdInput.value;
+      if (editId) {
+        await updateExpediente(MODULO, parseInt(editId), formData);
+      } else {
+        await createExpediente(MODULO, formData);
+      }
+      await loadRegistros();
+      showList();
+    } catch (error) {
+      console.error('Error guardando:', error);
+      alert('Error al guardar el registro');
+    } finally {
+      hideLoading();
+    }
+  }
+
+  function handleFileSelect(file: File) {
+    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
+    
+    if (!allowedTypes.includes(file.type)) {
+      alert('Tipo de archivo no permitido. Solo se aceptan PDF, DOC, DOCX, JPG y PNG.');
+      return;
+    }
+    
+    if (file.size > 10 * 1024 * 1024) {
+      alert('El archivo es demasiado grande. Máximo 10MB.');
+      return;
+    }
+    
+    selectedFile = file;
+    fileName.textContent = file.name;
+    filePreview.classList.remove('hidden');
+    dropZone.classList.add('hidden');
+  }
+
+  btnAgregar.addEventListener('click', () => showForm(false));
+  btnRegresar.addEventListener('click', showList);
+  formFormacion.addEventListener('submit', handleSubmit);
+  cancelDeleteBtn.addEventListener('click', hideDeleteModal);
+  confirmDeleteBtn.addEventListener('click', handleDelete);
+  cancelInvalidarBtn.addEventListener('click', hideInvalidarModal);
+  confirmInvalidarBtn.addEventListener('click', handleInvalidar);
+  cancelRestaurarBtn.addEventListener('click', hideRestaurarModal);
+  confirmRestaurarBtn.addEventListener('click', handleRestaurar);
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  
+  fileInput.addEventListener('change', (e) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) handleFileSelect(file);
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-blue-500', 'bg-blue-50');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-blue-500', 'bg-blue-50');
+    const file = e.dataTransfer?.files[0];
+    if (file) handleFileSelect(file);
+  });
+
+  removeFileBtn.addEventListener('click', () => {
+    selectedFile = null;
+    fileInput.value = '';
+    filePreview.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+  });
+
+  checkViewingUser();
+  loadCatalogos();
+  setupInstitucionAutocomplete();
+  loadRegistros();
+</script>
+
 <script is:inline src="/js/back-navigation.js"></script>
