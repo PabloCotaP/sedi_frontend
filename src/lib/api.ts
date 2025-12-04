@@ -303,6 +303,37 @@ export async function getDocumentoDetallesByRegistroId(registroId: number) {
   return fetchAPI<DocumentoDetalle[]>(`/documento-detalle?registro_id_registro=${registroId}`);
 }
 
+export interface Carrera {
+  id_carrera: number;
+  nombre_carrera: string;
+}
+
+export interface NivelNombramiento {
+  id_niveles: number;
+  nivel: string;
+}
+
+export interface Nombramiento {
+  idnombramiento: number;
+  titulo: string;
+  niveles_id_niveles: number;
+  niveles_id_niveles_rel?: NivelNombramiento;
+}
+
+export async function getAllCarreras() {
+  return fetchAPI<{
+    status: string;
+    data: Carrera[];
+  }>('/Carrera/getAll');
+}
+
+export async function getAllNombramientos() {
+  return fetchAPI<{
+    status: string;
+    data: Nombramiento[];
+  }>('/Nombramiento/getAll');
+}
+
 export async function createUser(data: {
   nombre: string;
   ap_pat: string;
