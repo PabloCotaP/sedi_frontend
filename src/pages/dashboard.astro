@@ -91,11 +91,28 @@ const sections = [
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
       <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+        <div id="viewing-user-banner" class="hidden mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+              </svg>
+              <span class="text-blue-700 font-medium">
+                Viendo expediente de: <strong id="viewing-user-name"></strong>
+              </span>
+            </div>
+            <a href="/panel-administrador" class="bg-[#8b7355] hover:bg-[#7a6349] text-white font-semibold py-3 px-8 rounded-lg transition-colors duration-200 whitespace-nowrap">
+              Regresar
+            </a>
+          </div>
+        </div>
+
+        <div id="sections-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {sections.map((section) => (
             <a
               href={section.route}
-              class="bg-[#d9d9d9] rounded-[44px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 no-underline transition-all duration-300 hover:-translate-y-2 hover:shadow-xl h-[236px] flex flex-col items-center justify-center"
+              data-route={section.route}
+              class="section-link bg-[#d9d9d9] rounded-[44px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 no-underline transition-all duration-300 hover:-translate-y-2 hover:shadow-xl h-[236px] flex flex-col items-center justify-center"
             >
               <div class="flex items-center justify-center mb-4">
                 <img 
@@ -120,6 +137,38 @@ const sections = [
 <script type="module" src="/js/pages.js"></script>
 
 <script>
-  import { requireAuth } from '../lib/auth';
-  requireAuth();
+  (function() {
+    const token = localStorage.getItem('access_token');
+    const userId = localStorage.getItem('user_id');
+    
+    if (!token || !userId) {
+      window.location.href = '/';
+      return;
+    }
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewingUserId = urlParams.get('userId');
+    const viewingUserName = urlParams.get('userName');
+    
+    if (viewingUserId && viewingUserName) {
+      const banner = document.getElementById('viewing-user-banner');
+      const userNameSpan = document.getElementById('viewing-user-name');
+      
+      if (banner && userNameSpan) {
+        banner.classList.remove('hidden');
+        userNameSpan.textContent = decodeURIComponent(viewingUserName);
+      }
+      
+      const sectionLinks = document.querySelectorAll('.section-link');
+      sectionLinks.forEach((link) => {
+        const baseRoute = link.getAttribute('data-route');
+        if (baseRoute) {
+          link.setAttribute('href', `${baseRoute}?userId=${viewingUserId}&userName=${viewingUserName}`);
+        }
+      });
+      
+      sessionStorage.setItem('viewing_user_id', viewingUserId);
+      sessionStorage.setItem('viewing_user_name', viewingUserName);
+    }
+  })();
 </script>

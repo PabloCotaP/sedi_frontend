@@ -66,14 +66,21 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
       }
 
       if (data.user) {
+        if (data.token) {
+          localStorage.setItem('access_token', data.token);
+        }
         localStorage.setItem('user_email', data.user.correo);
         localStorage.setItem('user_name', data.user.nombre);
+        localStorage.setItem('user_id', data.user.id.toString());
+        localStorage.setItem('user_rol', data.user.rol);
       }
 
+      // Pequeño delay para asegurar que localStorage se guarde
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       window.location.href = '/principal';
 
     } catch (err) {
-      console.error('Error al iniciar sesión:', err);
       const errorDiv = document.getElementById('error-message');
       if (errorDiv) {
         errorDiv.textContent = 'Error al iniciar sesión. Por favor, intenta nuevamente.';

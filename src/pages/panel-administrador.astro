@@ -1,0 +1,527 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+---
+
+<BaseLayout title="Panel de Administrador - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h1 class="text-4xl font-normal italic text-black mb-4">Expedientes de docentes</h1>
+            <p class="text-base italic text-black">
+              En esta sección se obtiene la lista de todos los empleados existentes en el sistema, se puede acceder a los expedientes de cada uno de manera individual.
+            </p>
+          </div>
+          <div class="flex gap-4">
+            <button 
+              id="btnAddDocente"
+              class="bg-[#1f6818] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#185513] transition-colors border border-black flex items-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              Agregar Docente
+            </button>
+            <button 
+              id="btnAddCoordinador"
+              class="bg-[#2563eb] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#1d4ed8] transition-colors border border-black flex items-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+              </svg>
+              Agregar Coordinador
+            </button>
+            <a 
+              href="/dashboard" 
+              class="bg-[#93622f] text-white px-8 py-3 rounded-[15px] text-xl font-bold no-underline shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#7a5127] transition-colors border border-black"
+            >
+              Regresar
+            </a>
+          </div>
+        </div>
+
+        <div class="mb-8">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="searchInput"
+              placeholder="Buscar por nombre, número de empleado, carrera..."
+              class="w-full max-w-2xl px-4 py-3 border-2 border-gray-400 rounded-lg text-lg focus:outline-none focus:border-[#93622f]"
+            />
+            <button 
+              id="searchBtn"
+              class="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+            >
+              <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <h2 class="text-3xl font-light italic text-black underline text-center mb-8">Lista de empleados</h2>
+
+        <div id="loadingIndicator" class="text-center py-8">
+          <p class="text-lg text-gray-600">Cargando usuarios...</p>
+        </div>
+
+        <div id="errorMessage" class="hidden text-center py-8">
+          <p class="text-lg text-red-600"></p>
+        </div>
+
+        <div id="usersTable" class="hidden">
+          <div class="bg-[#d9d9d9] rounded-lg overflow-hidden">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="border-b-2 border-gray-400">
+                  <th class="py-4 px-6 text-left text-xl font-bold italic text-black border-r border-gray-400">Número de empleado</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Nombre</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Carrera</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="noUsersMessage" class="hidden text-center py-8">
+          <p class="text-lg text-gray-600">No se encontraron usuarios.</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal para agregar empleado -->
+    <div id="addEmployeeModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div id="modalHeader" class="bg-[#3d3d3d] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center">
+          <h3 id="modalTitle" class="text-2xl font-bold">Agregar Nuevo Empleado</h3>
+          <button id="closeModal" class="text-white hover:text-gray-300 text-3xl">&times;</button>
+        </div>
+        
+        <form id="addEmployeeForm" class="p-6 space-y-4">
+          <input type="hidden" name="roles_id_role" id="hiddenRole" value="3" />
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre *</label>
+              <input 
+                type="text" 
+                name="nombre" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+                placeholder="Nombre(s)"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido Paterno *</label>
+              <input 
+                type="text" 
+                name="ap_pat" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+                placeholder="Apellido paterno"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Apellido Materno</label>
+              <input 
+                type="text" 
+                name="ap_mat" 
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+                placeholder="Apellido materno"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Correo Electrónico *</label>
+              <input 
+                type="email" 
+                name="correo" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+                placeholder="correo@uabc.edu.mx"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de Nacimiento *</label>
+              <input 
+                type="date" 
+                name="fecha_nacimiento" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de Contratación *</label>
+              <input 
+                type="date" 
+                name="fecha_contratacion" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Carrera *</label>
+              <select 
+                name="carrera_id_carrera" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+              >
+                <option value="">Seleccione una carrera</option>
+                <option value="1">Ing. Software</option>
+                <option value="2">Ing. Electrónica</option>
+                <option value="3">Ing. Mecatrónica</option>
+                <option value="4">Ing. Industrial</option>
+                <option value="5">Arquitectura</option>
+                <option value="6">Diseño Gráfico</option>
+                <option value="7">Ing. Civil</option>
+                <option value="8">Ing. Computación</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">Nombramiento *</label>
+              <select 
+                name="nombramiento_idnombramiento" 
+                required
+                class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-[#93622f]"
+              >
+                <option value="">Seleccione un nombramiento</option>
+                <option value="1">Tiempo Completo</option>
+                <option value="2">Medio Tiempo</option>
+                <option value="3">Por Horas</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="formError" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+          </div>
+
+          <div id="formSuccess" class="hidden bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+          </div>
+
+          <div class="flex justify-end gap-4 pt-4">
+            <button 
+              type="button" 
+              id="cancelBtn"
+              class="px-6 py-2 border-2 border-gray-400 rounded-lg text-gray-700 font-semibold hover:bg-gray-100 transition-colors"
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              id="submitBtn"
+              class="px-6 py-2 bg-[#1f6818] text-white rounded-lg font-semibold hover:bg-[#185513] transition-colors"
+            >
+              Guardar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  import { getAllUsers, checkSession, createUser, type Usuario } from '../lib/api';
+
+  const carreras: { [key: number]: string } = {
+    1: 'Ing. Software',
+    2: 'Ing. Electrónica',
+    3: 'Ing. Mecatrónica',
+    4: 'Ing. Industrial',
+    5: 'Arquitectura',
+    6: 'Diseño Gráfico',
+    7: 'Ing. Civil',
+    8: 'Ing. Computación'
+  };
+
+  // Roles
+  const ROLE_COORDINADOR = 2;
+  const ROLE_DOCENTE = 3;
+
+  function renderUsers(users: Usuario[]) {
+    const tableBody = document.getElementById('usersTableBody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+
+    users.forEach((user) => {
+      const row = document.createElement('tr');
+      row.className = 'border-b border-gray-400';
+      
+      const carreraNombre = carreras[user.carrera_id_carrera] || 'Sin asignar';
+      const nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.trim();
+
+      row.innerHTML = `
+        <td class="py-4 px-6 text-center text-xl italic text-black border-r border-gray-400">${user.id_usuario}</td>
+        <td class="py-4 px-6 text-center text-xl italic text-black border-r border-gray-400">${nombreCompleto}</td>
+        <td class="py-4 px-6 text-center text-xl italic text-black border-r border-gray-400">${carreraNombre}</td>
+        <td class="py-4 px-6 text-center">
+          <a 
+            href="/dashboard?userId=${user.id_usuario}&userName=${encodeURIComponent(nombreCompleto)}"
+            class="inline-flex items-center gap-2 bg-[#1f6818] text-white px-6 py-2 rounded-lg text-lg font-bold no-underline hover:bg-[#185513] transition-colors"
+          >
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M10 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/>
+            </svg>
+            Consultar Docs
+          </a>
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  function filterUsers(users: Usuario[], searchTerm: string): Usuario[] {
+    if (!searchTerm) return users;
+    
+    const term = searchTerm.toLowerCase();
+    return users.filter(user => {
+      const nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.toLowerCase();
+      const carreraNombre = (carreras[user.carrera_id_carrera] || '').toLowerCase();
+      const idString = user.id_usuario.toString();
+      
+      return nombreCompleto.includes(term) || 
+             carreraNombre.includes(term) || 
+             idString.includes(term);
+    });
+  }
+
+  // Modal functions
+  function openModal(roleId: number, roleName: string) {
+    const modal = document.getElementById('addEmployeeModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalHeader = document.getElementById('modalHeader');
+    const hiddenRole = document.getElementById('hiddenRole') as HTMLInputElement;
+    const submitBtn = document.getElementById('submitBtn');
+    
+    if (modal) {
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    if (modalTitle) {
+      modalTitle.textContent = `Agregar Nuevo ${roleName}`;
+    }
+    
+    if (modalHeader) {
+      // Cambiar color del header según el tipo
+      if (roleId === ROLE_COORDINADOR) {
+        modalHeader.className = 'bg-[#2563eb] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center';
+      } else {
+        modalHeader.className = 'bg-[#1f6818] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center';
+      }
+    }
+    
+    if (hiddenRole) {
+      hiddenRole.value = roleId.toString();
+    }
+    
+    if (submitBtn) {
+      submitBtn.textContent = `Guardar ${roleName}`;
+      if (roleId === ROLE_COORDINADOR) {
+        submitBtn.className = 'px-6 py-2 bg-[#2563eb] text-white rounded-lg font-semibold hover:bg-[#1d4ed8] transition-colors';
+      } else {
+        submitBtn.className = 'px-6 py-2 bg-[#1f6818] text-white rounded-lg font-semibold hover:bg-[#185513] transition-colors';
+      }
+    }
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('addEmployeeModal');
+    const form = document.getElementById('addEmployeeForm') as HTMLFormElement;
+    const formError = document.getElementById('formError');
+    const formSuccess = document.getElementById('formSuccess');
+    
+    if (modal) {
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+    if (form) form.reset();
+    if (formError) formError.classList.add('hidden');
+    if (formSuccess) formSuccess.classList.add('hidden');
+  }
+
+  async function handleFormSubmit(e: Event, allUsers: Usuario[], usersTable: HTMLElement | null, noUsersMessage: HTMLElement | null) {
+    e.preventDefault();
+    
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const formError = document.getElementById('formError');
+    const formSuccess = document.getElementById('formSuccess');
+    const submitBtn = document.getElementById('submitBtn') as HTMLButtonElement;
+    const originalBtnText = submitBtn?.textContent || 'Guardar';
+
+    // Hide previous messages
+    if (formError) formError.classList.add('hidden');
+    if (formSuccess) formSuccess.classList.add('hidden');
+
+    // Disable submit button
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Guardando...';
+    }
+
+    const roleId = parseInt(formData.get('roles_id_role') as string);
+    const roleName = roleId === ROLE_COORDINADOR ? 'Coordinador' : 'Docente';
+
+    try {
+      const userData = {
+        nombre: formData.get('nombre') as string,
+        ap_pat: formData.get('ap_pat') as string,
+        ap_mat: formData.get('ap_mat') as string || undefined,
+        correo: formData.get('correo') as string,
+        fecha_nacimiento: formData.get('fecha_nacimiento') as string,
+        fecha_contratacion: formData.get('fecha_contratacion') as string,
+        roles_id_role: roleId,
+        carrera_id_carrera: parseInt(formData.get('carrera_id_carrera') as string),
+        nombramiento_idnombramiento: parseInt(formData.get('nombramiento_idnombramiento') as string),
+      };
+
+      const response = await createUser(userData);
+
+      if (response.status === 'success') {
+        if (formSuccess) {
+          formSuccess.textContent = `¡${roleName} creado exitosamente!`;
+          formSuccess.classList.remove('hidden');
+        }
+
+        // Add new user to the list
+        if (response.user && response.user.roles_id_role !== 1) {
+          allUsers.push(response.user);
+          renderUsers(allUsers);
+          
+          if (usersTable) usersTable.classList.remove('hidden');
+          if (noUsersMessage) noUsersMessage.classList.add('hidden');
+        }
+
+        // Close modal after 1.5 seconds
+        setTimeout(() => {
+          closeModal();
+        }, 1500);
+      }
+    } catch (error: any) {
+      if (formError) {
+        formError.textContent = error.message || `Error al crear el ${roleName.toLowerCase()}. Por favor, intente nuevamente.`;
+        formError.classList.remove('hidden');
+      }
+    } finally {
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    }
+  }
+
+  async function init() {
+    await requireAuth();
+
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+    const usersTable = document.getElementById('usersTable');
+    const noUsersMessage = document.getElementById('noUsersMessage');
+    const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+
+    // Modal elements
+    const btnAddDocente = document.getElementById('btnAddDocente');
+    const btnAddCoordinador = document.getElementById('btnAddCoordinador');
+    const closeModalBtn = document.getElementById('closeModal');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const addEmployeeForm = document.getElementById('addEmployeeForm');
+    const modal = document.getElementById('addEmployeeModal');
+
+    let allUsers: Usuario[] = [];
+
+    try {
+      const response = await getAllUsers();
+      
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+
+      if (response.status === 'success' && response.users && response.users.length > 0) {
+        // Filtrar usuarios activos y excluir administradores (rol ID 1)
+        allUsers = response.users.filter(u => u.activo && u.roles_id_role !== 1);
+        
+        if (allUsers.length > 0) {
+          if (usersTable) usersTable.classList.remove('hidden');
+          renderUsers(allUsers);
+        } else {
+          if (noUsersMessage) noUsersMessage.classList.remove('hidden');
+        }
+      } else {
+        if (noUsersMessage) noUsersMessage.classList.remove('hidden');
+      }
+    } catch (error) {
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      
+      if (errorMessage) {
+        const errorP = errorMessage.querySelector('p');
+        if (errorP) {
+          errorP.textContent = 'Error al cargar los usuarios. Por favor, intente nuevamente.';
+        }
+        errorMessage.classList.remove('hidden');
+      }
+    }
+
+    // Search functionality
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const target = e.target as HTMLInputElement;
+        const filtered = filterUsers(allUsers, target.value);
+        renderUsers(filtered);
+      });
+    }
+
+    // Modal event listeners - Botones separados
+    if (btnAddDocente) {
+      btnAddDocente.addEventListener('click', () => openModal(ROLE_DOCENTE, 'Docente'));
+    }
+
+    if (btnAddCoordinador) {
+      btnAddCoordinador.addEventListener('click', () => openModal(ROLE_COORDINADOR, 'Coordinador'));
+    }
+
+    if (closeModalBtn) {
+      closeModalBtn.addEventListener('click', closeModal);
+    }
+
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', closeModal);
+    }
+
+    // Close modal when clicking outside
+    if (modal) {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+    }
+
+    // Form submit
+    if (addEmployeeForm) {
+      addEmployeeForm.addEventListener('submit', (e) => handleFormSubmit(e, allUsers, usersTable, noUsersMessage));
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+  }
+
+  init();
+</script>

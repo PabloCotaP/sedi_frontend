@@ -1,5 +1,46 @@
-(function(){
+const API_BASE_URL = 'http://localhost:8000/api';
+
+function getAccessToken() {
+  return localStorage.getItem('access_token');
+}
+
+async function fetchAPI(endpoint, options = {}) {
+  const url = `${API_BASE_URL}${endpoint}`;
+  const token = getAccessToken();
   
+  const headers = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+  
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  
+  const defaultOptions = {
+    credentials: 'include',
+    headers: headers,
+  };
+  const response = await fetch(url, { ...defaultOptions, ...options });
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || `Error ${response.status}`);
+  }
+  return response.json();
+}
+
+(async function(){
+  try {
+    const session = await fetchAPI('/user');
+    if (session.status !== 'success' || !session.user) {
+      window.location.href = '/';
+      return;
+    }
+  } catch (error) {
+    window.location.href = '/';
+    return;
+  }
+
   const vistaLista = document.getElementById('vista-lista');
   const vistaFormulario = document.getElementById('vista-formulario');
   const btnAgregar = document.getElementById('btn-agregar');
@@ -43,21 +84,12 @@
         <td class="border border-gray-400 px-4 py-3 text-center text-black">${escapeHtml(it.hasta)}</td>
         <td class="border border-gray-400 px-4 py-3 text-center">
           <div class="flex justify-center items-center gap-3">
-            <button class="btn-ver text-gray-600 hover:text-gray-800" data-index="${idx}" title="Ver"></button>
-            <button class="btn-editar text-gray-600 hover:text-gray-800" data-index="${idx}" title="Editar"></button>
-            <button class="btn-eliminar text-red-600 hover:text-red-800" data-index="${idx}" title="Eliminar"></button>
+            <button class="btn-editar bg-yellow-400 hover:bg-yellow-500 text-white px-2 py-1 rounded text-sm" data-index="${idx}" title="Editar">Editar</button>
+            <button class="btn-eliminar bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm" data-index="${idx}" title="Eliminar">Eliminar</button>
           </div>
         </td>
       </tr>
     `).join('');
-
-    tabla.querySelectorAll('.btn-ver').forEach(btn=>{
-      btn.addEventListener('click', ()=>{
-        const i = Number(btn.getAttribute('data-index'));
-        const it = items[i];
-        alert(`Actividad: ${it.actividad}\nOrganización: ${it.organizacion}\nDe: ${it.de}\nHasta: ${it.hasta}`);
-      });
-    });
 
     tabla.querySelectorAll('.btn-editar').forEach(btn=>{
       btn.addEventListener('click', ()=>{
@@ -82,6 +114,7 @@
         if (!confirm('¿Estás seguro de que deseas eliminar este registro?')) return;
         const i = Number(btn.getAttribute('data-index'));
         items.splice(i,1);
+        localStorage.setItem('exp_prof_no_academica', JSON.stringify(items));
         renderTabla();
       });
     });
@@ -117,11 +150,20 @@
     } else {
       items.push(obj);
     }
+    localStorage.setItem('exp_prof_no_academica', JSON.stringify(items));
     renderTabla();
     vistaFormulario?.classList.add('hidden');
     vistaLista?.classList.remove('hidden');
     formulario && formulario.reset();
   });
 
+  const stored = localStorage.getItem('exp_prof_no_academica');
+  if (stored) {
+    try {
+      items = JSON.parse(stored);
+    } catch(e) {
+      items = [];
+    }
+  }
   renderTabla();
 })();

@@ -1,0 +1,335 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Sidebar from '../components/Sidebar.astro';
+
+const categoriasTitulos: { [key: string]: string } = {
+  '1': 'Información personal',
+  '2': 'Formación académica',
+  '3': 'Capacitación docente',
+  '4': 'Actualización disciplinar',
+  '5': 'Gestión académica',
+  '6': 'Productos académicos relevantes',
+  '7': 'Experiencia profesional no académica',
+  '8': 'Experiencia en diseño ingenieril',
+  '9': 'Logros profesionales no académicos',
+  '10': 'Participación en colegios, cámaras, asociaciones científicas, etc.',
+  '11': 'Premios, distinciones o reconocimientos recibidos',
+  '12': 'Aportaciones relevantes a la mejora del PE'
+};
+
+const categoriasDescripciones: { [key: string]: string } = {
+  '1': 'Datos personales del docente incluyendo información de contacto y datos generales.',
+  '2': 'Grados académicos del profesor, especialidad, institución, país y año de obtención.',
+  '3': 'Cursos, diplomados o módulos de capacitación docente realizados.',
+  '4': 'Cursos y capacitaciones de actualización en su área disciplinar.',
+  '5': 'Participación en actividades de gestión académica y administrativa.',
+  '6': 'Publicaciones, libros, artículos y otros productos académicos relevantes.',
+  '7': 'Experiencia laboral fuera del ámbito académico relacionada con su área.',
+  '8': 'Participación en proyectos de diseño e ingeniería.',
+  '9': 'Certificaciones, logros y reconocimientos profesionales no académicos.',
+  '10': 'Membresías en colegios, cámaras y asociaciones profesionales.',
+  '11': 'Premios, distinciones y reconocimientos recibidos.',
+  '12': 'Contribuciones a la mejora del Programa Educativo.'
+};
+---
+
+<BaseLayout title="Documentos del Usuario - SEDI">
+  <Sidebar />
+
+  <div class="flex flex-col min-h-screen bg-white ml-[133px]">
+    <Header showUserInfo={true} userEmail="" />
+
+    <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
+      <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
+        <div class="flex justify-between items-start mb-6">
+          <div>
+            <h1 id="categoriaTitulo" class="text-3xl sm:text-4xl font-normal italic text-black mb-4">Cargando...</h1>
+            <p id="categoriaDescripcion" class="text-base italic text-black max-w-3xl">...</p>
+          </div>
+          <a 
+            id="regresarBtn"
+            href="/panel-administrador" 
+            class="bg-[#93622f] text-white px-8 py-3 rounded-[15px] text-xl font-bold no-underline shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#7a5127] transition-colors border border-black"
+          >
+            Regresar
+          </a>
+        </div>
+
+        <div id="userInfoBanner" class="bg-[#d9d9d9] rounded-[20px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-4 mb-8 max-w-2xl">
+          <p id="userInfo" class="text-xl italic text-black">Usuario: Cargando...</p>
+        </div>
+
+        <div id="loadingIndicator" class="text-center py-8">
+          <p class="text-lg text-gray-600">Cargando documentos...</p>
+        </div>
+
+        <div id="errorMessage" class="hidden text-center py-8">
+          <p class="text-lg text-red-600"></p>
+        </div>
+
+        <div id="documentosContainer" class="hidden">
+          <div class="bg-[#d9d9d9] rounded-lg overflow-hidden">
+            <table class="w-full border-collapse">
+              <thead>
+                <tr class="border-b-2 border-gray-400">
+                  <th class="py-4 px-6 text-left text-xl font-bold italic text-black border-r border-gray-400">ID</th>
+                  <th class="py-4 px-6 text-left text-xl font-bold italic text-black border-r border-gray-400">Nombre del Documento</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Fecha de Subida</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Estado</th>
+                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="documentosTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="noDocumentosMessage" class="hidden text-center py-12">
+          <svg class="w-24 h-24 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+          </svg>
+          <p class="text-xl text-gray-600">No hay documentos en esta categoría para este usuario.</p>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<script>
+  import { requireAuth } from '../lib/auth';
+  import { getUserById, getRegistros, getDocumentoDetalles, checkSession, type Usuario, type Registro, type DocumentoDetalle } from '../lib/api';
+
+  const categoriasTitulos: { [key: string]: string } = {
+    '1': 'Información personal',
+    '2': 'Formación académica',
+    '3': 'Capacitación docente',
+    '4': 'Actualización disciplinar',
+    '5': 'Gestión académica',
+    '6': 'Productos académicos relevantes',
+    '7': 'Experiencia profesional no académica',
+    '8': 'Experiencia en diseño ingenieril',
+    '9': 'Logros profesionales no académicos',
+    '10': 'Participación en colegios, cámaras, asociaciones científicas, etc.',
+    '11': 'Premios, distinciones o reconocimientos recibidos',
+    '12': 'Aportaciones relevantes a la mejora del PE'
+  };
+
+  const categoriasDescripciones: { [key: string]: string } = {
+    '1': 'Datos personales del docente incluyendo información de contacto y datos generales.',
+    '2': 'Grados académicos del profesor, especialidad, institución, país y año de obtención.',
+    '3': 'Cursos, diplomados o módulos de capacitación docente realizados.',
+    '4': 'Cursos y capacitaciones de actualización en su área disciplinar.',
+    '5': 'Participación en actividades de gestión académica y administrativa.',
+    '6': 'Publicaciones, libros, artículos y otros productos académicos relevantes.',
+    '7': 'Experiencia laboral fuera del ámbito académico relacionada con su área.',
+    '8': 'Participación en proyectos de diseño e ingeniería.',
+    '9': 'Certificaciones, logros y reconocimientos profesionales no académicos.',
+    '10': 'Membresías en colegios, cámaras y asociaciones profesionales.',
+    '11': 'Premios, distinciones y reconocimientos recibidos.',
+    '12': 'Contribuciones a la mejora del Programa Educativo.'
+  };
+
+  const tiposDocumentoPorCategoria: { [key: number]: number[] } = {
+    1: [1],
+    2: [2],
+    3: [3],
+    4: [4],
+    5: [5],
+    6: [6],
+    7: [7],
+    8: [8],
+    9: [9],
+    10: [10],
+    11: [11],
+    12: [12]
+  };
+
+  async function checkAdminAccess() {
+    try {
+      const response = await checkSession();
+      if (response.status === 'success' && response.user) {
+        if (response.user.rol !== 'admin' && response.user.rol !== 'administrador') {
+          window.location.href = '/dashboard';
+          return false;
+        }
+        return true;
+      }
+      window.location.href = '/';
+      return false;
+    } catch (error) {
+      window.location.href = '/';
+      return false;
+    }
+  }
+
+  function getUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+      userId: params.get('id'),
+      categoriaId: params.get('categoria'),
+      ruta: params.get('ruta')
+    };
+  }
+
+  function getEstadoClase(estado: string): string {
+    switch (estado?.toLowerCase()) {
+      case 'validado':
+      case 'aprobado':
+        return 'bg-[#1f6818] text-white';
+      case 'pendiente':
+        return 'bg-[#f59e0b] text-white';
+      case 'rechazado':
+        return 'bg-[#dc2626] text-white';
+      default:
+        return 'bg-gray-500 text-white';
+    }
+  }
+
+  function formatDate(dateString: string): string {
+    if (!dateString) return 'N/A';
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-MX', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch {
+      return dateString;
+    }
+  }
+
+  function renderDocumentos(documentos: DocumentoDetalle[]) {
+    const tableBody = document.getElementById('documentosTableBody');
+    if (!tableBody) return;
+
+    tableBody.innerHTML = '';
+
+    documentos.forEach((doc) => {
+      const row = document.createElement('tr');
+      row.className = 'border-b border-gray-400';
+      
+      const estadoClase = getEstadoClase(doc.estado_validacion);
+      const fechaFormateada = formatDate(doc.fecha_subida);
+
+      row.innerHTML = `
+        <td class="py-4 px-6 text-center text-lg italic text-black border-r border-gray-400">${doc.id_documento_detalle}</td>
+        <td class="py-4 px-6 text-left text-lg italic text-black border-r border-gray-400">${doc.nombre_archivo || 'Sin nombre'}</td>
+        <td class="py-4 px-6 text-center text-lg italic text-black border-r border-gray-400">${fechaFormateada}</td>
+        <td class="py-4 px-6 text-center border-r border-gray-400">
+          <span class="px-4 py-2 rounded-lg text-sm font-bold ${estadoClase}">
+            ${doc.estado_validacion || 'Pendiente'}
+          </span>
+        </td>
+        <td class="py-4 px-6 text-center">
+          ${doc.url_archivo ? `
+            <a 
+              href="${doc.url_archivo}"
+              target="_blank"
+              class="inline-flex items-center gap-2 bg-[#3b82f6] text-white px-4 py-2 rounded-lg text-sm font-bold no-underline hover:bg-[#2563eb] transition-colors"
+            >
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+              </svg>
+              Ver
+            </a>
+          ` : `
+            <span class="text-gray-500 italic">Sin archivo</span>
+          `}
+        </td>
+      `;
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  async function init() {
+    await requireAuth();
+    
+    const isAdmin = await checkAdminAccess();
+    if (!isAdmin) return;
+
+    const { userId, categoriaId } = getUrlParams();
+
+    if (!userId || !categoriaId) {
+      window.location.href = '/panel-administrador';
+      return;
+    }
+
+    const categoriaTitulo = document.getElementById('categoriaTitulo');
+    const categoriaDescripcion = document.getElementById('categoriaDescripcion');
+    const regresarBtn = document.getElementById('regresarBtn');
+    const userInfo = document.getElementById('userInfo');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const errorMessage = document.getElementById('errorMessage');
+    const documentosContainer = document.getElementById('documentosContainer');
+    const noDocumentosMessage = document.getElementById('noDocumentosMessage');
+
+    if (categoriaTitulo) categoriaTitulo.textContent = categoriasTitulos[categoriaId] || 'Categoría';
+    if (categoriaDescripcion) categoriaDescripcion.textContent = categoriasDescripciones[categoriaId] || '';
+    if (regresarBtn) regresarBtn.setAttribute('href', `/expediente-usuario?id=${userId}`);
+
+    try {
+      const userResponse = await getUserById(parseInt(userId));
+      
+      if (userResponse.status === 'success' && userResponse.user) {
+        const user = userResponse.user;
+        const nombreCompleto = `${user.nombre} ${user.ap_pat} ${user.ap_mat || ''}`.trim();
+        if (userInfo) userInfo.textContent = `Usuario: ${nombreCompleto}`;
+      }
+
+      let registros: Registro[] = [];
+      let documentos: DocumentoDetalle[] = [];
+
+      try {
+        const registrosResponse = await getRegistros();
+        if (Array.isArray(registrosResponse)) {
+          const tiposDocCategoria = tiposDocumentoPorCategoria[parseInt(categoriaId)] || [];
+          registros = registrosResponse.filter(r => 
+            r.usuario_id_usuario === parseInt(userId) && 
+            tiposDocCategoria.includes(r.tipos_documento_id_tipo_documento)
+          );
+        }
+      } catch (e) {
+      }
+
+      if (registros.length > 0) {
+        try {
+          const documentosResponse = await getDocumentoDetalles();
+          if (Array.isArray(documentosResponse)) {
+            const registroIds = registros.map(r => r.id_registro);
+            documentos = documentosResponse.filter(d => registroIds.includes(d.registro_id_registro));
+          }
+        } catch (e) {
+        }
+      }
+
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+
+      if (documentos.length > 0) {
+        if (documentosContainer) documentosContainer.classList.remove('hidden');
+        renderDocumentos(documentos);
+      } else {
+        if (noDocumentosMessage) noDocumentosMessage.classList.remove('hidden');
+      }
+
+    } catch (error) {
+      if (loadingIndicator) loadingIndicator.classList.add('hidden');
+      
+      if (errorMessage) {
+        const errorP = errorMessage.querySelector('p');
+        if (errorP) {
+          errorP.textContent = 'Error al cargar los documentos. Por favor, intente nuevamente.';
+        }
+        errorMessage.classList.remove('hidden');
+      }
+    }
+  }
+
+  init();
+</script>
