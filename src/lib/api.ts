@@ -1,4 +1,4 @@
-export const API_BASE_URL = 'http://localhost:8000/api';
+export const API_BASE_URL = 'http://sedi_backend.test/api';
 
 function getAccessToken(): string | null {
   if (typeof window === 'undefined') return null;

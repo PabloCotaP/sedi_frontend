@@ -77,8 +77,8 @@ import Sidebar from '../components/Sidebar.astro';
 
       <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
-          <h1 id="form-titulo" class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
-            CAPACITACIÓN DOCENTE
+          <h1 id="form-titulo" class="text-[28px] sm:text-[32px] font-normal text-black text-center flex-1 italic">
+            Capacitación docente
           </h1>
           <button 
             id="btn-regresar"
@@ -91,14 +91,14 @@ import Sidebar from '../components/Sidebar.astro';
           <input type="hidden" id="registro-id" name="registro_id" value="" />
           
           <div class="flex items-center gap-6">
-            <label for="tipo-capacitacion" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="tipo-capacitacion" class="w-48 text-right font-normal text-black text-[18px]">
               Tipo de capacitación *
             </label>
             <input id="tipo-capacitacion" name="descripcion" type="text" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="Ej: Curso de pedagogía" />
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="institucion-select" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="institucion-select" class="w-48 text-right font-normal text-black text-[18px]">
               Institución *
             </label>
             <div class="flex-1 relative">
@@ -134,7 +134,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="pais-select" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="pais-select" class="w-48 text-right font-normal text-black text-[18px]">
               País
             </label>
             <select id="pais-select" name="pais_idpais" class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
@@ -143,21 +143,21 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="anio-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="anio-input" class="w-48 text-right font-normal text-black text-[18px]">
               Año *
             </label>
             <input id="anio-input" name="anio_obtencion" type="number" min="1900" max="2100" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="Ej: 2024" />
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="horas-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="horas-input" class="w-48 text-right font-normal text-black text-[18px]">
               Horas
             </label>
             <input id="horas-input" name="horas" type="number" min="0" class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" placeholder="Ej: 40" />
           </div>
 
           <div class="flex items-start gap-6">
-            <label class="w-48 text-right font-semibold text-black text-[18px] pt-3">
+            <label class="w-48 text-right font-normal text-black text-[18px] pt-3">
               Documento
             </label>
             <div class="flex-1">

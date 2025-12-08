@@ -69,8 +69,8 @@ import Sidebar from '../components/Sidebar.astro';
 
       <div id="vista-formulario"class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
-          <h1 id="form-title" class="text-[28px] sm:text-[32px] font-bold text-black text-center flex-1 italic uppercase">
-            FORMACIÓN ACADÉMICA
+          <h1 id="form-title" class="text-[28px] sm:text-[32px] font-normal text-black text-center flex-1 italic">
+            Formación Académica
           </h1>
           <button 
             id="btn-regresar"
@@ -83,7 +83,7 @@ import Sidebar from '../components/Sidebar.astro';
           <input type="hidden" id="edit-id" value="" />
 
           <div class="flex items-center gap-6">
-            <label for="nivel-select" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="nivel-select" class="w-48 text-right font-normal text-black text-[18px]">
               Nivel
             </label>
             <div class="flex-1">
@@ -98,7 +98,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="nombre-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="nombre-input" class="w-48 text-right font-normal text-black text-[18px]">
               Descripción
             </label>
             <input id="nombre-input" name="nombre" type="text" required 
@@ -107,7 +107,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="anio-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="anio-input" class="w-48 text-right font-normal text-black text-[18px]">
               Año de obtención
             </label>
             <input id="anio-input" name="anio" type="number" min="1900" max="2100" required 
@@ -115,7 +115,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="cedula-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="cedula-input" class="w-48 text-right font-normal text-black text-[18px]">
               Cédula profesional
             </label>
             <input id="cedula-input" name="cedula" type="text" 
@@ -124,7 +124,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="institucion-input" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="institucion-input" class="w-48 text-right font-normal text-black text-[18px]">
               Institución <span class="text-red-500">*</span>
             </label>
             <div class="flex-1 relative">
@@ -145,7 +145,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="pais-select" class="w-48 text-right font-semibold text-black text-[18px]">
+            <label for="pais-select" class="w-48 text-right font-normal text-black text-[18px]">
               País <span class="text-red-500">*</span>
             </label>
             <select id="pais-select" name="pais_idpais" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
@@ -154,7 +154,7 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex flex-col gap-4">
-            <label class="font-semibold text-black text-[18px] text-center">Documento (Título o Cédula)</label>
+            <label class="font-normal text-black text-[18px] text-center">Documento (Título o Cédula)</label>
             <div 
               id="drop-zone"
               class="border-2 border-dashed border-gray-400 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-colors"
@@ -583,7 +583,7 @@ import Sidebar from '../components/Sidebar.astro';
   function showForm(isEdit = false) {
     vistaLista.classList.add('hidden');
     vistaFormulario.classList.remove('hidden');
-    formTitle.textContent = isEdit ? 'EDITAR FORMACIÓN ACADÉMICA' : 'AGREGAR FORMACIÓN ACADÉMICA';
+    formTitle.textContent = isEdit ? 'Editar formación académica' : 'Agregar formación académica';
   }
 
   function showList() {
