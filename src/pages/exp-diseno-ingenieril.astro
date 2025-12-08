@@ -224,7 +224,7 @@ import Sidebar from '../components/Sidebar.astro';
         </div>
 
         <div class="w-full h-[75vh] border rounded">
-          <embed id="preview-pdf" src="" type="application/pdf" class="w-full h-full" />
+          <iframe id="preview-pdf" class="w-full h-full border-0"></iframe>
         </div>
 
       </div>
@@ -367,19 +367,24 @@ import Sidebar from '../components/Sidebar.astro';
     });
 
     document.querySelectorAll('.btn-ver').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', async (e) => {
         e.preventDefault();
-        
-        const url = (btn as HTMLElement).getAttribute("data-url");
 
+        const url = btn.getAttribute("data-url");
         const modal = document.getElementById("modal-preview");
-        const embed = document.getElementById("preview-pdf");
+        const iframe = document.getElementById("preview-pdf");
         const linkDownload = document.getElementById("download-pdf");
 
-        embed?.setAttribute("src", url || "");
-        linkDownload?.setAttribute("href", url || "");
+        linkDownload?.setAttribute("href", url);
 
-        modal?.classList.remove("hidden");
+        // prevent chrome direct download
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const pdfUrl = URL.createObjectURL(blob);
+
+        iframe.src = pdfUrl;
+
+        modal.classList.remove("hidden");
       });
     });
   }
