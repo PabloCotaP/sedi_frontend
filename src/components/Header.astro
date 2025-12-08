@@ -1,10 +1,9 @@
 ---
 export interface Props {
   showUserInfo?: boolean;
-  userEmail?: string | null;
 }
 
-const { showUserInfo = false, userEmail = null } = Astro.props;
+const { showUserInfo = false } = Astro.props;
 
 const uabcLogo = 'https://www.figma.com/api/mcp/asset/6f4c4da3-f41a-4bf7-ab0d-1dc384167cc3'; // image 9
 const fiadLogo = 'https://www.figma.com/api/mcp/asset/ddcdd925-8c54-490c-8027-8463aebbb1ba'; // image 10
