@@ -44,7 +44,7 @@ const GOOGLE_CLIENT_ID = import.meta.env.PUBLIC_GOOGLE_CLIENT_ID;
     const credential = response.credential;
 
     try {
-      const res = await fetch('http://localhost:8000/api/login', {
+      const res = await fetch('http://sedi_backend.test/api/', {
         method: 'POST',
         credentials: 'include',
         headers: {
