@@ -78,7 +78,7 @@ import Sidebar from '../components/Sidebar.astro';
       <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
           <h1 id="form-titulo" class="text-[28px] sm:text-[32px] font-normal text-black text-center flex-1 italic">
-            Capacitación docente
+            Capacitación Docente
           </h1>
           <button 
             id="btn-regresar"
@@ -101,36 +101,9 @@ import Sidebar from '../components/Sidebar.astro';
             <label for="institucion-select" class="w-48 text-right font-normal text-black text-[18px]">
               Institución *
             </label>
-            <div class="flex-1 relative">
-              <div class="flex gap-2">
-                <div class="flex-1 relative">
-                  <input 
-                    type="text" 
-                    id="institucion-input" 
-                    class="w-full border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                    placeholder="Buscar o escribir nueva institución..."
-                    autocomplete="off"
-                    required
-                  />
-                  <input type="hidden" id="institucion-id" name="institucion_idinstitucion" value="" />
-                  <div id="institucion-dropdown" class="hidden absolute z-10 w-full mt-1 bg-white border-2 border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                  </div>
-                </div>
-                <button 
-                  type="button" 
-                  id="btn-nueva-institucion"
-                  class="bg-[#1f6818] hover:bg-[#165012] text-white font-semibold px-4 py-3 rounded-lg transition-colors duration-200 whitespace-nowrap"
-                  title="Agregar nueva institución"
-                >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                  </svg>
-                </button>
-              </div>
-              <p id="institucion-hint" class="text-sm text-gray-500 mt-1 hidden">
-                <span class="text-green-600">✓</span> Nueva institución: se creará al guardar
-              </p>
-            </div>
+            <select id="institucion-select" name="institucion_idinstitucion" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <option value="">Seleccione una institución</option>
+            </select>
           </div>
 
           <div class="flex items-center gap-6">
@@ -330,136 +303,16 @@ import Sidebar from '../components/Sidebar.astro';
 
       if (institucionesRes.status === 'success' && institucionesRes.data) {
         instituciones = institucionesRes.data;
+        const selectInst = document.getElementById('institucion-select') as HTMLSelectElement;
+        if (selectInst) {
+          selectInst.innerHTML = '<option value="">Seleccione una institución</option>' +
+            instituciones.map(i => `<option value="${i.idinstitucion}">${i.nombre}</option>`).join('');
+        }
         instituciones.forEach(i => institucionesMap[i.idinstitucion] = i.nombre);
       }
     } catch (error) {
       console.error('Error al cargar catálogos:', error);
     }
-  }
-
-  function setupInstitucionAutocomplete() {
-    const input = document.getElementById('institucion-input') as HTMLInputElement;
-    const dropdown = document.getElementById('institucion-dropdown') as HTMLDivElement;
-    const hiddenInput = document.getElementById('institucion-id') as HTMLInputElement;
-    const hint = document.getElementById('institucion-hint') as HTMLParagraphElement;
-    const btnNueva = document.getElementById('btn-nueva-institucion') as HTMLButtonElement;
-
-    if (!input || !dropdown || !hiddenInput) return;
-
-    function showDropdown(filtered: Institucion[]) {
-      if (filtered.length === 0) {
-        dropdown.classList.add('hidden');
-        return;
-      }
-
-      dropdown.innerHTML = filtered.map(inst => `
-        <div class="institucion-option px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0" 
-             data-id="${inst.idinstitucion}" data-nombre="${inst.nombre}">
-          ${inst.nombre}
-        </div>
-      `).join('');
-
-      dropdown.classList.remove('hidden');
-
-      dropdown.querySelectorAll('.institucion-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-          const id = opt.getAttribute('data-id');
-          const nombre = opt.getAttribute('data-nombre');
-          if (id && nombre) {
-            selectInstitucion(parseInt(id), nombre);
-          }
-        });
-      });
-    }
-
-    function selectInstitucion(id: number, nombre: string) {
-      input.value = nombre;
-      hiddenInput.value = id.toString();
-      selectedInstitucionId = id;
-      isNewInstitucion = false;
-      dropdown.classList.add('hidden');
-      hint.classList.add('hidden');
-      input.classList.remove('border-green-500');
-      input.classList.add('border-black');
-    }
-
-    function markAsNew() {
-      const nombre = input.value.trim();
-      if (nombre) {
-        hiddenInput.value = '';
-        selectedInstitucionId = null;
-        isNewInstitucion = true;
-        hint.classList.remove('hidden');
-        input.classList.remove('border-black');
-        input.classList.add('border-green-500');
-      }
-    }
-
-    input.addEventListener('input', () => {
-      const query = input.value.toLowerCase().trim();
-      
-      hiddenInput.value = '';
-      selectedInstitucionId = null;
-      isNewInstitucion = false;
-      hint.classList.add('hidden');
-      input.classList.remove('border-green-500');
-      input.classList.add('border-black');
-
-      if (query.length < 1) {
-        dropdown.classList.add('hidden');
-        return;
-      }
-
-      const filtered = instituciones.filter(i => 
-        i.nombre.toLowerCase().includes(query)
-      ).slice(0, 10);
-
-      showDropdown(filtered);
-
-      const exactMatch = instituciones.find(i => i.nombre.toLowerCase() === query);
-      if (exactMatch) {
-        selectInstitucion(exactMatch.idinstitucion, exactMatch.nombre);
-      }
-    });
-
-    input.addEventListener('focus', () => {
-      if (input.value.trim().length > 0) {
-        const query = input.value.toLowerCase().trim();
-        const filtered = instituciones.filter(i => 
-          i.nombre.toLowerCase().includes(query)
-        ).slice(0, 10);
-        showDropdown(filtered);
-      }
-    });
-
-    input.addEventListener('blur', () => {
-      setTimeout(() => {
-        dropdown.classList.add('hidden');
-        
-        const nombre = input.value.trim();
-        if (nombre && !selectedInstitucionId) {
-          const exactMatch = instituciones.find(i => 
-            i.nombre.toLowerCase() === nombre.toLowerCase()
-          );
-          if (exactMatch) {
-            selectInstitucion(exactMatch.idinstitucion, exactMatch.nombre);
-          } else {
-            markAsNew();
-          }
-        }
-      }, 200);
-    });
-
-    btnNueva?.addEventListener('click', () => {
-      const nombre = input.value.trim();
-      if (nombre) {
-        markAsNew();
-        alert(`La institución "${nombre}" se creará al guardar el registro.`);
-      } else {
-        input.focus();
-        alert('Escribe el nombre de la nueva institución primero.');
-      }
-    });
   }
 
   function renderTabla() {
@@ -601,26 +454,20 @@ import Sidebar from '../components/Sidebar.astro';
 
     const formTitulo = document.getElementById('form-titulo');
     const tipoInput = document.getElementById('tipo-capacitacion') as HTMLInputElement;
-    const institucionInput = document.getElementById('institucion-input') as HTMLInputElement;
-    const institucionHidden = document.getElementById('institucion-id') as HTMLInputElement;
+    const institucionSelect = document.getElementById('institucion-select') as HTMLSelectElement;
     const anioInput = document.getElementById('anio-input') as HTMLInputElement;
     const horasInput = document.getElementById('horas-input') as HTMLInputElement;
     const documentoActual = document.getElementById('documento-actual');
     const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
-    const hint = document.getElementById('institucion-hint') as HTMLParagraphElement;
 
-    if (formTitulo) formTitulo.textContent = 'EDITAR CAPACITACIÓN';
+    if (formTitulo) formTitulo.textContent = 'Editar Capacitación Docente';
     if (tipoInput) tipoInput.value = registro.descripcion || '';
     
     // Set institucion
-    if (registro.documento?.institucion_idinstitucion && institucionInput && institucionHidden) {
+    if (registro.documento?.institucion_idinstitucion && institucionSelect) {
       const instId = registro.documento.institucion_idinstitucion;
-      const instNombre = institucionesMap[instId] || '';
-      institucionInput.value = instNombre;
-      institucionHidden.value = instId.toString();
+      institucionSelect.value = instId.toString();
       selectedInstitucionId = instId;
-      isNewInstitucion = false;
-      hint?.classList.add('hidden');
     }
 
     if (anioInput && registro.info_extra?.anio_obtencion) {
@@ -649,22 +496,14 @@ import Sidebar from '../components/Sidebar.astro';
     const documentoActual = document.getElementById('documento-actual');
     const archivoSeleccionado = document.getElementById('archivo-seleccionado');
     const dropZone = document.getElementById('drop-zone');
-    const institucionInput = document.getElementById('institucion-input') as HTMLInputElement;
-    const institucionHidden = document.getElementById('institucion-id') as HTMLInputElement;
-    const hint = document.getElementById('institucion-hint') as HTMLParagraphElement;
+    const institucionSelect = document.getElementById('institucion-select') as HTMLSelectElement;
 
     if (form) form.reset();
-    if (formTitulo) formTitulo.textContent = 'CAPACITACIÓN DOCENTE';
+    if (formTitulo) formTitulo.textContent = 'Agregar Capacitación Docente';
     if (documentoActual) documentoActual.classList.add('hidden');
     if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
     if (dropZone) dropZone.classList.remove('hidden');
-    if (institucionInput) {
-      institucionInput.value = '';
-      institucionInput.classList.remove('border-green-500');
-      institucionInput.classList.add('border-black');
-    }
-    if (institucionHidden) institucionHidden.value = '';
-    if (hint) hint.classList.add('hidden');
+    if (institucionSelect) institucionSelect.value = '';
     document.getElementById('form-error')?.classList.add('hidden');
   }
 
@@ -717,7 +556,6 @@ import Sidebar from '../components/Sidebar.astro';
 
     if (loadingIndicator) loadingIndicator.classList.add('hidden');
     renderTabla();
-    setupInstitucionAutocomplete();
 
     const btnAgregar = document.getElementById('btn-agregar');
     const btnRegresar = document.getElementById('btn-regresar');
@@ -784,19 +622,18 @@ import Sidebar from '../components/Sidebar.astro';
       const formError = document.getElementById('form-error');
       const guardarBtn = document.getElementById('guardar-btn') as HTMLButtonElement;
       const originalText = guardarBtn?.textContent || 'Guardar';
-      const institucionInput = document.getElementById('institucion-input') as HTMLInputElement;
-      const institucionHidden = document.getElementById('institucion-id') as HTMLInputElement;
+      const institucionSelect = document.getElementById('institucion-select') as HTMLSelectElement;
 
       formError?.classList.add('hidden');
 
       // Validate institution
-      const institucionNombre = institucionInput?.value.trim();
-      if (!institucionNombre) {
+      const institucionId = institucionSelect?.value;
+      if (!institucionId) {
         if (formError) {
           formError.textContent = 'La institución es obligatoria';
           formError.classList.remove('hidden');
         }
-        institucionInput?.focus();
+        institucionSelect?.focus();
         return;
       }
 
@@ -806,30 +643,8 @@ import Sidebar from '../components/Sidebar.astro';
       }
 
       try {
-        let finalInstitucionId = selectedInstitucionId;
-        
-        if (isNewInstitucion && !selectedInstitucionId) {
-          const newInstRes = await createInstitucion(institucionNombre);
-          if (newInstRes.status === 'success' && newInstRes.data) {
-            finalInstitucionId = newInstRes.data.idinstitucion;
-            instituciones.push(newInstRes.data);
-            institucionesMap[newInstRes.data.idinstitucion] = newInstRes.data.nombre;
-          } else {
-            throw new Error('Error al crear la institución');
-          }
-        }
-
-        if (!finalInstitucionId) {
-          throw new Error('Debe seleccionar o crear una institución');
-        }
-
-        // Update hidden field
-        if (institucionHidden) {
-          institucionHidden.value = finalInstitucionId.toString();
-        }
-
         const formData = new FormData(form);
-        formData.set('institucion_idinstitucion', finalInstitucionId.toString());
+        formData.set('institucion_idinstitucion', institucionId);
 
         let response;
         if (editandoId) {

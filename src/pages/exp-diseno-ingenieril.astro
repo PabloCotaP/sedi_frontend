@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import Sidebar from '../components/Sidebar.astro';
 ---
 
-<BaseLayout title="Experiencia en diseño ingenieril - SEDI">
+<BaseLayout title="Experiencia en Diseño Ingenieril - SEDI">
   <Sidebar />
 
   <div class="flex flex-col min-h-screen bg-white ml-[133px]">
@@ -27,7 +27,7 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div class="flex-1">
             <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">
-              Experiencia en diseño ingenieril
+              Experiencia en Diseño Ingenieril
             </h1>
             <p class="text-[14px] text-gray-700 leading-snug">
               Actividades de diseño de ingeniería desarrolladas, dentro o fuera de la institución, en las que se evidencia que participó
@@ -78,7 +78,7 @@ import Sidebar from '../components/Sidebar.astro';
       <div id="vista-formulario" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8 hidden">
         <div class="flex justify-between items-center mb-8">
           <h1 id="form-titulo" class="text-[28px] sm:text-[32px] font-normal text-black text-center flex-1 italic">
-            Experiencia en diseño ingenieril
+            Experiencia en Diseño Ingenieril
           </h1>
           <button 
             id="btn-regresar"
@@ -410,7 +410,7 @@ import Sidebar from '../components/Sidebar.astro';
     const documentoActual = document.getElementById('documento-actual');
     const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
 
-    if (formTitulo) formTitulo.textContent = 'EDITAR EXPERIENCIA EN DISEÑO';
+    if (formTitulo) formTitulo.textContent = 'Editar Experiencia en Diseño Ingenieril';
     if (descripcionInput) descripcionInput.value = registro.descripcion || '';
     if (fechaInicioInput && registro.info_extra?.fecha_inicio) {
       fechaInicioInput.value = registro.info_extra.fecha_inicio.split('T')[0];
@@ -437,7 +437,7 @@ import Sidebar from '../components/Sidebar.astro';
     const dropZone = document.getElementById('drop-zone');
 
     if (form) form.reset();
-    if (formTitulo) formTitulo.textContent = 'EXPERIENCIA EN DISEÑO INGENIERIL';
+    if (formTitulo) formTitulo.textContent = 'Agregar Experiencia en Diseño Ingenieril';
     if (documentoActual) documentoActual.classList.add('hidden');
     if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
     if (dropZone) dropZone.classList.remove('hidden');

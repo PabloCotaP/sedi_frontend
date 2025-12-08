@@ -373,7 +373,7 @@ import Sidebar from '../components/Sidebar.astro';
     const documentoActual = document.getElementById('documento-actual');
     const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
 
-    if (formTitulo) formTitulo.textContent = 'EDITAR PREMIO O DISTINCIÓN';
+    if (formTitulo) formTitulo.textContent = 'Editar Premio o Distinción';
     if (descripcionInput) descripcionInput.value = registro.descripcion || '';
 
     if (registro.documento?.ruta_archivo && documentoActual && linkDocumento) {
@@ -394,7 +394,7 @@ import Sidebar from '../components/Sidebar.astro';
     const dropZone = document.getElementById('drop-zone');
 
     if (form) form.reset();
-    if (formTitulo) formTitulo.textContent = 'PREMIOS, DISTINCIONES O RECONOCIMIENTOS RECIBIDOS';
+    if (formTitulo) formTitulo.textContent = 'Agregar Premios, Distinciones y Reconocimientos';
     if (documentoActual) documentoActual.classList.add('hidden');
     if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
     if (dropZone) dropZone.classList.remove('hidden');
