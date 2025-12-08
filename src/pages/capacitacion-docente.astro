@@ -9,7 +9,7 @@ import Sidebar from '../components/Sidebar.astro';
   <Sidebar />
 
   <div class="flex flex-col min-h-screen bg-white ml-[133px]">
-    <Header showUserInfo={true} userEmail="" />
+    <Header showUserInfo={true} />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
       <div id="viewing-user-banner" class="hidden max-w-[1728px] mx-auto mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
@@ -568,8 +568,10 @@ import Sidebar from '../components/Sidebar.astro';
 
         const url = btn.getAttribute("data-url");
         const modal = document.getElementById("modal-preview");
-        const iframe = document.getElementById("preview-pdf");
+        const iframe = document.getElementById("preview-pdf") as HTMLIFrameElement | null;
         const linkDownload = document.getElementById("download-pdf");
+
+        if (!url || !modal || !iframe) return;
 
         linkDownload?.setAttribute("href", url);
 
