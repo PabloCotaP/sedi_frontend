@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://sedi_backend.test/api';
 
 function getAccessToken() {
   return localStorage.getItem('access_token');
