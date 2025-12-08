@@ -103,7 +103,7 @@ import Sidebar from '../components/Sidebar.astro';
           <!-- Selector de tipo de empleado -->
           <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de Empleado *</label>
-            <div class="flex gap-4">
+            <div class="flex gap-4 flex-wrap">
               <label class="flex items-center gap-2 cursor-pointer">
                 <input 
                   type="radio" 
@@ -122,6 +122,15 @@ import Sidebar from '../components/Sidebar.astro';
                   class="w-5 h-5 text-[#2563eb] focus:ring-[#2563eb]"
                 />
                 <span class="text-lg font-medium text-gray-700">Coordinador</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="radio" 
+                  name="roles_id_role" 
+                  value="1" 
+                  class="w-5 h-5 text-[#dc2626] focus:ring-[#dc2626]"
+                />
+                <span class="text-lg font-medium text-gray-700">Administrador</span>
               </label>
             </div>
           </div>
@@ -244,8 +253,18 @@ import Sidebar from '../components/Sidebar.astro';
 
   let carrerasMap: { [key: number]: string } = {};
 
+  const ROLE_ADMIN = 1;
   const ROLE_COORDINADOR = 2;
   const ROLE_DOCENTE = 3;
+
+  function getRoleName(roleId: number): string {
+    switch(roleId) {
+      case ROLE_ADMIN: return 'Administrador';
+      case ROLE_COORDINADOR: return 'Coordinador';
+      case ROLE_DOCENTE: return 'Docente';
+      default: return 'Empleado';
+    }
+  }
 
   async function loadCarrerasAndNombramientos() {
     const carreraSelect = document.getElementById('carreraSelect') as HTMLSelectElement;
@@ -389,7 +408,7 @@ import Sidebar from '../components/Sidebar.astro';
     }
 
     const roleId = parseInt(formData.get('roles_id_role') as string);
-    const roleName = roleId === ROLE_COORDINADOR ? 'Coordinador' : 'Docente';
+    const roleName = getRoleName(roleId);
 
     try {
       const userData = {
