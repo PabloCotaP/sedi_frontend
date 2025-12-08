@@ -1,3 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+	html, body {
+		/* Apply the project's default sans font stack across all pages */
+		@apply font-sans;
+	}
+}

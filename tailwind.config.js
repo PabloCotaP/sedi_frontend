@@ -6,7 +6,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'serif': ['Georgia', 'serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial'],
+        serif: ['Georgia', 'serif'],
       },
     },
   },

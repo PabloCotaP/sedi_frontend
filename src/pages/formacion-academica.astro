@@ -12,9 +12,15 @@ import Sidebar from '../components/Sidebar.astro';
     <Header showUserInfo={true} userEmail="" />
 
     <main class="flex-1 bg-[#f3f3f3] px-4 py-8 sm:px-8">
-      <div id="viewing-user-banner" class="hidden max-w-[1728px] mx-auto mb-4 bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded-lg">
-        <span class="font-semibold">Viendo expediente de: </span>
-        <span id="viewing-user-name"></span>
+      <div id="viewing-user-banner" class="hidden max-w-[1728px] mx-auto mb-6 bg-blue-100 border-l-4 border-blue-500 p-4 rounded-r-lg">
+        <div class="flex items-center">
+          <svg class="w-6 h-6 text-blue-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+          </svg>
+          <span class="text-blue-700 font-medium">
+            Viendo registros de: <strong id="viewing-user-name"></strong>
+          </span>
+        </div>
       </div>
 
       <div id="vista-lista" class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-8">
@@ -50,11 +56,11 @@ import Sidebar from '../components/Sidebar.astro';
           <table class="w-full border-collapse">
             <thead>
               <tr class="bg-[#d9d9d9]">
-                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[18px] text-black">Nivel / Descripción</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Año</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Cédula</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Documento</th>
-                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Acciones</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nivel / Descripción</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Año</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Cédula</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Documento</th>
+                <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Acciones</th>
               </tr>
             </thead>
             <tbody id="tabla-formacion">
@@ -163,15 +169,15 @@ import Sidebar from '../components/Sidebar.astro';
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
               <p class="text-gray-600 mb-2">Arrastra y suelta tu archivo aquí</p>
-              <p class="text-gray-400 text-sm">o haz clic para seleccionar</p>
-              <input type="file" id="documento" name="documento" class="hidden" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" />
+              <p class="text-gray-400 text-sm">o haz clic para seleccionar (PDF, máximo 10MB)</p>
+              <input type="file" id="documento" name="documento" class="hidden" accept=".pdf" />
             </div>
             <div id="file-preview" class="hidden bg-green-50 border border-green-300 rounded-lg p-4 flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <span id="file-name" class="text-green-700 font-medium"></span>
+                <span id="file-name" class="document-file-name text-gray-800 text-sm font-medium"></span>
               </div>
               <button type="button" id="remove-file" class="text-red-500 hover:text-red-700">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -821,18 +827,18 @@ import Sidebar from '../components/Sidebar.astro';
   }
 
   function handleFileSelect(file: File) {
-    const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'image/jpeg', 'image/png'];
-    
+    const allowedTypes = ['application/pdf'];
+
     if (!allowedTypes.includes(file.type)) {
-      alert('Tipo de archivo no permitido. Solo se aceptan PDF, DOC, DOCX, JPG y PNG.');
+      alert('Tipo de archivo no permitido. Solo se aceptan PDF.');
       return;
     }
-    
+
     if (file.size > 10 * 1024 * 1024) {
       alert('El archivo es demasiado grande. Máximo 10MB.');
       return;
     }
-    
+
     selectedFile = file;
     fileName.textContent = file.name;
     filePreview.classList.remove('hidden');

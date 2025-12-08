@@ -45,8 +45,8 @@ const categoriasDescripciones: { [key: string]: string } = {
       <div class="max-w-[1728px] mx-auto bg-[#f3f3f3] rounded-[25px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] p-6 sm:p-12">
         <div class="flex justify-between items-start mb-6">
           <div>
-            <h1 id="categoriaTitulo" class="text-3xl sm:text-4xl font-normal italic text-black mb-4">Cargando...</h1>
-            <p id="categoriaDescripcion" class="text-base italic text-black max-w-3xl">...</p>
+            <h1 id="categoriaTitulo" class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">Cargando...</h1>
+            <p id="categoriaDescripcion" class="text-[14px] text-gray-700 leading-snug">...</p>
           </div>
           <a 
             id="regresarBtn"
@@ -70,15 +70,15 @@ const categoriasDescripciones: { [key: string]: string } = {
         </div>
 
         <div id="documentosContainer" class="hidden">
-          <div class="bg-[#d9d9d9] rounded-lg overflow-hidden">
+          <div class="bg-white rounded-lg overflow-hidden">
             <table class="w-full border-collapse">
               <thead>
-                <tr class="border-b-2 border-gray-400">
-                  <th class="py-4 px-6 text-left text-xl font-bold italic text-black border-r border-gray-400">ID</th>
-                  <th class="py-4 px-6 text-left text-xl font-bold italic text-black border-r border-gray-400">Nombre del Documento</th>
-                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Fecha de Subida</th>
-                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black border-r border-gray-400">Estado</th>
-                  <th class="py-4 px-6 text-center text-xl font-bold italic text-black">Acciones</th>
+                <tr class="bg-[#d9d9d9]">
+                  <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">ID</th>
+                  <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[20px] text-black">Nombre del Documento</th>
+                  <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Fecha de Subida</th>
+                  <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Estado</th>
+                  <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[20px] text-black">Acciones</th>
                 </tr>
               </thead>
               <tbody id="documentosTableBody">
