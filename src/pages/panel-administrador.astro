@@ -22,22 +22,13 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
           <div class="flex gap-4">
             <button 
-              id="btnAddDocente"
+              id="btnAddEmpleado"
               class="hidden bg-[#1f6818] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#185513] transition-colors border border-black flex items-center gap-2"
             >
               <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
               </svg>
-              Agregar Docente
-            </button>
-            <button 
-              id="btnAddCoordinador"
-              class="hidden bg-[#2563eb] text-white px-6 py-3 rounded-[15px] text-lg font-bold shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] hover:bg-[#1d4ed8] transition-colors border border-black flex items-center gap-2"
-            >
-              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-              </svg>
-              Agregar Coordinador
+              Agregar Empleado
             </button>
             <a 
               href="/dashboard" 
@@ -109,7 +100,31 @@ import Sidebar from '../components/Sidebar.astro';
         </div>
         
         <form id="addEmployeeForm" class="p-6 space-y-4">
-          <input type="hidden" name="roles_id_role" id="hiddenRole" value="3" />
+          <!-- Selector de tipo de empleado -->
+          <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Tipo de Empleado *</label>
+            <div class="flex gap-4">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="radio" 
+                  name="roles_id_role" 
+                  value="3" 
+                  checked
+                  class="w-5 h-5 text-[#1f6818] focus:ring-[#1f6818]"
+                />
+                <span class="text-lg font-medium text-gray-700">Docente</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="radio" 
+                  name="roles_id_role" 
+                  value="2" 
+                  class="w-5 h-5 text-[#2563eb] focus:ring-[#2563eb]"
+                />
+                <span class="text-lg font-medium text-gray-700">Coordinador</span>
+              </label>
+            </div>
+          </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -319,12 +334,10 @@ import Sidebar from '../components/Sidebar.astro';
   }
 
   // Modal functions
-  function openModal(roleId: number, roleName: string) {
+  function openModal() {
     const modal = document.getElementById('addEmployeeModal');
     const modalTitle = document.getElementById('modalTitle');
     const modalHeader = document.getElementById('modalHeader');
-    const hiddenRole = document.getElementById('hiddenRole') as HTMLInputElement;
-    const submitBtn = document.getElementById('submitBtn');
     
     if (modal) {
       modal.classList.remove('hidden');
@@ -332,29 +345,11 @@ import Sidebar from '../components/Sidebar.astro';
     }
     
     if (modalTitle) {
-      modalTitle.textContent = `Agregar Nuevo ${roleName}`;
+      modalTitle.textContent = 'Agregar Nuevo Empleado';
     }
     
     if (modalHeader) {
-      // Cambiar color del header según el tipo
-      if (roleId === ROLE_COORDINADOR) {
-        modalHeader.className = 'bg-[#2563eb] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center';
-      } else {
-        modalHeader.className = 'bg-[#1f6818] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center';
-      }
-    }
-    
-    if (hiddenRole) {
-      hiddenRole.value = roleId.toString();
-    }
-    
-    if (submitBtn) {
-      submitBtn.textContent = `Guardar ${roleName}`;
-      if (roleId === ROLE_COORDINADOR) {
-        submitBtn.className = 'px-6 py-2 bg-[#2563eb] text-white rounded-lg font-semibold hover:bg-[#1d4ed8] transition-colors';
-      } else {
-        submitBtn.className = 'px-6 py-2 bg-[#1f6818] text-white rounded-lg font-semibold hover:bg-[#185513] transition-colors';
-      }
+      modalHeader.className = 'bg-[#1f6818] text-white px-6 py-4 rounded-t-2xl flex justify-between items-center';
     }
   }
 
@@ -456,21 +451,19 @@ import Sidebar from '../components/Sidebar.astro';
     const searchInput = document.getElementById('searchInput') as HTMLInputElement;
 
     // Modal elements
-    const btnAddDocente = document.getElementById('btnAddDocente');
-    const btnAddCoordinador = document.getElementById('btnAddCoordinador');
+    const btnAddEmpleado = document.getElementById('btnAddEmpleado');
     const closeModalBtn = document.getElementById('closeModal');
     const cancelBtn = document.getElementById('cancelBtn');
     const addEmployeeForm = document.getElementById('addEmployeeForm');
     const modal = document.getElementById('addEmployeeModal');
 
-    // Verificar rol para mostrar botones de agregar (solo admin)
+    // Verificar rol para mostrar botón de agregar (solo admin)
     const userRol = localStorage.getItem('user_rol');
     const rolLower = userRol?.toLowerCase() || '';
     const isAdmin = rolLower === 'admin' || rolLower === 'administrativo';
     
     if (isAdmin) {
-      if (btnAddDocente) btnAddDocente.classList.remove('hidden');
-      if (btnAddCoordinador) btnAddCoordinador.classList.remove('hidden');
+      if (btnAddEmpleado) btnAddEmpleado.classList.remove('hidden');
     }
 
     let allUsers: Usuario[] = [];
@@ -514,13 +507,9 @@ import Sidebar from '../components/Sidebar.astro';
       });
     }
 
-    // Modal event listeners - Botones separados
-    if (btnAddDocente) {
-      btnAddDocente.addEventListener('click', () => openModal(ROLE_DOCENTE, 'Docente'));
-    }
-
-    if (btnAddCoordinador) {
-      btnAddCoordinador.addEventListener('click', () => openModal(ROLE_COORDINADOR, 'Coordinador'));
+    // Modal event listener - Botón único
+    if (btnAddEmpleado) {
+      btnAddEmpleado.addEventListener('click', () => openModal());
     }
 
     if (closeModalBtn) {
