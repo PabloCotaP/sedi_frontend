@@ -132,7 +132,27 @@ import Sidebar from '../components/Sidebar.astro';
                 </button>
               </div>
               <div id="documento-actual" class="hidden mt-3 p-3 bg-blue-50 rounded-lg">
-                <p class="text-blue-700 text-sm">Documento actual: <a id="link-documento-actual" href="#" target="_blank" class="underline font-medium">Ver documento</a></p>
+                <div class="flex items-center justify-between">
+                  <p class="text-blue-700 text-sm">Documento actual: <a id="link-documento-actual" href="#" target="_blank" class="underline font-medium">Ver documento</a></p>
+                </div>
+              </div>
+              <!-- Alerta de documento inválido -->
+              <div id="documento-invalido-alerta" class="hidden mt-3 p-3 bg-red-50 border border-red-300 rounded-lg">
+                <div class="flex items-start gap-2">
+                  <svg class="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                  </svg>
+                  <div class="flex-1">
+                    <p class="text-red-700 font-medium text-sm">⚠️ Documento marcado como inválido</p>
+                    <p class="text-red-600 text-sm mt-1"><strong>Motivo:</strong> <span id="motivo-invalido-form"></span></p>
+                    <p class="text-red-600 text-xs mt-2">Para corregirlo, elimina el documento actual y sube uno nuevo.</p>
+                  </div>
+                </div>
+                <div class="mt-3 flex gap-2">
+                  <a id="link-documento-invalido" href="#" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-sm">Ver documento actual</a>
+                  <span class="text-gray-400">|</span>
+                  <button type="button" id="btn-eliminar-documento-invalido" class="text-red-600 hover:text-red-800 font-medium text-sm">Eliminar y subir nuevo</button>
+                </div>
               </div>
             </div>
           </div>
@@ -233,6 +253,7 @@ import Sidebar from '../components/Sidebar.astro';
   let viewingUserId: number | null = null;
   let registroAEliminar: number | null = null;
   let editandoId: number | null = null;
+  let documentoAEliminar: boolean = false;
   let isAdmin = false;
   let invalidarDocId: number | null = null;
   let restaurarDocId: number | null = null;
@@ -370,14 +391,34 @@ import Sidebar from '../components/Sidebar.astro';
     const formTitulo = document.getElementById('form-titulo');
     const descripcionInput = document.getElementById('descripcion') as HTMLTextAreaElement;
     const documentoActual = document.getElementById('documento-actual');
+    const documentoInvalidoAlerta = document.getElementById('documento-invalido-alerta');
     const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
+    const linkDocumentoInvalido = document.getElementById('link-documento-invalido') as HTMLAnchorElement;
+    const motivoInvalidoForm = document.getElementById('motivo-invalido-form');
+    const dropZone = document.getElementById('drop-zone');
 
     if (formTitulo) formTitulo.textContent = 'Editar Participación';
     if (descripcionInput) descripcionInput.value = registro.descripcion || '';
 
-    if (registro.documento?.ruta_archivo && documentoActual && linkDocumento) {
-      documentoActual.classList.remove('hidden');
-      linkDocumento.href = getExpedienteDownloadUrl(registro.documento.iddocumento_detalle);
+    // Ocultar ambas secciones de documento primero
+    if (documentoActual) documentoActual.classList.add('hidden');
+    if (documentoInvalidoAlerta) documentoInvalidoAlerta.classList.add('hidden');
+    if (dropZone) dropZone.classList.remove('hidden');
+
+    // Verificar si el documento existe y si es inválido
+    if (registro.documento?.ruta_archivo) {
+      const esInvalido = registro.documento.valido === false;
+      const downloadUrl = getExpedienteDownloadUrl(registro.documento.iddocumento_detalle);
+      
+      if (esInvalido) {
+        if (documentoInvalidoAlerta) documentoInvalidoAlerta.classList.remove('hidden');
+        if (linkDocumentoInvalido) linkDocumentoInvalido.href = downloadUrl;
+        if (motivoInvalidoForm) motivoInvalidoForm.textContent = registro.documento.motivo_invalidez || 'Sin especificar';
+        if (dropZone) dropZone.classList.add('hidden');
+      } else {
+        if (documentoActual) documentoActual.classList.remove('hidden');
+        if (linkDocumento) linkDocumento.href = downloadUrl;
+      }
     }
 
     document.getElementById('vista-lista')?.classList.add('hidden');
@@ -386,15 +427,18 @@ import Sidebar from '../components/Sidebar.astro';
 
   function resetFormulario() {
     editandoId = null;
+    documentoAEliminar = false;
     const form = document.getElementById('participacion-form') as HTMLFormElement;
     const formTitulo = document.getElementById('form-titulo');
     const documentoActual = document.getElementById('documento-actual');
+    const documentoInvalidoAlerta = document.getElementById('documento-invalido-alerta');
     const archivoSeleccionado = document.getElementById('archivo-seleccionado');
     const dropZone = document.getElementById('drop-zone');
 
     if (form) form.reset();
     if (formTitulo) formTitulo.textContent = 'Agregar Participación en Colegios, Cámaras y Asociaciones';
     if (documentoActual) documentoActual.classList.add('hidden');
+    if (documentoInvalidoAlerta) documentoInvalidoAlerta.classList.add('hidden');
     if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
     if (dropZone) dropZone.classList.remove('hidden');
     document.getElementById('form-error')?.classList.add('hidden');
@@ -509,6 +553,18 @@ import Sidebar from '../components/Sidebar.astro';
       dropZone?.classList.remove('hidden');
     });
 
+    // Event listener para eliminar documento inválido y mostrar drop zone
+    const btnEliminarDocumentoInvalido = document.getElementById('btn-eliminar-documento-invalido');
+    btnEliminarDocumentoInvalido?.addEventListener('click', () => {
+      const documentoInvalidoAlerta = document.getElementById('documento-invalido-alerta');
+      const dropZoneEl = document.getElementById('drop-zone');
+      
+      documentoAEliminar = true;
+      
+      if (documentoInvalidoAlerta) documentoInvalidoAlerta.classList.add('hidden');
+      if (dropZoneEl) dropZoneEl.classList.remove('hidden');
+    });
+
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -525,6 +581,10 @@ import Sidebar from '../components/Sidebar.astro';
 
       try {
         const formData = new FormData(form);
+        
+        if (documentoAEliminar) {
+          formData.set('eliminar_documento', 'true');
+        }
 
         let response;
         if (editandoId) {
