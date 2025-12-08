@@ -181,6 +181,28 @@ import Sidebar from '../components/Sidebar.astro';
       </div>
     </div>
 
+    <div id="modal-preview" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-xl p-6 max-w-4xl w-full mx-4 relative">
+
+        <button id="close-preview" class="absolute top-3 right-3 text-gray-700 hover:text-black text-2xl">
+          &times;
+        </button>
+
+        <h3 class="text-lg font-bold mb-4">Vista previa del documento</h3>
+
+        <div class="flex justify-end mb-3">
+          <a id="download-pdf" href="#" download class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            Descargar PDF
+          </a>
+        </div>
+
+        <div class="w-full h-[75vh] border rounded">
+          <embed id="preview-pdf" src="" type="application/pdf" class="w-full h-full" />
+        </div>
+
+      </div>
+    </div>
+
     <Footer />
   </div>
 </BaseLayout>
@@ -251,8 +273,10 @@ import Sidebar from '../components/Sidebar.astro';
           </td>
           <td class="border border-gray-300 px-4 py-3 text-center">
             ${tieneDocumento ? `
-              <a href="${getExpedienteDownloadUrl(reg.documento!.iddocumento_detalle)}" target="_blank" 
-                class="text-blue-600 hover:text-blue-800 underline">Ver</a>
+              <a href="#" class="btn-ver text-blue-600 hover:text-blue-800 underline"
+                data-url="${getExpedienteDownloadUrl(reg.documento!.iddocumento_detalle)}">
+                Ver
+              </a>
             ` : '<span class="text-gray-400">Sin documento</span>'}
           </td>
           <td class="border border-gray-300 px-4 py-3 text-center">
@@ -304,6 +328,24 @@ import Sidebar from '../components/Sidebar.astro';
         document.getElementById('modal-restaurar')?.classList.remove('hidden');
       });
     });
+
+    document.querySelectorAll('.btn-ver').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const url = (btn as HTMLElement).getAttribute("data-url");
+
+        const modal = document.getElementById("modal-preview");
+        const embed = document.getElementById("preview-pdf");
+        const linkDownload = document.getElementById("download-pdf");
+
+        embed?.setAttribute("src", url || "");
+        linkDownload?.setAttribute("href", url || "");
+
+        modal?.classList.remove("hidden");
+      });
+    });
+
   }
 
   function editarRegistro(id: number) {
@@ -575,6 +617,25 @@ import Sidebar from '../components/Sidebar.astro';
         restaurarDocId = null;
       }
     });
+
+    document.getElementById("close-preview")?.addEventListener("click", () => {
+      const modal = document.getElementById("modal-preview");
+      const embed = document.getElementById("preview-pdf");
+
+      embed?.setAttribute("src", "");
+      modal?.classList.add("hidden");
+    });
+
+    document.getElementById("modal-preview")?.addEventListener("click", (e) => {
+      if (e.target === e.currentTarget) {
+        const modal = document.getElementById("modal-preview");
+        const embed = document.getElementById("preview-pdf");
+
+        embed?.setAttribute("src", "");
+        modal?.classList.add("hidden");
+      }
+    });
+
   }
 
   init();
