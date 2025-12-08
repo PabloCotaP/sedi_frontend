@@ -138,7 +138,7 @@ import Sidebar from '../components/Sidebar.astro';
                       id="archivo" 
                       name="archivo" 
                       required
-                      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                      accept=".pdf"
                       class="hidden"
                     />
                     <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -154,7 +154,7 @@ import Sidebar from '../components/Sidebar.astro';
                         <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 2l5 5h-5V4zm-3 9v4h2v-4h2l-3-3-3 3h2z"/>
                       </svg>
                       <div>
-                        <p id="nombre-archivo" class="font-medium text-gray-700"></p>
+                        <p id="nombre-archivo" class="document-file-name text-gray-700 text-sm font-medium"></p>
                         <p id="tamano-archivo" class="text-sm text-gray-500"></p>
                       </div>
                     </div>
