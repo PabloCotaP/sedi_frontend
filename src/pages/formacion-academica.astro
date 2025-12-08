@@ -51,6 +51,7 @@ import Sidebar from '../components/Sidebar.astro';
             <thead>
               <tr class="bg-[#d9d9d9]">
                 <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[18px] text-black">Nivel / Descripción</th>
+                <th class="border border-gray-400 px-4 py-3 text-left font-normal text-[18px] text-black">Institución</th>
                 <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Año</th>
                 <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Cédula</th>
                 <th class="border border-gray-400 px-4 py-3 text-center font-normal text-[18px] text-black">Documento</th>
@@ -124,24 +125,12 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
 
           <div class="flex items-center gap-6">
-            <label for="institucion-input" class="w-48 text-right font-normal text-black text-[18px]">
+            <label for="institucion-select" class="w-48 text-right font-normal text-black text-[18px]">
               Institución <span class="text-red-500">*</span>
             </label>
-            <div class="flex-1 relative">
-              <input type="hidden" id="institucion-id" name="institucion_idinstitucion" value="" />
-              <input id="institucion-input" type="text" required
-                placeholder="Escribe para buscar o crear nueva institución"
-                autocomplete="off"
-                class="w-full border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" />
-              <div id="institucion-dropdown" class="absolute z-10 w-full bg-white border-2 border-gray-300 rounded-b-lg shadow-lg max-h-48 overflow-y-auto hidden">
-              </div>
-              <p id="institucion-hint" class="text-sm text-green-600 mt-1 hidden">
-                ✓ Se creará una nueva institución al guardar
-              </p>
-            </div>
-            <button type="button" id="btn-nueva-institucion" class="bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg whitespace-nowrap">
-              + Nueva
-            </button>
+            <select id="institucion-select" name="institucion_idinstitucion" required class="flex-1 border-2 border-black rounded px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+              <option value="">Seleccione una institución</option>
+            </select>
           </div>
 
           <div class="flex items-center gap-6">
@@ -237,6 +226,28 @@ import Sidebar from '../components/Sidebar.astro';
           </div>
         </div>
       </div>
+
+      <div id="modal-preview" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-xl p-6 max-w-4xl w-full mx-4 relative">
+
+          <button id="close-preview" class="absolute top-3 right-3 text-gray-700 hover:text-black text-2xl">
+            &times;
+          </button>
+
+          <h3 class="text-lg font-bold mb-4">Vista previa del documento</h3>
+
+          <div class="flex justify-end mb-3">
+            <a id="download-pdf" href="#" download class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+              Descargar PDF
+            </a>
+          </div>
+
+          <div class="w-full h-[75vh] border rounded">
+            <iframe id="preview-pdf" class="w-full h-full border-0"></iframe>
+          </div>
+
+        </div>
+      </div>
     </main>
 
     <Footer />
@@ -297,11 +308,7 @@ import Sidebar from '../components/Sidebar.astro';
   const nombreInput = document.getElementById('nombre-input') as HTMLInputElement;
   const anioInput = document.getElementById('anio-input') as HTMLInputElement;
   const cedulaInput = document.getElementById('cedula-input') as HTMLInputElement;
-  const institucionInput = document.getElementById('institucion-input') as HTMLInputElement;
-  const institucionIdInput = document.getElementById('institucion-id') as HTMLInputElement;
-  const institucionDropdown = document.getElementById('institucion-dropdown') as HTMLDivElement;
-  const institucionHint = document.getElementById('institucion-hint') as HTMLParagraphElement;
-  const btnNuevaInstitucion = document.getElementById('btn-nueva-institucion') as HTMLButtonElement;
+  const institucionSelect = document.getElementById('institucion-select') as HTMLSelectElement;
   const paisSelect = document.getElementById('pais-select') as HTMLSelectElement;
   const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
   const fileInput = document.getElementById('documento') as HTMLInputElement;
@@ -362,108 +369,13 @@ import Sidebar from '../components/Sidebar.astro';
 
       if (institucionesRes.status === 'success' && institucionesRes.data) {
         instituciones = institucionesRes.data;
+        institucionSelect.innerHTML = '<option value="">Seleccione una institución</option>' +
+          instituciones.map(i => `<option value="${i.idinstitucion}">${i.nombre}</option>`).join('');
         instituciones.forEach(i => institucionesMap[i.idinstitucion] = i.nombre);
       }
     } catch (error) {
       console.error('Error al cargar catálogos:', error);
     }
-  }
-
-  function setupInstitucionAutocomplete() {
-    function showDropdown(filtered: Institucion[]) {
-      if (filtered.length === 0) {
-        institucionDropdown.classList.add('hidden');
-        return;
-      }
-
-      institucionDropdown.innerHTML = filtered.map(inst => `
-        <div class="institucion-option px-4 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100 last:border-0" 
-             data-id="${inst.idinstitucion}" data-nombre="${inst.nombre}">
-          ${inst.nombre}
-        </div>
-      `).join('');
-
-      institucionDropdown.classList.remove('hidden');
-
-      institucionDropdown.querySelectorAll('.institucion-option').forEach(opt => {
-        opt.addEventListener('click', () => {
-          const id = opt.getAttribute('data-id');
-          const nombre = opt.getAttribute('data-nombre');
-          if (id && nombre) {
-            selectInstitucion(parseInt(id), nombre);
-          }
-        });
-      });
-    }
-
-    function selectInstitucion(id: number, nombre: string) {
-      institucionInput.value = nombre;
-      institucionIdInput.value = id.toString();
-      selectedInstitucionId = id;
-      isNewInstitucion = false;
-      institucionDropdown.classList.add('hidden');
-      institucionHint.classList.add('hidden');
-      institucionInput.classList.remove('border-green-500');
-      institucionInput.classList.add('border-black');
-    }
-
-    function markAsNew() {
-      const nombre = institucionInput.value.trim();
-      if (nombre) {
-        institucionIdInput.value = '';
-        selectedInstitucionId = null;
-        isNewInstitucion = true;
-        institucionHint.classList.remove('hidden');
-        institucionInput.classList.remove('border-black');
-        institucionInput.classList.add('border-green-500');
-      }
-    }
-
-    institucionInput.addEventListener('input', () => {
-      const query = institucionInput.value.toLowerCase().trim();
-      
-      institucionIdInput.value = '';
-      selectedInstitucionId = null;
-      isNewInstitucion = false;
-      institucionHint.classList.add('hidden');
-      institucionInput.classList.remove('border-green-500');
-      institucionInput.classList.add('border-black');
-
-      if (query.length < 1) {
-        institucionDropdown.classList.add('hidden');
-        return;
-      }
-
-      const filtered = instituciones.filter(i => 
-        i.nombre.toLowerCase().includes(query)
-      ).slice(0, 10);
-
-      showDropdown(filtered);
-
-      const exactMatch = instituciones.find(i => i.nombre.toLowerCase() === query);
-      if (exactMatch) {
-        selectInstitucion(exactMatch.idinstitucion, exactMatch.nombre);
-      }
-    });
-
-    institucionInput.addEventListener('blur', () => {
-      setTimeout(() => {
-        institucionDropdown.classList.add('hidden');
-        if (institucionInput.value.trim() && !selectedInstitucionId) {
-          markAsNew();
-        }
-      }, 200);
-    });
-
-    btnNuevaInstitucion.addEventListener('click', () => {
-      const nombre = institucionInput.value.trim();
-      if (nombre) {
-        markAsNew();
-      } else {
-        institucionInput.focus();
-        alert('Escribe el nombre de la nueva institución primero');
-      }
-    });
   }
 
   async function loadRegistros() {
@@ -500,6 +412,9 @@ import Sidebar from '../components/Sidebar.astro';
 
     tablaFormacion.innerHTML = registros.map(reg => {
       const docUrl = reg.documento ? getExpedienteDownloadUrl(reg.documento.iddocumento_detalle) : null;
+      const institucionNombre = reg.documento?.institucion_idinstitucion 
+        ? institucionesMap[reg.documento.institucion_idinstitucion] || 'N/A' 
+        : 'N/A';
       const anio = reg.info_extra?.anio_obtencion || '-';
       const cedula = reg.info_extra?.nivel_experiencia || '-';
       const esInvalido = reg.documento && reg.documento.valido === false;
@@ -511,15 +426,14 @@ import Sidebar from '../components/Sidebar.astro';
             ${reg.descripcion}
             ${esInvalido ? `<span class="block text-red-600 text-xs mt-1">⚠️ Documento inválido: ${motivoInvalido}</span>` : ''}
           </td>
+          <td class="border border-gray-400 px-4 py-3 text-black">${institucionNombre}</td>
           <td class="border border-gray-400 px-4 py-3 text-center text-black">${anio}</td>
           <td class="border border-gray-400 px-4 py-3 text-center text-black">${cedula}</td>
           <td class="border border-gray-400 px-4 py-3 text-center">
             ${docUrl ? `
-              <a href="${docUrl}" target="_blank" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Ver
+              <a href="#" class="btn-ver text-blue-600 hover:text-blue-800 underline"
+              data-url="${docUrl}">
+              Ver
               </a>
             ` : '<span class="text-gray-400">-</span>'}
           </td>
@@ -578,12 +492,36 @@ import Sidebar from '../components/Sidebar.astro';
         showRestaurarModal(docId);
       });
     });
+
+    document.querySelectorAll('.btn-ver').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        const url = btn.getAttribute("data-url");
+        const modal = document.getElementById("modal-preview");
+        const iframe = document.getElementById("preview-pdf") as HTMLIFrameElement | null;
+        const linkDownload = document.getElementById("download-pdf");
+
+        if (!url || !modal || !iframe) return;
+
+        linkDownload?.setAttribute("href", url);
+
+        // prevent chrome direct download
+        const response = await fetch(url);
+        const blob = await response.blob();
+        const pdfUrl = URL.createObjectURL(blob);
+
+        iframe.src = pdfUrl;
+
+        modal.classList.remove("hidden");
+      });
+    });
   }
 
   function showForm(isEdit = false) {
     vistaLista.classList.add('hidden');
     vistaFormulario.classList.remove('hidden');
-    formTitle.textContent = isEdit ? 'Editar formación académica' : 'Agregar formación académica';
+    formTitle.textContent = isEdit ? 'Editar formación académica' : 'Agregar Formación Académica';
   }
 
   function showList() {
@@ -598,13 +536,9 @@ import Sidebar from '../components/Sidebar.astro';
     selectedFile = null;
     filePreview.classList.add('hidden');
     dropZone.classList.remove('hidden');
-    institucionInput.value = '';
-    institucionIdInput.value = '';
+    institucionSelect.value = '';
     selectedInstitucionId = null;
     isNewInstitucion = false;
-    institucionHint.classList.add('hidden');
-    institucionInput.classList.remove('border-green-500');
-    institucionInput.classList.add('border-black');
   }
 
   function editRegistro(id: number) {
@@ -633,9 +567,7 @@ import Sidebar from '../components/Sidebar.astro';
 
     if (reg.documento?.institucion_idinstitucion) {
       const instId = reg.documento.institucion_idinstitucion;
-      const instNombre = institucionesMap[instId] || '';
-      institucionInput.value = instNombre;
-      institucionIdInput.value = instId.toString();
+      institucionSelect.value = instId.toString();
       selectedInstitucionId = instId;
     }
 
@@ -747,15 +679,16 @@ import Sidebar from '../components/Sidebar.astro';
     const anio = anioInput.value;
     const cedula = cedulaInput.value.trim();
     const paisId = paisSelect.value;
+    const institucionId = institucionSelect.value;
     
     if (!nombre) {
       alert('Por favor ingresa la descripción de la formación');
       return;
     }
 
-    if (!selectedInstitucionId && !isNewInstitucion) {
-      alert('Por favor selecciona o crea una institución');
-      institucionInput.focus();
+    if (!institucionId) {
+      alert('Por favor selecciona una institución');
+      institucionSelect.focus();
       return;
     }
 
@@ -763,24 +696,6 @@ import Sidebar from '../components/Sidebar.astro';
       alert('Por favor selecciona un país');
       paisSelect.focus();
       return;
-    }
-
-    let institucionId = selectedInstitucionId;
-    if (isNewInstitucion && institucionInput.value.trim()) {
-      try {
-        const res = await createInstitucion(institucionInput.value.trim());
-        if (res.status === 'success' && res.data) {
-          institucionId = res.data.idinstitucion;
-          instituciones.push(res.data);
-          institucionesMap[res.data.idinstitucion] = res.data.nombre;
-        } else {
-          throw new Error('No se pudo crear la institución');
-        }
-      } catch (error) {
-        console.error('Error creando institución:', error);
-        alert('Error al crear la nueva institución');
-        return;
-      }
     }
     
     const descripcion = nivel ? `${nivel}: ${nombre}` : nombre;
@@ -879,9 +794,20 @@ import Sidebar from '../components/Sidebar.astro';
     dropZone.classList.remove('hidden');
   });
 
+  document.getElementById("close-preview")?.addEventListener("click", () => {
+    const modal = document.getElementById("modal-preview");
+    modal?.classList.add("hidden");
+  });
+
+  document.getElementById("modal-preview")?.addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) {
+      const modal = document.getElementById("modal-preview");
+      modal?.classList.add("hidden");
+    }
+  });
+
   checkViewingUser();
   loadCatalogos();
-  setupInstitucionAutocomplete();
   loadRegistros();
 </script>
 

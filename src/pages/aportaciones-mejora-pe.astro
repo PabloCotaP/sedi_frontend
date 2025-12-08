@@ -396,7 +396,7 @@ import Sidebar from '../components/Sidebar.astro';
     const documentoActual = document.getElementById('documento-actual');
     const linkDocumento = document.getElementById('link-documento-actual') as HTMLAnchorElement;
 
-    if (formTitulo) formTitulo.textContent = 'EDITAR APORTACIÓN';
+    if (formTitulo) formTitulo.textContent = 'Editar Aportación';
     if (descripcionInput) {
       descripcionInput.value = registro.descripcion || '';
       updateWordCount();
@@ -420,7 +420,7 @@ import Sidebar from '../components/Sidebar.astro';
     const dropZone = document.getElementById('drop-zone');
 
     if (form) form.reset();
-    if (formTitulo) formTitulo.textContent = 'APORTACIONES A LA MEJORA DEL PLAN DE ESTUDIOS';
+    if (formTitulo) formTitulo.textContent = 'Agregar Aportaciones a la Mejora del Plan de Estudios';
     if (documentoActual) documentoActual.classList.add('hidden');
     if (archivoSeleccionado) archivoSeleccionado.classList.add('hidden');
     if (dropZone) dropZone.classList.remove('hidden');
