@@ -27,7 +27,7 @@ import Sidebar from '../components/Sidebar.astro';
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div class="flex-1">
             <h1 class="text-[28px] sm:text-[32px] font-normal text-black mb-2 italic">
-              Participación en colegios, cámaras, asociaciones científicas o algún otro tipo de organismo profesional
+              Participación en Colegios, Cámaras, Asociaciones Científicas o Algún Otro Tipo de Organismo Profesional
             </h1>
             <p class="text-[14px] text-gray-700 leading-snug">
               Membresía vigente en colegios, cámaras, asociaciones científicas o algún otro tipo de organismo profesional. Nombre del organismo, tiempo de membresía y el nivel de participación (miembro, socio, directivo, integrante o coordinador de algún equipo o comisión, etc.).
@@ -116,7 +116,7 @@ import Sidebar from '../components/Sidebar.astro';
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                 </svg>
                 <p class="text-gray-600">Haz clic o arrastra un archivo aquí</p>
-                <p class="text-gray-400 text-sm mt-1">PDF, DOC, DOCX, JPG, PNG (máx. 10MB)</p>
+                <p class="text-gray-400 text-sm mt-1">PDF (máx. 10MB)</p>
               </div>
               <div id="archivo-seleccionado" class="hidden mt-3 p-3 bg-green-50 rounded-lg flex items-center justify-between">
                 <div class="flex items-center gap-2">
@@ -133,7 +133,7 @@ import Sidebar from '../components/Sidebar.astro';
               </div>
               <div id="documento-actual" class="hidden mt-3 p-3 bg-blue-50 rounded-lg">
                 <div class="flex items-center justify-between">
-                  <p class="text-blue-700 text-sm">Documento actual: <a id="link-documento-actual" href="#" target="_blank" class="underline font-medium">Ver documento</a></p>
+                  <p class="text-blue-700 text-sm">Documento cargado: <a id="link-documento-actual" href="#" class="btn-ver text-blue-600 hover:text-blue-800 underline font-medium">Ver documento</a></p>
                 </div>
               </div>
               <!-- Alerta de documento inválido -->
@@ -149,7 +149,7 @@ import Sidebar from '../components/Sidebar.astro';
                   </div>
                 </div>
                 <div class="mt-3 flex gap-2">
-                  <a id="link-documento-invalido" href="#" target="_blank" class="text-blue-600 hover:text-blue-800 underline text-sm">Ver documento actual</a>
+                  <a id="link-documento-invalido" href="#" class="btn-ver text-blue-600 hover:text-blue-800 underline text-sm">Ver documento</a>
                   <span class="text-gray-400">|</span>
                   <button type="button" id="btn-eliminar-documento-invalido" class="text-red-600 hover:text-red-800 font-medium text-sm">Eliminar y subir nuevo</button>
                 </div>
@@ -412,12 +412,12 @@ import Sidebar from '../components/Sidebar.astro';
       
       if (esInvalido) {
         if (documentoInvalidoAlerta) documentoInvalidoAlerta.classList.remove('hidden');
-        if (linkDocumentoInvalido) linkDocumentoInvalido.href = downloadUrl;
+        if (linkDocumentoInvalido) linkDocumentoInvalido.setAttribute('data-url', downloadUrl);
         if (motivoInvalidoForm) motivoInvalidoForm.textContent = registro.documento.motivo_invalidez || 'Sin especificar';
         if (dropZone) dropZone.classList.add('hidden');
       } else {
         if (documentoActual) documentoActual.classList.remove('hidden');
-        if (linkDocumento) linkDocumento.href = downloadUrl;
+        if (linkDocumento) linkDocumento.setAttribute('data-url', downloadUrl);
       }
     }
 
